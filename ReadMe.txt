@@ -1,3 +1,4 @@
 DkBase
 DkAssetLoad
+DkEditor
 DkFight
