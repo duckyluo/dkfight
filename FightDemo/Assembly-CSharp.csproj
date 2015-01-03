@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{A416A5F8-1768-B7D8-3DFC-E65984CC0B63}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_1;UNITY_4_6;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;UNITY_PRO_LICENSE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>D:/Soft/Unity4.6/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>D:/Soft/Unity4.6/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Programs\Demo\CameraTest.cs" />
+     <Compile Include="Assets\Programs\Demo\CombineMesh.cs" />
+     <Compile Include="Assets\Programs\Demo\Test.cs" />
+     <Compile Include="Assets\Programs\Demo\Test3.cs" />
+     <Compile Include="Assets\Programs\Demo\Test4.cs" />
+     <Compile Include="Assets\Programs\DkShader\Effect\DkEffectTest.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\Base\RoleBaseActionNode.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\Base\RoleBaseDirectNode.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\Base\RoleBaseParalleNode.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\Base\RoleBaseSelectorNode.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskActionNode.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskAttackAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskJumpAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskMoveAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskSkillAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Action\RoleAskStopAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Control\RoleInputAttackCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Control\RoleInputJumpCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Control\RoleInputMoveCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\Control\RoleNotInputCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\Node\RoleDeciderDirect.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleDecider\RoleDeciderBt.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoAttackAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoHurtAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoIdleAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoMoveDirectionAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoMoveJumpAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoMoveStopAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Action\RoleDoSkillAN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Control\RoleStateAttackCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Control\RoleStateDieCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Control\RoleStateIdleCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Control\RoleStateMoveCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\Control\RoleStateSkillCN.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\Node\RoleExecutorDirect.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\AI\RoleExecutor\RoleExecutorBt.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Animation\AnimationCtrl.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleBlackBoard.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleCtrlAnimation.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleCtrlMove.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleCtrlMsg.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleDataBase.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleDataRunTime.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Role\RoleRootPoint.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\FsmMessage\SceneFsmMsg.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\FsmMessage\SceneFsmMsgManager.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\FsmMessage\TimeLineMsg.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\Object\SceneObj.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\Object\SceneObjCtrl.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\Object\SceneRoleObj.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\Scene\SceneManager.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Common\SerializeData\DkSRoleObject.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\AnimationNameDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\CameraDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\CharacterDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\InputDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\ModuleDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\PanelDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\RouteNoteDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\SceneDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\SkillDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\TagDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Define\UIDef.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Manager\InputManager.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Manager\TimerManager.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Utility\AvoidDestroyTool.cs" />
+     <Compile Include="Assets\Programs\Scripts\Game\Utility\CameraViewTool.cs" />
+     <None Include="Assets\Programs\DkShader\Shaders\DkNormalExtusion.shader" />
+     <None Include="Assets\Programs\Shaders\VertexLitwithZ.shader" />
+     <None Include="Assets\Programs\Shaders\Custom_Mobile_Diffuse.shader" />
+     <None Include="Assets\Programs\Shaders\DarkMapShader.shader" />
+     <None Include="Assets\Programs\DkShader\Shaders\DkColorLight.shader" />
+     <None Include="Assets\Programs\DkShader\Shaders\DkFlashLight.shader" />
+     <None Include="Assets\Programs\Shaders\Unlit_Texture.shader" />
+     <None Include="Assets\Programs\Shaders\AddMapShader.shader" />
+     <None Include="Assets\Programs\DkShader\Shaders\DkColor.shader" />
+ <Reference Include="UnityEngine.UI">
+ <HintPath>D:/Soft/Unity4.6/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="PureMVC.DotNET.20">
+ <HintPath>E:/Program/Unity/DkFight/FightDemo/Assets/Plugins/PureMVC.DotNET.20.dll</HintPath>
+ </Reference>
+ <Reference Include="DkAssetLoad">
+ <HintPath>E:/Program/Unity/DkFight/FightDemo/Assets/Plugins/DkAssetLoad.dll</HintPath>
+ </Reference>
+ <Reference Include="DkBase">
+ <HintPath>E:/Program/Unity/DkFight/FightDemo/Assets/Plugins/DkBase.dll</HintPath>
+ </Reference>
+ <Reference Include="ICSharpCode.SharpZipLib">
+ <HintPath>E:/Program/Unity/DkFight/FightDemo/Assets/Plugins/ICSharpCode.SharpZipLib.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
