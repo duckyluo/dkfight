@@ -41,18 +41,24 @@ public class RoleCtrlAnimation
 //		}
 //	}
 	
-	public void Play(string name , WrapMode mode , bool replay)
+	public void Play(string name , WrapMode mode , bool replay , float speed )
 	{
 		if (replay || aniCtrl.GetCurAniName != name) 
 		{
-			aniCtrl.Play (name, mode);
+			aniCtrl.Play (name, mode, speed);
 		}
 	}
 
-	public void SetCurSpeed(float value)
+
+	public void SampleCurAtTime(float time)
 	{
-		aniCtrl.SetCurSpeed (value);
+		aniCtrl.SampleCurAtTime(time);
 	}
+
+//	public void SetCurSpeed(float value)
+//	{
+//		aniCtrl.SetCurSpeed (value);
+//	}
 	
 	public void Pause()
 	{
@@ -64,13 +70,25 @@ public class RoleCtrlAnimation
 		aniCtrl.Resume ();
 	}
 
+	public bool IsCurAniFinish
+	{
+		get
+		{
+			return aniCtrl.IsCurAniFinish;
+		}
+	}
+
 	public AnimationState GetCurState
 	{
 		get
 		{
 			return aniCtrl.GetCurState;
 		}
+	}
 
+	public AnimationState GetState(string animationName)
+	{
+		return aniCtrl.GetState(animationName);
 	}
 
 	protected Animation GetAnimation

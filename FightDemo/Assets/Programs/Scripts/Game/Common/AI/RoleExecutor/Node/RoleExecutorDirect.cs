@@ -9,8 +9,9 @@ public class RoleExecutorDirect : RoleBaseDirectNode
 	{
 		this.m_name = "RoleExecutorDirect";
 		base.Initalize();
+		this.AddChild(new RoleStateHitCN());
+		this.AddChild(new RoleStateAttackCN());
 		this.AddChild(new RoleStateMoveCN());
 		this.AddChild(new RoleStateIdleCN());
-
 	}
 }

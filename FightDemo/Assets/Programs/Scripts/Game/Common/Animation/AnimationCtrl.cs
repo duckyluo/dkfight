@@ -5,12 +5,8 @@ using Dk.Event;
 
 public class AnimationCtrl : DkEventDispatch
 {
-	public const float DefaultSpeed = 1.0f;
+	public static float GameSpeed = 1.0f;
 
-//	public string m_defaultAniName = AnimationNameDef.Idle;
-//	
-//	public WrapMode m_defaultPlayMode = WrapMode.Loop;
-	
 	protected Animation m_animation = null;
 
 	protected string m_curAniName = string.Empty;
@@ -18,10 +14,10 @@ public class AnimationCtrl : DkEventDispatch
 	{
 		get{return m_curAniName;}
 	}
-
+	
 	protected WrapMode m_curPlayMode = WrapMode.Once;
 
-	protected float m_curSpeed = 1.0f;
+	protected float m_curAniSpeed = 1.0f;
 		
 	protected bool m_checkEnd = false;
 	
@@ -88,12 +84,17 @@ public class AnimationCtrl : DkEventDispatch
 	{
 		get
 		{
-			if(m_inited)
-			{
-				return m_animation[m_curAniName];
-			}
-			else return null;
+			return GetState(m_curAniName);
 		}
+	}
+
+	public AnimationState GetState(string animationName)
+	{
+		if(HasState(animationName))
+		{
+			return m_animation[animationName];
+		}
+		else return null;
 	}
 
 	public bool IsCurAniPlaying
@@ -130,7 +131,7 @@ public class AnimationCtrl : DkEventDispatch
 		}
 	}
 
-	public void Play(string name , WrapMode mode)// , bool replay)
+	public void Play(string name , WrapMode mode, float speed)// , bool replay)
 	{
 		if(m_inited == false)
 		{
@@ -146,10 +147,32 @@ public class AnimationCtrl : DkEventDispatch
 			checkPlayMode(mode);
 
 			m_curPlayMode = m_animation[name].wrapMode = mode;
-			m_animation[name].speed = m_curSpeed;
+			m_animation[name].speed = (speed*GameSpeed);
 			m_animation.Stop();
 			m_animation.Play(name);
 			m_curAniName = name;
+			m_curAniSpeed = speed;
+		}
+	}
+
+	public void SampleCurAtTime(float time)
+	{
+		if(GetCurState.length < time)
+		{
+			time = GetCurState.length;
+		}
+		GetCurState.time = time;
+		GetCurState.enabled = true;
+		m_animation.Sample();
+	}
+
+	public void SetGameSpeed(float value)
+	{
+		GameSpeed = value;
+		if(HasState(m_curAniName))
+		{
+			AnimationState state = m_animation[m_curAniName];
+			state.speed = m_curAniSpeed*GameSpeed;
 		}
 	}
 	
@@ -162,32 +185,17 @@ public class AnimationCtrl : DkEventDispatch
 			m_isPaused = true;
 		}
 	}
-
-	public void SetCurSpeed(float value)
-	{
-		if(HasState(m_curAniName))
-		{
-			AnimationState state = m_animation[m_curAniName];
-			state.speed = value;
-		}
-		m_curSpeed = value;
-	}
-
+	
 	public void Resume()
 	{
 		if(HasState(m_curAniName))
 		{
 			AnimationState state = m_animation[m_curAniName];
-			state.speed = m_curSpeed;
+			state.speed = m_curAniSpeed*GameSpeed;
 			m_isPaused = false;
 		}
 	}
-
-//	public void Start()
-//	{
-//		Play(m_curAniName,m_curPlayMode,true);
-//	}
-
+	
 	public bool HasState(string name)
 	{
 		if(m_inited == false || m_isDestroyed || string.IsNullOrEmpty(name))

@@ -8,6 +8,12 @@ public class RoleAskJumpAN : RoleAskActionNode
 {
 	protected RoleFsmMessage askMsg = null;
 
+	public override void Initalize ()
+	{
+		this.m_name = "AskJump";
+		base.Initalize ();
+	}
+
 	public override bool Evaluate (DkBtInputParam input)
 	{
 		if(InputManager.ConsumeActiveKey() == eInputActiveKey.Jump)
@@ -22,10 +28,11 @@ public class RoleAskJumpAN : RoleAskActionNode
 		if(askMsg == null)
 		{
 			askMsg = new RoleFsmMessage();
-			askMsg.targetId = GetRoleBBData.DataInfo.index;
+			askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
 			askMsg.cmdType = eCommandType.Cmd_Move;
+			askMsg.actionType = eActionType.Jump;
 			askMsg.moveMethod = eMoveMethod.Jump;
-			askMsg.targetPostion = GetRunTimeData.CurPos;
+			askMsg.curPos = GetRunTimeData.CurPos;
 
 			if(InputManager.GetInputDirect == eInputDirect.LEFT)
 			{

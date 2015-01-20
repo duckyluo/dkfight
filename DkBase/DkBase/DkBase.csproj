@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{67DF9CAE-7EF4-4BD1-B7D4-156A21800F0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DkBase</RootNamespace>
+    <AssemblyName>DkBase</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>libs\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zlib.CF">
+      <HintPath>libs\Ionic.Zlib.CF.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>libs\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+    <Folder Include="Scripts\Dk\" />
+    <Folder Include="Scripts\Dk\Base\" />
+    <Folder Include="Scripts\Dk\Utils\Zip\" />
+    <Folder Include="Scripts\Dk\Utils\Camera\" />
+    <Folder Include="Scripts\Dk\Effect\" />
+    <Folder Include="Scripts\Dk\Effect\Shader\" />
+    <Folder Include="Scripts\Dk\Utils\Serialize\" />
+    <Folder Include="Scripts\Dk\AI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Scripts\Dk\Event\DkEvent.cs" />
+    <Compile Include="Scripts\Dk\Event\DkEventDispatch.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IBox.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IComponent.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IModule.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IReceiver.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IScene.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\ISysUI.cs" />
+    <Compile Include="Scripts\Dk\Utils\CSV\CsvFile.cs" />
+    <Compile Include="Scripts\Dk\Utils\CSV\CsvReader.cs" />
+    <Compile Include="Scripts\Dk\Utils\File\DkFileUtil.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\IDkMediator.cs" />
+    <Compile Include="Scripts\Dk\Interfaces\ILoadCollection.cs" />
+    <Compile Include="Scripts\Dk\Base\DkGlobal.cs" />
+    <Compile Include="Scripts\Dk\Utils\Zip\DkZipUtil.cs" />
+    <Compile Include="Scripts\Dk\Utils\Camera\DkCameraUtil.cs" />
+    <Compile Include="Scripts\Dk\Base\DkVersion.cs" />
+    <Compile Include="Scripts\Dk\Utils\Log\DkLog.cs" />
+    <Compile Include="Scripts\Dk\Effect\DkColorLight.cs" />
+    <Compile Include="Scripts\Dk\Effect\DkEffect.cs" />
+    <Compile Include="Scripts\Dk\Effect\DkFlashLight.cs" />
+    <Compile Include="Scripts\Dk\Base\DkTimer.cs" />
+    <Compile Include="Scripts\Dk\Utils\Serialize\DkSerializeData.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Common\DkBtRuningStatus.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Precondition\DkBtPrecondition.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Precondition\DkBtPreconditionAND.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Precondition\DkBtPreconditonOR.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Data\DkBtInputParam.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Data\DkBtOutputParam.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Common\DkBehaviorTree.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Data\DkBlackboard.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\DkBtRootNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\DkBtNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ControlNode\DkBtControlNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ControlNode\DkBtSelectorNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ActionNode\DkBtActionNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ControlNode\DkBtParalleNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ControlNode\DkBtSequenceNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ActionNode\DkBtWaitNode.cs" />
+    <Compile Include="Scripts\Dk\AI\BT\Node\ControlNode\DkBtDirectNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\Dk\Effect\Shader\DkColor.shader" />
+    <None Include="Scripts\Dk\Effect\Shader\DkColorLight.shader" />
+    <None Include="Scripts\Dk\Effect\Shader\DkFlashLight.shader" />
+    <None Include="Scripts\Dk\Effect\Shader\DkNormalExtusion.shader" />
+  </ItemGroup>
+</Project>

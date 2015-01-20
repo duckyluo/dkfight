@@ -11,6 +11,12 @@ public class RoleDoIdleAN : RoleBaseActionNode
 {
 	protected TimeLineMessage m_nextMsg = null;
 
+	public override void Initalize ()
+	{
+		this.m_name = "DoIdle";
+		base.Initalize ();
+	}
+
 	public override bool Evaluate (DkBtInputParam input)
 	{
 		return true;
@@ -20,14 +26,18 @@ public class RoleDoIdleAN : RoleBaseActionNode
 	{
 		InputManager.KeyJumpEnalbe = true;
 
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
+		GetRunTimeData.ActionType = eActionType.Idle;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_Idle;
+		GetRunTimeData.PostureType = ePostureType.Pose_Stand;
 
 		GetRunTimeData.MoveEnable = true;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
+
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+		GetRunTimeData.CurAlpha = 1f;
+		GetRunTimeData.CurScale = 1f;
 
 		m_nextMsg = null;
 
@@ -53,7 +63,7 @@ public class RoleDoIdleAN : RoleBaseActionNode
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
-				if((waitMsg as THitMessage).damageForce == eDamageForce.None)
+				if(waitMsg.GetActionType == eActionType.Not_Use)
 				{
 					GetMsgCtrl.AddRunTLMsg(waitMsg);
 					GetMsgCtrl.RemoveWaitMsg(waitMsg);
@@ -98,7 +108,7 @@ public class RoleDoIdleAN : RoleBaseActionNode
 	{
 		if(GetAniCtrl != null)
 		{
-			GetAniCtrl.Play(AnimationNameDef.Idle,WrapMode.Loop,false);
+			GetAniCtrl.Play(AnimationNameDef.Idle,WrapMode.Loop,false,1f);
 		}
 	}
 

@@ -9,13 +9,15 @@ public class SceneRoleObj : SceneObj
 
 	protected GameObject m_modelPrefab = null;
 
-	protected RoleCtrlMsg m_msgCtrl = null;
+	protected RoleCtrlMessage m_msgCtrl = null;
 	
-	protected RoleCtrlMove m_moveCtrl = null;
+	protected RoleCtrlTransform m_moveCtrl = null;
 
 	protected RoleCtrlAnimation m_aniCtrl = null;
 
-	protected RoleDataBase m_baseData = null;
+	protected RoleCtrlSkill m_skillCtrl = null;
+
+	protected RoleDataLocal m_localData = null;
 
 	protected RoleDataRunTime m_runTimeData = null;
 
@@ -51,10 +53,11 @@ public class SceneRoleObj : SceneObj
 				m_roleBlackBoard.PrefabMain = m_mainPrefab;
 				m_roleBlackBoard.PrefabModel = m_modelPrefab;
 				m_roleBlackBoard.DataInfo = m_info;
-				m_roleBlackBoard.DataBase = m_baseData;
+				m_roleBlackBoard.DataLocal = m_localData;
 				m_roleBlackBoard.DataRunTime = m_runTimeData;
 				m_roleBlackBoard.CtrlAnimation = m_aniCtrl;
-				m_roleBlackBoard.CtrlMove = m_moveCtrl;
+				m_roleBlackBoard.CtrlTransform = m_moveCtrl;
+				m_roleBlackBoard.CtrlSkill = m_skillCtrl;
 				m_roleBlackBoard.CtrlMsg = m_msgCtrl;
 				m_roleBlackBoard.TreeDecider = m_deciderTree;
 				m_roleBlackBoard.TreeExecutor = m_executorTree;
@@ -62,8 +65,10 @@ public class SceneRoleObj : SceneObj
 				m_aniCtrl.Initalize(m_roleBlackBoard);
 				m_moveCtrl.Initalize(m_roleBlackBoard);
 				m_msgCtrl.Initalize(m_roleBlackBoard);
-				(m_deciderTree as RoleDeciderBt).Initalize(m_roleBlackBoard);
-				(m_executorTree as RoleExecutorBt).Initalize(m_roleBlackBoard);
+				m_skillCtrl.Initalize(m_roleBlackBoard);
+				m_deciderTree.Initalize(m_roleBlackBoard);
+				m_executorTree.Initalize(m_roleBlackBoard);
+				m_localData.Initalize(m_roleBlackBoard);
 			}
 			else
 			{
@@ -82,8 +87,8 @@ public class SceneRoleObj : SceneObj
 		if(prefab != null)
 		{
 			m_mainPrefab = GameObject.Instantiate(prefab) as GameObject;
-			m_mainPrefab.name = "Dk1";
-			m_modelPrefab = GameObject.Find("/Dk1/Body");
+			m_mainPrefab.name = Info.nick;
+			m_modelPrefab = m_mainPrefab.GetComponentInChildren<BodyUIS>().gameObject;
 			return true;
 		}
 		else
@@ -97,7 +102,7 @@ public class SceneRoleObj : SceneObj
 	{
 		if(m_mainPrefab != null)
 		{
-			m_baseData = m_mainPrefab.GetComponent<RoleDataBase>();
+			m_localData = m_mainPrefab.AddComponent<RoleDataLocal>();
 			m_runTimeData = new RoleDataRunTime();
 			return true;
 		}
@@ -107,24 +112,26 @@ public class SceneRoleObj : SceneObj
 	private bool createCtrl()
 	{
 		m_aniCtrl = new RoleCtrlAnimation();
-		m_msgCtrl = new RoleCtrlMsg();
-		m_moveCtrl = new RoleCtrlMove();
+		m_msgCtrl = new RoleCtrlMessage();
+		m_moveCtrl = new RoleCtrlTransform();
+		m_skillCtrl = new RoleCtrlSkill();
 
-		if(this.Info.isMe)
+		if(this.Info.team == eSceneTeamType.Me)
 		{
 			m_deciderTree = new RoleDeciderBt();
 			m_executorTree = new RoleExecutorBt();
 		}
+		else
+		{
+			m_deciderTree = new DkBehaviourTree();
+			m_executorTree = new RoleExecutorBt();
+
+			m_mainPrefab.tag = "Enemy";
+		}
+
 		return true;
 	}
 	
-//	public override void Start()
-//	{
-//		if(!this.m_inited)
-//		{
-//			return;
-//		}
-//	}
 	
 	public override void Update()
 	{
@@ -136,12 +143,10 @@ public class SceneRoleObj : SceneObj
 		m_deciderTree.Update(null);
 		m_msgCtrl.Update();
 		m_executorTree.Update(null);
-		//m_aniCtrl.Update();
 		m_moveCtrl.Update();
 	}
 		
-	
-	public override void OnFsmReceive (ISceneFsmMsg msg)
+	public override void OnFsmReceive (IFsmMsg msg)
 	{
 		if(m_msgCtrl != null)
 		{

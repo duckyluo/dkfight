@@ -7,8 +7,8 @@ public class InputManager
 
 //	#endregion
 
-	private const float KEY_INPUT_CACHE_TIME = 0.5f;
-	private const float KEY_INPUT_COOL_TIME = 0.25f;
+	private const float KEY_INPUT_CACHE_TIME = 1f;
+	private const float KEY_INPUT_COOL_TIME = 0.1f;
 	private const float KEY_CONSUME_COOL_TIME = 0f;
 
 	private static float m_keyCacheLastTime = 0;
@@ -152,6 +152,10 @@ public class InputManager
 		else if(Input.GetKeyDown(KeyCode.Space)&&KeyJumpEnalbe)
 		{
 			CacheKeyInput(eInputActiveKey.Jump);
+		}
+		else if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+		{
+			resetActiveKey();
 		}
 	}
 

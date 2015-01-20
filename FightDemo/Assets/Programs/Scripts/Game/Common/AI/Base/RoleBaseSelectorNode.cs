@@ -55,14 +55,19 @@ public class RoleBaseSelectorNode : DkBtSelectorNode
 		get{return GetRoleBBData.DataRunTime;}
 	}
 
-	protected RoleCtrlMsg GetMsgCtrl
+	protected RoleDataLocal GetLocalData
+	{
+		get{return GetRoleBBData.DataLocal;}
+	}
+
+	protected RoleCtrlMessage GetMsgCtrl
 	{
 		get{return GetRoleBBData.CtrlMsg;}
 	}
 
-	protected RoleCtrlMove GetMoveCtrl
+	protected RoleCtrlTransform GetTransformCtrl
 	{
-		get{return GetRoleBBData.CtrlMove;}
+		get{return GetRoleBBData.CtrlTransform;}
 	}
 	
 	protected RoleCtrlAnimation GetAniCtrl

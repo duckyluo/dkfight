@@ -7,10 +7,10 @@ using Dk.BehaviourTree;
 
 public class RoleExecutorBt : DkBehaviourTree 
 {
-	public void Initalize (RoleBlackBoard bbData)
+	public override void Initalize (System.Object obj)
 	{
-		base.Initalize();
-		this.BBData = bbData;
+		base.Initalize(obj);
+		this.BBData = obj as RoleBlackBoard;
 		this.SetRootNode(new DkBtRootNode(this));
 		RoleExecutorDirect direct = new RoleExecutorDirect();
 		this.m_rootNode.SetDirectNode(direct);

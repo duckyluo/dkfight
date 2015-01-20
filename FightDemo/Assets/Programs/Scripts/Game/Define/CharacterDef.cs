@@ -3,29 +3,47 @@ public enum eMoveMethod
 {
 	Not_Use,
 	None,
+	Gravity,
 	Direction,
 	Jump,
 	RootPoint,
 	Position,
 	Path,
+	Motion,
 }
 
 public enum ePostureType
 {
 	Not_Use,
 	Pose_None = 0,
-	Pose_Idle = 1,
-	Pose_RUN = 2,
-	Pose_Lie = 3,
-	Pose_Standup = 4,
-	Pose_JumpUp = 5,
-	Pose_JumpFloat = 6,
-	Pose_JumpDown = 7,
-	Pose_JumpAttack = 8,
-	Pose_Attack = 9,
-	Pose_Hit = 10,
-	Pose_HitBack = 11,
-	Pose_HitFly = 12,
+	Pose_Appear = 1,
+	Pose_Disappear = 2,
+	Pose_Die = 3,
+
+	Pose_Lie = 11,
+	Pose_Standup = 12,	
+	Pose_Stand = 13,
+	Pose_Alert = 14,
+	
+	Pose_Hide = 21,
+	Pose_RUN = 22,
+	Pose_Escape = 23,
+	Pose_JumpUp = 25,
+	Pose_JumpFloat = 26,
+	Pose_JumpDown = 27,
+
+	Pose_Hit = 31,
+	Pose_HitLie = 32,
+	Pose_HitBack = 33,
+	Pose_HitDown = 34,
+	Pose_HitFlyUp = 35,
+	Pose_HitFlyFloat = 36,
+	Pose_HitFlyDown = 37,
+	Pose_HitGround = 38,
+	
+	Pose_Attack = 101,
+	Pose_JumpAttack = 102,
+	Pose_Skill = 103,
 }
 
 public enum eStateType
@@ -34,15 +52,31 @@ public enum eStateType
 	State_None = 0,
 	State_Idle = 1,
 	State_Move = 2,
-	//State_Attack = 2,
-	State_Skill = 3,
+	State_Attack = 3,
 	State_Hit = 4,
-	//State_Jump = 4,
 	State_Hide = 5,
 	State_Die = 6,
 	State_Appear = 7,
 	State_Disappear = 8,
+}
 
+public enum eActionType
+{
+	Not_Use,
+	None,
+	Idle,
+	Move,
+	Stop,
+	Jump,
+	JumpDown,
+	Attack,
+	JumpAttack,
+	Skill,
+	Die,
+	ForceHit,
+	ForceBack,
+	ForceUp,
+	ForceDown,
 }
 
 public enum eLookDirection

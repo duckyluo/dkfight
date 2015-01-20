@@ -13,29 +13,27 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 
 	protected TimeLineMessage m_nextMsg = null;
 
+	public override void Initalize ()
+	{
+		this.m_name = "DoMove";
+		base.Initalize ();
+	}
+
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		TMoveMessage moveMsg = GetFrontWaitMsg as TMoveMessage;
-		if(moveMsg != null)
+		if(GetFrontWaitMsg.GetActionType == eActionType.Move)
 		{
-			if(moveMsg.moveMethod == eMoveMethod.Direction)
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
-		else
-		{
-			Debug.LogError("something impossible");
-			return false;
-		}
+		else return false;
 	}
 	
 	protected override void Enter (DkBtInputParam input)
 	{
 		InputManager.KeyJumpEnalbe = true;
 
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
+		GetRunTimeData.ActionType = eActionType.Move;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
 		GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
@@ -44,7 +42,10 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+
 		GetRunTimeData.ForceSpeed = Vector3.zero;
+		GetRunTimeData.CurAlpha = 1f;
+		GetRunTimeData.CurScale = 1f;
 
 		m_curMsg = GetFrontWaitMsg as TMoveMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
@@ -75,7 +76,7 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
-				if((waitMsg as THitMessage).damageForce == eDamageForce.None)
+				if(waitMsg.GetActionType == eActionType.Not_Use)
 				{
 					GetMsgCtrl.AddRunTLMsg(waitMsg);
 					GetMsgCtrl.RemoveWaitMsg(waitMsg);
@@ -119,11 +120,11 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 		}
 		else
 		{
-			if(GetRunTimeData.MoveMethod == eMoveMethod.None)
+			if(GetRunTimeData.MoveMethod == eMoveMethod.Gravity)
 			{
 				GetRunTimeData.MoveMethod = eMoveMethod.Direction;
 				GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
-				GetRunTimeData.LookDirection = m_curMsg.lookDirection;
+				GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
 				GetRunTimeData.PostureType = ePostureType.Pose_RUN;
 
 				UpdateAnimation();
@@ -135,7 +136,7 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 	{
 		if(GetAniCtrl != null)
 		{
-			GetAniCtrl.Play(AnimationNameDef.Run,WrapMode.Loop,false);
+			GetAniCtrl.Play(AnimationNameDef.Run,WrapMode.Loop,false,1f);
 		}
 	}
 	

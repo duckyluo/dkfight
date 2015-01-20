@@ -1,6 +1,7 @@
 
 public enum eInputDirect
 {
+	Not_Use,
 	NONE,
 	LEFT,
 	RIGHT,
@@ -8,6 +9,7 @@ public enum eInputDirect
 
 public enum eInputActiveKey
 {
+	Not_Use,
 	None,
 	Jump,
 	Attack,
@@ -16,3 +18,20 @@ public enum eInputActiveKey
 	Skill_Three,
 	Skill_Four,
 }
+
+
+
+//public enum eActionKey
+//{
+//	Not_Use,
+//	None,
+//	Move,
+//	Stop,
+//	Jump,
+//	Attack,
+//	JumpAttack,
+//	SkillOne,
+//	SkillTwo,
+//	SkillThree,
+//	SkillFour,
+//}

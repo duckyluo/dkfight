@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-
 public class RoleBaseActionNode : DkBtActionNode
 {
 	protected bool m_isDebug = true;
@@ -56,19 +55,29 @@ public class RoleBaseActionNode : DkBtActionNode
 		get{return GetRoleBBData.DataRunTime;}
 	}
 
-	protected RoleCtrlMsg GetMsgCtrl
+	protected RoleDataLocal GetLocalData
+	{
+		get{return GetRoleBBData.DataLocal;}
+	}
+
+	protected RoleCtrlMessage GetMsgCtrl
 	{
 		get{return GetRoleBBData.CtrlMsg;}
 	}
 
-	protected RoleCtrlMove GetMoveCtrl
+	protected RoleCtrlTransform GetTransformCtrl
 	{
-		get{return GetRoleBBData.CtrlMove;}
+		get{return GetRoleBBData.CtrlTransform;}
 	}
 
 	protected RoleCtrlAnimation GetAniCtrl
 	{
 		get{return GetRoleBBData.CtrlAnimation;}
+	}
+
+	protected RoleCtrlSkill GetSkillCtrl
+	{
+		get{return GetRoleBBData.CtrlSkill;}
 	}
 
 	protected TimeLineMessage GetFrontWaitMsg

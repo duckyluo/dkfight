@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class DkSRoleObject : ScriptableObject 
 {
-	public DkSRoleData data = new DkSRoleData();
+	public SRoleData data = new SRoleData();
 
 	public string assetPath = "";
 

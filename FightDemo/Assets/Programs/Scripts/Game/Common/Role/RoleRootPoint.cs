@@ -3,7 +3,6 @@ using System.Collections;
 
 public class RoleRootPoint : MonoBehaviour 
 {
-	
 	void Awake()
 	{
 		this.enabled = false;

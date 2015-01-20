@@ -11,12 +11,13 @@ public class RoleAskMoveAN : RoleAskActionNode
 	public override void Initalize ()
 	{
 		this.m_name = "AskMove";
-		this.m_isDebug = false;
+		//this.m_isDebug = false;
 		base.Initalize ();
 	}
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
+		//return true;
 		if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
 		{
 			return true;
@@ -34,10 +35,11 @@ public class RoleAskMoveAN : RoleAskActionNode
 		{
 			askMsg = new RoleFsmMessage();
 
-			askMsg.targetId = GetRoleBBData.DataInfo.index;
+			askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
 			askMsg.cmdType = eCommandType.Cmd_Move;
+			askMsg.actionType = eActionType.Move;
 			askMsg.moveMethod = eMoveMethod.Direction;
-			askMsg.targetPostion = GetRunTimeData.CurPos;
+			askMsg.curPos = GetRunTimeData.CurPos;
 
 			eInputDirect inputDirect = InputManager.ConsumeDirect();
 			
@@ -60,5 +62,6 @@ public class RoleAskMoveAN : RoleAskActionNode
 			this.m_status = eDkBtRuningStatus.End;
 		}
 	}
+	
 }
 

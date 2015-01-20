@@ -3,20 +3,20 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SceneObjCtrl : SceneFsmObj
+public class SceneObjCtrl : IFsmReceiver
 {
 	private Dictionary<int,SceneObj> objDict = new Dictionary<int, SceneObj>();
 
 	public SceneObjCtrl()
 	{
-		SceneFsmMsgManager.RegistReceiver(eFsmMsgType.Role,this);
+		FsmMsgManager.RegistReceiver(eFsmMsgType.Role,this);
 	}
 	
-	public override void OnFsmReceive (ISceneFsmMsg msg)
+	public void OnFsmReceive (IFsmMsg msg)
 	{
 		if(msg.GetMsgType() == eFsmMsgType.Role)
 		{
-			int index = (msg as RoleFsmMessage).targetId;
+			int index = (msg as RoleFsmMessage).receiveIndex;
 
 			//Debug.Log("role ctrl receive msg , target is "+index);
 			if(index >= 0)

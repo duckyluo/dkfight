@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6F5AA5D4-9850-4116-BEC3-781DE69F2B49}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DkAssetLoad</RootNamespace>
+    <AssemblyName>DkAssetLoad</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="DkBase">
+      <HintPath>libs\DkBase.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+    <Folder Include="Scripts\Dk\" />
+    <Folder Include="Scripts\Dk\Asset\Config\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Scripts\Dk\Asset\DkAssetLoadCollection.cs" />
+    <Compile Include="Scripts\Dk\Asset\DkAssetLoadObject.cs" />
+    <Compile Include="Scripts\Dk\Asset\DkAssetLoadRequest.cs" />
+    <Compile Include="Scripts\Dk\Loader\DkLoaderAssist.cs" />
+    <Compile Include="Scripts\Dk\Loader\DkLoaderMission.cs" />
+    <Compile Include="Scripts\Dk\Loader\DkLoadManager.cs" />
+    <Compile Include="Scripts\Dk\Loader\DkMissionCollection.cs" />
+    <Compile Include="Scripts\Dk\Loader\DkLoadPathUtil.cs" />
+    <Compile Include="Scripts\Dk\Asset\Config\DkABItem.cs" />
+    <Compile Include="Scripts\Dk\Asset\Config\DkABListConfig.cs" />
+    <Compile Include="Scripts\Dk\Asset\Config\DkAssetItem.cs" />
+    <Compile Include="Scripts\Dk\Asset\Config\DkAssetListConfig.cs" />
+    <Compile Include="Scripts\Dk\Asset\DkResourceItem.cs" />
+    <Compile Include="Scripts\Dk\Asset\DkResoureManager.cs" />
+    <Compile Include="Scripts\Dk\Asset\DkPackageManager.cs" />
+  </ItemGroup>
+</Project>

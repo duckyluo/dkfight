@@ -1,0 +1,17 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DkBase\Scripts\Dk\AI\BT\Common\DkBehaviorTree.cs">
+    <Files>
+      <File FileName="DkBase\Scripts\Dk\Base\DkTimer.cs" Line="1" Column="1" />
+      <File FileName="e:\work\unity\DkBase\DkBase\Scripts\Dk\AI\BT\Node\ActionNode\DkBtWaitNode.cs" Line="18" Column="3" />
+      <File FileName="DkBase\Scripts\Dk\Event\DkEventDispatch.cs" Line="1" Column="1" />
+      <File FileName="DkBase\Scripts\Dk\Effect\DkEffect.cs" Line="1" Column="1" />
+      <File FileName="DkBase\Scripts\Dk\Effect\DkColorLight.cs" Line="1" Column="1" />
+      <File FileName="DkBase\Scripts\Dk\AI\BT\Common\DkBehaviorTree.cs" Line="67" Column="6" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -9,9 +9,19 @@ public class SceneDef
 
 public enum eSceneObjType
 {
+	Not_Use,
 	None,
 	Role,
 	Npc,
 	Item,
+}
+
+public enum eSceneTeamType
+{
+	Not_Use,
+	None,
+	Me,
+	Partner,
+	Enemy,
 }
 

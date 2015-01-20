@@ -9,8 +9,9 @@ public class RoleStateMoveCN : RoleBaseSelectorNode
 	public override void Initalize ()
 	{
 		this.m_name = "StateMove";
+		this.m_isDebug = false;
 		base.Initalize ();
-
+		this.AddChild(new RoleDoJumpDownAN());
 		this.AddChild(new RoleDoMoveJumpAN());
 		this.AddChild(new RoleDoMoveDirectionAN());
 		this.AddChild(new RoleDoMoveStopAN());
@@ -19,6 +20,12 @@ public class RoleStateMoveCN : RoleBaseSelectorNode
 	public override bool Evaluate (DkBtInputParam input)
 	{
 		return IsWaitingMove();
+	}
+
+	protected override void Enter (DkBtInputParam input)
+	{
+		this.GetRunTimeData.StateType = eStateType.State_Move;
+		base.Enter (input);
 	}
 	
 	protected bool IsWaitingMove()

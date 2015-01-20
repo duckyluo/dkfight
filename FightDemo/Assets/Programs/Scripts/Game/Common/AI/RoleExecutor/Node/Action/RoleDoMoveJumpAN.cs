@@ -9,30 +9,28 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	protected TMoveMessage m_curMsg = null;
 	
 	protected TimeLineMessage m_nextMsg = null;
-	
+
+	public override void Initalize ()
+	{
+		this.m_name = "DoJump";
+		base.Initalize ();
+	}
+
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		TMoveMessage moveMsg = GetFrontWaitMsg as TMoveMessage;
-		if(moveMsg != null)
+		if(GetFrontWaitMsg.GetActionType == eActionType.Jump)
 		{
-			if(moveMsg.moveMethod == eMoveMethod.Jump)
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
-		else
-		{
-			Debug.LogError("something impossible");
-			return false;
-		}
+		else return false;
 	}
 	
 	protected override void Enter (DkBtInputParam input)
 	{
 		InputManager.KeyJumpEnalbe = false;
 
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
+		GetRunTimeData.ActionType = eActionType.Jump;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
 		GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
@@ -41,7 +39,10 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.No;
+
 		GetRunTimeData.ForceSpeed = Vector3.zero;
+		GetRunTimeData.CurAlpha = 1f;
+		GetRunTimeData.CurScale = 1f;
 
 		m_curMsg = GetFrontWaitMsg as TMoveMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
@@ -72,7 +73,7 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
-				if((waitMsg as THitMessage).damageForce == eDamageForce.None)
+				if(waitMsg.GetActionType == eActionType.Not_Use)
 				{
 					GetMsgCtrl.AddRunTLMsg(waitMsg);
 					GetMsgCtrl.RemoveWaitMsg(waitMsg);
@@ -107,8 +108,27 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 			GetMsgCtrl.MoveList.Clear();// to do
 		}
 	}
+	
+	protected void UpdateCurMsg()
+	{
+		if(GetRunTimeData.MoveMethod == eMoveMethod.Gravity)
+		{
+			StartJump();
+		}
+		else
+		{
+			if(m_nextMsg != null && m_nextMsg.GetActionType == eActionType.JumpAttack)
+			{
+				Exit(null);
+			}
+			else
+			{
+				DoJumping();
+			}
+		}
+	}
 
-	private float m_jumpFloatTime = 0.2f; //浮空时间
+	private float m_jumpFloatTime = 0.3f; //浮空时间
 	private float m_jumpUpTime = 0.3f; //上升时间
 	private float m_jumpDownTime = 0.3f; //下降时间
 	private float m_jumpHeight = 1.6f; //上升高度
@@ -116,23 +136,11 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	private float m_jumpDownAV = 0f; //下降加速度
 	private float m_jumpFloatLastTime = 0f; //浮空剩余时间
 
-	protected void UpdateCurMsg()
-	{
-		if(GetRunTimeData.MoveMethod == eMoveMethod.None)
-		{
-			StartJump();
-		}
-		else
-		{
-			DoJumping();
-		}
-	}
-
 	private void StartJump()
 	{
 		GetRunTimeData.MoveMethod = eMoveMethod.Jump;
 		GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
-		GetRunTimeData.LookDirection = m_curMsg.lookDirection;
+		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
 		GetRunTimeData.PostureType = ePostureType.Pose_JumpUp;
 		GetRunTimeData.CollisionFlag = CollisionFlags.None;
 		
@@ -143,6 +151,8 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		float startSpeed = m_jumpHeight*2/m_jumpUpTime;
 		
 		GetRunTimeData.ForceSpeed = new Vector3(0f,startSpeed,0f);
+
+		UpdateAnimation();
 	}
 	
 	private void DoJumping()
@@ -179,7 +189,7 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		if(height >= m_jumpHeight )
 		{
 
-			GetMoveCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x, m_jumpHeight , GetRunTimeData.CurPos.z));
+			GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x, m_jumpHeight , GetRunTimeData.CurPos.z));
 			GetRunTimeData.PostureType = ePostureType.Pose_JumpFloat;
 			yspeed = 0;
 		}
@@ -206,10 +216,10 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 
 		float yspeed =  GetRunTimeData.ForceSpeed.y;
 		yspeed -= m_jumpDownAV*Time.deltaTime;
-		float nextYPos = ( GetRunTimeData.CurPos.y + 1.3f ) + yspeed*Time.deltaTime;//to fix resource ! shit	
-		if(nextYPos <= GetMoveCtrl.StandHeight)
+		float nextYPos = ( GetRunTimeData.CurPos.y + 0.8f ) + yspeed*Time.deltaTime;//to fix resource ! shit	
+		if(nextYPos <= GetTransformCtrl.StandHeight)
 		{
-			GetMoveCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetMoveCtrl.StandHeight,GetRunTimeData.CurPos.z));
+			GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetTransformCtrl.StandHeight,GetRunTimeData.CurPos.z));
 			GetRunTimeData.ForceSpeed = Vector3.zero;
 			Exit(null);
 		}
@@ -223,7 +233,7 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	{
 		if(GetAniCtrl != null)
 		{
-			GetAniCtrl.Play(AnimationNameDef.Jump,WrapMode.ClampForever,false);
+			GetAniCtrl.Play(AnimationNameDef.Jump,WrapMode.ClampForever,false,1f);
 		}
 	}
 	
@@ -231,6 +241,7 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	{
 		m_curMsg = null;
 		m_nextMsg = null;
+
 		base.Exit (input);
 	}
 }

@@ -4,11 +4,11 @@ using Dk.BehaviourTree;
 
 public class RoleDeciderBt : DkBehaviourTree 
 {
-	public void Initalize (RoleBlackBoard bbData)
+	public override void Initalize (System.Object obj)
 	{
-		base.Initalize();
+		base.Initalize(obj);
 
-		this.BBData = bbData;
+		this.BBData = obj as RoleBlackBoard;
 		this.SetRootNode(new DkBtRootNode(this));
 		RoleDeciderDirect direct = new RoleDeciderDirect();
 		this.m_rootNode.SetDirectNode(direct);

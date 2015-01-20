@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class RoleInputJumpCN : RoleBaseSelectorNode
 {
+	public override void Initalize ()
+	{
+		this.m_name = "InputJump";
+		this.m_isDebug = false;
+		base.Initalize ();
+		this.AddChild(new RoleAskJumpAN());
+	}
+
 	public override bool Evaluate (DkBtInputParam input)
 	{
 		if(InputManager.HasJumpKey && InputManager.IsConsumeKeyEnalbe && GetRunTimeData.ActiveChStateEnalbe)
@@ -17,11 +25,5 @@ public class RoleInputJumpCN : RoleBaseSelectorNode
 			else return false;
 		}
 		else return false;
-	}
-	
-	public override void Initalize ()
-	{
-		base.Initalize ();
-		this.AddChild(new RoleAskJumpAN());
 	}
 }

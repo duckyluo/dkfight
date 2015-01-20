@@ -12,14 +12,7 @@ public class RoleDataRunTime
 		set{m_useGravity = value;}
 		get{return m_useGravity;}
 	}
-
-	public float m_gravity = GravityDef.Nomal;
-	public float Gravity
-	{
-		set{m_gravity = value;}
-		get{return m_gravity;}
-	}
-
+	
 	protected Vector3 m_forceSpeed = new Vector3();
 	public Vector3 ForceSpeed
 	{
@@ -34,12 +27,26 @@ public class RoleDataRunTime
 		get{ return m_curPos; }
 	}
 
-	protected Vector3 m_logicPos = Vector3.zero;
-	public Vector3 LogicPos
+	protected float m_curAlpha = 1f;
+	public float CurAlpha
 	{
-		set{ m_logicPos = value;}
-		get{ return m_logicPos; }
+		set{ m_curAlpha = value;}
+		get{ return m_curAlpha; }
 	}
+
+	protected float m_curScale = 1f;
+	public float CurScale
+	{
+		set{ m_curScale = value;}
+		get{ return m_curScale; }
+	}
+
+//	protected Vector3 m_logicPos = Vector3.zero;
+//	public Vector3 LogicPos
+//	{
+//		set{ m_logicPos = value;}
+//		get{ return m_logicPos; }
+//	}
 	
 	protected eLookDirection m_lookDirection = eLookDirection.Not_Use;
 	public eLookDirection LookDirection
@@ -76,19 +83,26 @@ public class RoleDataRunTime
 		get{ return m_state; }
 	}
 
-	protected string m_animationName = string.Empty;
-	public string AnimationName
+	protected eActionType m_action = eActionType.Not_Use;
+	public eActionType ActionType
 	{
-		set{m_animationName = value;}
-		get{return m_animationName;}
+		set{ m_action = value;}
+		get{ return m_action; }
 	}
 
-	protected eDamageForce m_damageforce = eDamageForce.Not_Use;
-	public eDamageForce DamageForce
-	{
-		set{ m_damageforce = value;}
-		get{ return m_damageforce; }
-	}
+//	protected string m_animationName = string.Empty;
+//	public string AnimationName
+//	{
+//		set{m_animationName = value;}
+//		get{return m_animationName;}
+//	}
+
+//	protected eDamageForce m_damageforce = eDamageForce.Not_Use;
+//	public eDamageForce DamageForce
+//	{
+//		set{ m_damageforce = value;}
+//		get{ return m_damageforce; }
+//	}
 	
 	protected CollisionFlags m_collisionFlag = CollisionFlags.None;
 	public CollisionFlags CollisionFlag
@@ -139,17 +153,17 @@ public class RoleDataRunTime
 		get{return (CollisionFlags.CollidedBelow & CollisionFlag) != 0;}
 	}
 
-	public void ResetAll()
-	{
-		MoveMethod = eMoveMethod.None;
-		MoveDirection = eMoveDirection.None;
-		UseGravity = eUseGravity.Yes;
-		PostureType = ePostureType.Pose_None;
-		ForceSpeed = Vector3.zero;
-		MoveEnable = true;
-		ActiveChStateEnalbe = true;
-		PassiveChStateEnalbe = true;
-	}
+//	public void ResetAll()
+//	{
+//		MoveMethod = eMoveMethod.None;
+//		MoveDirection = eMoveDirection.None;
+//		UseGravity = eUseGravity.Yes;
+//		PostureType = ePostureType.Pose_None;
+//		ForceSpeed = Vector3.zero;
+//		MoveEnable = true;
+//		ActiveChStateEnalbe = true;
+//		PassiveChStateEnalbe = true;
+//	}
 
 	public eLookDirection GetLookDirectionToPos(Vector3 pos)
 	{
@@ -164,7 +178,7 @@ public class RoleDataRunTime
 		}
 		return look;
 	}
-
+	
 	public override string ToString ()
 	{
 		string str = "";
@@ -175,12 +189,12 @@ public class RoleDataRunTime
 		str += "[MoveDirection] "+MoveDirection + " , ";
 
 		str += "[UseGravity] "+UseGravity + " , ";
-		str += "[Gravity] "+Gravity + " , ";
+		//str += "[Gravity] "+Gravity + " , ";
 		str += "[CurPos] "+CurPos + " , ";
-		str += "[LogicPos] "+LogicPos + " , ";
+		//str += "[LogicPos] "+LogicPos + " , ";
 		str += "[ForceSpeed] "+ForceSpeed + " , ";
 
-		str += "[DamageForce] "+DamageForce + " , ";
+		//str += "[DamageForce] "+DamageForce + " , ";
 		str += "[MoveEnable] "+MoveEnable + " , ";
 		str += "[CollisionFlags] "+CollisionFlag + " , ";
 		str += "[IsPaused] "+IsPaused + " , ";

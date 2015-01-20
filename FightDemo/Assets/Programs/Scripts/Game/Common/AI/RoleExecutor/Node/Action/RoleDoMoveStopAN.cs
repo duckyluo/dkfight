@@ -12,30 +12,28 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 	protected TMoveMessage m_curMsg = null;
 	
 	protected TimeLineMessage m_nextMsg = null;
+
+	public override void Initalize ()
+	{
+		this.m_name = "DoStop";
+		base.Initalize ();
+	}
 	
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		TMoveMessage moveMsg = GetFrontWaitMsg as TMoveMessage;
-		if(moveMsg != null)
+		if(GetFrontWaitMsg.GetActionType == eActionType.Stop)
 		{
-			if(moveMsg.moveMethod == eMoveMethod.None)
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
-		else
-		{
-			Debug.LogError("something impossible");
-			return false;
-		}
+		else return false;
 	}
 
 	protected override void Enter (DkBtInputParam input)
 	{
 		InputManager.KeyJumpEnalbe = true;
-		
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
+
+		GetRunTimeData.ActionType = eActionType.Stop;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
 		GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
@@ -44,7 +42,10 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+
 		GetRunTimeData.ForceSpeed = Vector3.zero;
+		GetRunTimeData.CurAlpha = 1f;
+		GetRunTimeData.CurScale = 1f;
 		
 		m_curMsg = GetFrontWaitMsg as TMoveMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
@@ -75,7 +76,7 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
-				if((waitMsg as THitMessage).damageForce == eDamageForce.None)
+				if(waitMsg.GetActionType == eActionType.Not_Use)
 				{
 					GetMsgCtrl.AddRunTLMsg(waitMsg);
 					GetMsgCtrl.RemoveWaitMsg(waitMsg);
@@ -114,16 +115,16 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 	protected void UpdateCurMsg()
 	{
 		// to do
-		float dis = Vector3.Distance(m_curMsg.desPos,GetRunTimeData.CurPos);
+		float dis = Vector3.Distance(m_curMsg.GetCurPos,GetRunTimeData.CurPos);
 		if(dis == 0)
 		{
-			GetRunTimeData.LookDirection = m_curMsg.lookDirection;
+			GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
 			Exit(null);
 		}
 		else
 		{
-			Debug.Log("[error]some thing error, des "+ m_curMsg.desPos + " , cur "+GetRunTimeData.CurPos);
-			GetMoveCtrl.MoveTo(m_curMsg.desPos);
+			Debug.Log("[error]some thing error, des "+ m_curMsg.GetCurPos + " , cur "+GetRunTimeData.CurPos);
+			GetTransformCtrl.MoveTo(m_curMsg.GetCurPos);
 			Exit(null);
 		}
 	}

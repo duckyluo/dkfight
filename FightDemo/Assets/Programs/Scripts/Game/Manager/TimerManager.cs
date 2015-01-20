@@ -37,7 +37,7 @@ public class TimerManager : MonoBehaviour
 
 	public void Initalize()
 	{
-		DkTimer.Reset();
+		//DkTimer.Reset();
 		ChangeRuningMode(eTimerManagerRuningMode.Start);
 	}
 
@@ -51,18 +51,18 @@ public class TimerManager : MonoBehaviour
 		switch(curMode)
 		{
 		case eTimerManagerRuningMode.Start:
-			DkTimer.Start();
+			DkGameTimer.Start();
 			curMode = eTimerManagerRuningMode.Runing;
 			break;
 		case eTimerManagerRuningMode.Runing:
-			DkTimer.Update();
+			DkGameTimer.Update();
 			InputManager.Update();
 			SceneManager.Update();
 			break;
 		case eTimerManagerRuningMode.Pause:
+			DkGameTimer.Pause();
 			break;
 		case eTimerManagerRuningMode.Stop:
-			DkTimer.Reset();
 			break;
 		}
 	}
@@ -75,8 +75,13 @@ public class TimerManager : MonoBehaviour
 		}
 	}
 
+	public float GetDeltaTime
+	{
+		get{return DkGameTimer.DeltaTime/1000;}
+	}
+
 	public float GetElapsedTime
 	{
-		get{return DkTimer.GameElapsedTime;}
+		get{return DkGameTimer.ElapsedTime/1000;}
 	}
 }

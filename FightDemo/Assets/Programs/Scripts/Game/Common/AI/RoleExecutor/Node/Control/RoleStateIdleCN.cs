@@ -9,6 +9,7 @@ public class RoleStateIdleCN : RoleBaseSelectorNode
 	public override void Initalize ()
 	{
 		this.m_name = "StateIdle";
+		this.m_isDebug = false;
 		base.Initalize ();
 		this.AddChild(new RoleDoIdleAN());
 	}
