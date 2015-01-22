@@ -12,33 +12,30 @@ public class RoleForceHitAN : RoleBaseActionNode
 
 	public override void Initalize ()
 	{
-		this.m_name = "FocceHit";
+		this.m_name = "ForceHit";
 		base.Initalize ();
 	}
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(GetFrontWaitMsg.GetActionType == eActionType.ForceHit)
-		{
-			return true;
-		}
-		else return false;
+		return true;
 	}
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = false;
+		CheckSelfRule();
 
 		GetRunTimeData.ActionType = eActionType.None;
 		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.LookDirection = eLookDirection.None;
+		//GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
 		
 		GetRunTimeData.MoveEnable = false;
 		GetRunTimeData.ActiveChStateEnalbe = false;
 		GetRunTimeData.PassiveChStateEnalbe = false;
 		GetRunTimeData.UseGravity = eUseGravity.No;
+		GetRunTimeData.IsTrigger = false;
 		
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
@@ -73,24 +70,22 @@ public class RoleForceHitAN : RoleBaseActionNode
 		while(GetFrontWaitMsg != null)
 		{
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
+
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
-//				if(waitMsg.GetActionType == eActionType.Not_Use)
-//				{
-//					GetMsgCtrl.AddRunTLMsg(waitMsg);
-//					
-//					continue;
-//				}
-//				else
-//				{
-//					m_nextMsg = waitMsg;
-//					break;
-//				}
+				if(waitMsg.GetActionType == eActionType.Not_Use)
+				{
+					GetMsgCtrl.AddRunTLMsg(waitMsg);
+					GetMsgCtrl.RemoveWaitMsg(waitMsg);
+					//m_timeCount = 0;
 
-				GetMsgCtrl.AddRunTLMsg(waitMsg);
-				GetMsgCtrl.RemoveWaitMsg(waitMsg);
-				m_timeCount = 0;
-				break;
+					continue;
+				}
+				else
+				{
+					m_nextMsg = waitMsg;
+					break;
+				}
 			}
 			else 
 			{
@@ -118,7 +113,11 @@ public class RoleForceHitAN : RoleBaseActionNode
 		
 	protected void UpdateCurMsg()
 	{
-		if(GetRunTimeData.ActionType == eActionType.None)
+		if(m_nextMsg != null)
+		{
+			Exit(null);
+		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
 		{
 			StartHit();
 		}
@@ -137,22 +136,27 @@ public class RoleForceHitAN : RoleBaseActionNode
 
 		m_durationTime = GetAniCtrl.GetState(AnimationNameDef.Hit1).length;
 		m_timeCount = 0;
-		GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
+
+		UpdateAnimation();
 	}
 	
 	protected void DoHit()
 	{
-//		if(GetAniCtrl.IsCurAniFinish)
-//		{
-//			Exit(null);
-//		}
 		if(m_timeCount == 0)
 		{
-			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
+			UpdateAnimation();
 		}
 		else if(m_timeCount >= m_durationTime)
 		{
 			Exit(null);
+		}
+	}
+
+	protected void UpdateAnimation()
+	{
+		if(GetAniCtrl != null)
+		{
+			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
 		}
 	}
 
@@ -163,5 +167,13 @@ public class RoleForceHitAN : RoleBaseActionNode
 		m_durationTime = 0f;
 		m_timeCount = 0f;
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = false;
+		}
 	}
 }

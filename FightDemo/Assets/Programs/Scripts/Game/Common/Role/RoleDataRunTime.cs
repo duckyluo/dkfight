@@ -12,6 +12,13 @@ public class RoleDataRunTime
 		set{m_useGravity = value;}
 		get{return m_useGravity;}
 	}
+
+	protected bool m_isTrigger = false;
+	public bool IsTrigger
+	{
+		set{m_isTrigger = value;}
+		get{return m_isTrigger;}
+	}
 	
 	protected Vector3 m_forceSpeed = new Vector3();
 	public Vector3 ForceSpeed
@@ -151,6 +158,23 @@ public class RoleDataRunTime
 	public bool IsGround
 	{
 		get{return (CollisionFlags.CollidedBelow & CollisionFlag) != 0;}
+	}
+
+	public bool IsOnAir
+	{
+		get
+		{
+			if(this.m_posture == ePostureType.Pose_JumpUp ||
+			   this.m_posture == ePostureType.Pose_JumpFloat ||
+			   this.m_posture == ePostureType.Pose_JumpDown ||
+			   this.m_posture == ePostureType.Pose_HitFlyUp ||
+			   this.m_posture == ePostureType.Pose_HitFlyFloat ||
+			   this.m_posture == ePostureType.Pose_HitFlyDown )
+			{
+				return true;
+			}
+			else return false;
+		}
 	}
 
 //	public void ResetAll()

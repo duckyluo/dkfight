@@ -28,18 +28,19 @@ public class RoleDoJumpAttackAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = false;
+		CheckSelfRule();
 		
 		GetRunTimeData.ActionType = eActionType.None;
 		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.LookDirection = eLookDirection.None;
+		//GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_Attack;
 		
 		GetRunTimeData.MoveEnable = false;
 		GetRunTimeData.ActiveChStateEnalbe = false;
 		GetRunTimeData.PassiveChStateEnalbe = false;
 		GetRunTimeData.UseGravity = eUseGravity.No;
+		GetRunTimeData.IsTrigger = true;
 
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
@@ -112,7 +113,13 @@ public class RoleDoJumpAttackAN : RoleBaseActionNode
 	
 	protected void UpdateCurMsg()
 	{
-		if(GetRunTimeData.ActionType == eActionType.None)
+		if(m_nextMsg != null)
+		{
+			Debug.Log("============================= JumpAttack Break!!");
+			GetSkillCtrl.FinishSkillProcess();
+			Exit(null);
+		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
 		{
 			StartAttack();
 		}
@@ -137,15 +144,19 @@ public class RoleDoJumpAttackAN : RoleBaseActionNode
 			
 			if(GetSkillCtrl.CurSkillStatus != eProcessStatus.Run)
 			{
-				//GetSkillCtrl.FinishAll();
-				TMoveMessage moveMsg = new TMoveMessage();
-				moveMsg.GetCmdType = eCommandType.Cmd_Move;
-				moveMsg.GetActionType = eActionType.JumpDown;
-				this.GetMsgCtrl.WaitList.Insert(0,moveMsg);
-
-				Exit(null);
+				ToJumpDown();
 			}
 		}
+	}
+
+	protected void ToJumpDown()
+	{
+		TMoveMessage moveMsg = new TMoveMessage();
+		moveMsg.GetCmdType = eCommandType.Cmd_Move;
+		moveMsg.GetActionType = eActionType.JumpDown;
+		this.GetMsgCtrl.WaitList.Insert(0,moveMsg);
+		
+		Exit(null);
 	}
 
 	protected override void Exit (DkBtInputParam input)
@@ -153,6 +164,14 @@ public class RoleDoJumpAttackAN : RoleBaseActionNode
 		m_curMsg = null;
 		m_nextMsg = null;
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = false;
+		}
 	}
 }
 

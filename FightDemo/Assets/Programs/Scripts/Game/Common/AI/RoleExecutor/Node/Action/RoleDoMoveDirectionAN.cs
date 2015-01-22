@@ -30,18 +30,19 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = true;
+		CheckSelfRule();
 
-		GetRunTimeData.ActionType = eActionType.Move;
-		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+		GetRunTimeData.ActionType = eActionType.None;
+		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.LookDirection = eLookDirection.None;
+		//GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
 
 		GetRunTimeData.MoveEnable = true;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+		GetRunTimeData.IsTrigger = false;
 
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
@@ -118,18 +119,30 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 		{
 			Exit(null);//to do
 		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
+		{
+			StartMove();
+		}
 		else
 		{
-			if(GetRunTimeData.MoveMethod == eMoveMethod.Gravity)
-			{
-				GetRunTimeData.MoveMethod = eMoveMethod.Direction;
-				GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
-				GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
-				GetRunTimeData.PostureType = ePostureType.Pose_RUN;
-
-				UpdateAnimation();
-			}
+			DoMove();
 		}
+	}
+
+	protected void StartMove()
+	{
+		GetRunTimeData.ActionType = eActionType.Move;
+		GetRunTimeData.MoveMethod = eMoveMethod.Direction;
+		GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
+		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
+		GetRunTimeData.PostureType = ePostureType.Pose_RUN;
+
+		UpdateAnimation();
+	}
+
+	protected void DoMove()
+	{
+
 	}
 
 	protected void UpdateAnimation()
@@ -145,5 +158,13 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 		m_curMsg = null;
 		m_nextMsg = null;
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = true;
+		}
 	}
 }

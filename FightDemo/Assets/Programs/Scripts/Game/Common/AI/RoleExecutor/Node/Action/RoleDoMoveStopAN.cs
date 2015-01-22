@@ -30,18 +30,19 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = true;
+		CheckSelfRule();
 
-		GetRunTimeData.ActionType = eActionType.Stop;
-		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+		GetRunTimeData.ActionType = eActionType.None;
+		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.LookDirection = eLookDirection.None;
+		//GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
 		
 		GetRunTimeData.MoveEnable = true;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+		GetRunTimeData.IsTrigger = false;
 
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
@@ -114,19 +115,42 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 	
 	protected void UpdateCurMsg()
 	{
-		// to do
+		if(m_nextMsg != null)
+		{
+			Exit(null);
+		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
+		{
+			StartMove();
+		}
+		else
+		{
+			DoMove();
+		}
+	}
+
+	protected void StartMove()
+	{
+		GetRunTimeData.ActionType = eActionType.Stop;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+
 		float dis = Vector3.Distance(m_curMsg.GetCurPos,GetRunTimeData.CurPos);
 		if(dis == 0)
 		{
 			GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
 			Exit(null);
 		}
-		else
-		{
-			Debug.Log("[error]some thing error, des "+ m_curMsg.GetCurPos + " , cur "+GetRunTimeData.CurPos);
-			GetTransformCtrl.MoveTo(m_curMsg.GetCurPos);
-			Exit(null);
-		}
+	}
+
+	protected void DoMove()
+	{
+		//to do
+		Debug.Log("[error]some thing error, des "+ m_curMsg.GetCurPos + " , cur "+GetRunTimeData.CurPos);
+
+		Vector3 motion = m_curMsg.GetCurPos - GetRunTimeData.CurPos;
+		GetTransformCtrl.MoveLimit(motion);
+		//GetTransformCtrl.MoveTo(m_curMsg.GetCurPos);
+		Exit(null);
 	}
 
 	protected override void Exit (DkBtInputParam input)
@@ -134,5 +158,13 @@ public class RoleDoMoveStopAN : RoleBaseActionNode
 		m_curMsg = null;
 		m_nextMsg = null;
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = true;
+		}
 	}
 }

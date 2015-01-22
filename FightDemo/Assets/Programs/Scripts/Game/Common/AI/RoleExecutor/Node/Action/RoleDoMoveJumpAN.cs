@@ -27,18 +27,19 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = false;
+		CheckSelfRule();
 
-		GetRunTimeData.ActionType = eActionType.Jump;
-		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+		GetRunTimeData.ActionType = eActionType.None;
+		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.LookDirection = eLookDirection.None;
+		//GetRunTimeData.LookDirection = eLookDirection.None;
 		GetRunTimeData.PostureType = ePostureType.Pose_None;
 
 		GetRunTimeData.MoveEnable = false;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.No;
+		GetRunTimeData.IsTrigger = true;
 
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
@@ -111,20 +112,17 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 	
 	protected void UpdateCurMsg()
 	{
-		if(GetRunTimeData.MoveMethod == eMoveMethod.Gravity)
+		if(m_nextMsg != null)
+		{
+			Exit(null);
+		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
 		{
 			StartJump();
 		}
 		else
 		{
-			if(m_nextMsg != null && m_nextMsg.GetActionType == eActionType.JumpAttack)
-			{
-				Exit(null);
-			}
-			else
-			{
-				DoJumping();
-			}
+			DoJumping();
 		}
 	}
 
@@ -138,6 +136,7 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 
 	private void StartJump()
 	{
+		GetRunTimeData.ActionType = eActionType.Jump;
 		GetRunTimeData.MoveMethod = eMoveMethod.Jump;
 		GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
 		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
@@ -189,7 +188,9 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		if(height >= m_jumpHeight )
 		{
 
-			GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x, m_jumpHeight , GetRunTimeData.CurPos.z));
+			Vector3 motion = new Vector3(0,m_jumpHeight - GetRunTimeData.CurPos.y,0);
+			GetTransformCtrl.MoveLimit(motion);
+			//GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x, m_jumpHeight , GetRunTimeData.CurPos.z));
 			GetRunTimeData.PostureType = ePostureType.Pose_JumpFloat;
 			yspeed = 0;
 		}
@@ -217,9 +218,11 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		float yspeed =  GetRunTimeData.ForceSpeed.y;
 		yspeed -= m_jumpDownAV*Time.deltaTime;
 		float nextYPos = ( GetRunTimeData.CurPos.y + 0.8f ) + yspeed*Time.deltaTime;//to fix resource ! shit	
-		if(nextYPos <= GetTransformCtrl.StandHeight)
+		if(nextYPos <= GetTransformCtrl.GetFloorHeight)
 		{
-			GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetTransformCtrl.StandHeight,GetRunTimeData.CurPos.z));
+			Vector3 motion = new Vector3(0,GetTransformCtrl.GetFloorHeight - GetRunTimeData.CurPos.y,0);
+			GetTransformCtrl.MoveLimit(motion);
+			//GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetTransformCtrl.GetFloorHeight,GetRunTimeData.CurPos.z));
 			GetRunTimeData.ForceSpeed = Vector3.zero;
 			Exit(null);
 		}
@@ -243,5 +246,13 @@ public class RoleDoMoveJumpAN : RoleBaseActionNode
 		m_nextMsg = null;
 
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = false;
+		}
 	}
 }

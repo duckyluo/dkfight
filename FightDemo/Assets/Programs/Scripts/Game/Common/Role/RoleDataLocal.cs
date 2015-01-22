@@ -29,10 +29,11 @@ public class RoleDataLocal : DkSerializeData
 		m_bbData = bbData;
 
 		SRoleSkillItem skill1 = new SRoleSkillItem();
-		skill1.skillIndex = 2;
+		skill1.skillIndex = 1;
 		skill1.skillId = 1;
-		skill1.hitTimes = 4;
-		skill1.hitInterval = 0.18f;
+		skill1.hitData.hitTimes = 4;
+		skill1.hitData.hitInterval = 0.18f;
+		skill1.hitData.hitForce = eSkillHitForce.Force_FlyUp;
 		
 		SkillAniChEvent skillThreeEvt1 = new SkillAniChEvent();
 		skillThreeEvt1.m_aniName = AnimationNameDef.Attack5;
@@ -61,8 +62,8 @@ public class RoleDataLocal : DkSerializeData
 		SkillHitBoundAddEvent hitEvent1 = new SkillHitBoundAddEvent();
 		hitEvent1.m_startTime = 0.2f;
 		hitEvent1.m_duration = 1f;
-		hitEvent1.m_localPos = new Vector3(0.5f,1f,0f);
-		hitEvent1.m_boundSize = new Vector3(1.5f,1.5f,1.5f);
+		hitEvent1.m_localPos = new Vector3(0.8f,1f,0f);
+		hitEvent1.m_boundSize = new Vector3(2f,1.5f,1.5f);
 //		hitEvent1.m_motion = new Vector3(1f,0f,0f);
 //		hitEvent1.m_moveTime = 0.5f;
 		skill1.hitBoundList.Add(hitEvent1);
@@ -82,9 +83,9 @@ public class RoleDataLocal : DkSerializeData
 		//=====================================================================//
 	
 		SRoleSkillItem skill2 = new SRoleSkillItem();
-		skill2.skillIndex = 1;
+		skill2.skillIndex = 2;
 		skill2.skillId = 2;
-		skill2.hitTimes = 1;
+		skill2.hitData.hitTimes = 1;
 		
 		SkillAniChEvent skillTwoEvt4 = new SkillAniChEvent();
 		skillTwoEvt4.m_aniName = AnimationNameDef.Attack4;
@@ -108,10 +109,10 @@ public class RoleDataLocal : DkSerializeData
 		skill2.alphaList.Add(skillTowEvt6);
 
 		SkillHitBoundAddEvent hitEvent2 = new SkillHitBoundAddEvent();
-		hitEvent2.m_startTime = 0.4f;
-		hitEvent2.m_duration = 0.3f;
-		hitEvent2.m_localPos = new Vector3(1f,1f,0f);
-		hitEvent2.m_boundSize = new Vector3(1.5f,1.5f,1.5f);
+		hitEvent2.m_startTime = 0.05f;
+		hitEvent2.m_duration = 0.7f;
+		hitEvent2.m_localPos = new Vector3(0.8f,1f,0f);
+		hitEvent2.m_boundSize = new Vector3(2f,2f,1f);
 		//		hitEvent1.m_motion = new Vector3(1f,0f,0f);
 		//		hitEvent1.m_moveTime = 0.5f;
 		skill2.hitBoundList.Add(hitEvent2);
@@ -132,6 +133,8 @@ public class RoleDataLocal : DkSerializeData
 		skill3.skillIndex = 0;
 		skill3.skillId = 4;
 		skill3.durationTime = 0.9f;
+		skill3.hitData.hitTimes = 2;
+		skill3.hitData.hitInterval = 0.4f;
 		
 		SkillAniChEvent skill3evt1 = new SkillAniChEvent();
 		skill3evt1.m_aniName = AnimationNameDef.Attack1;
@@ -145,16 +148,15 @@ public class RoleDataLocal : DkSerializeData
 		skill3evt2.m_duration = 0.33f;
 		skill3.aniList.Add(skill3evt2);
 
-//		SkillHitBoundAddEvent hitEvent1 = new SkillHitBoundAddEvent();
-//		hitEvent1.m_startTime = 0.1f;
-//		hitEvent1.m_duration = 0.6f;
-//		hitEvent1.m_localPos = new Vector3(1f,1f,0f);
-//		hitEvent1.m_boundSize = new Vector3(1f,1f,1f);
-//		hitEvent1.m_motion = new Vector3(1f,0f,0f);
-//		hitEvent1.m_moveTime = 0.5f;
-//		skill1.hitBoundList.Add(hitEvent1);
-//		//SkillPosChEvent moveEvent = new SkillPosChEvent();
-//
+		SkillHitBoundAddEvent skill3evt3 = new SkillHitBoundAddEvent();
+		skill3evt3.m_startTime = 0.1f;
+		skill3evt3.m_duration = 0.6f;
+		skill3evt3.m_localPos = new Vector3(1f,0.8f,0f);
+		skill3evt3.m_boundSize = new Vector3(1f,1.5f,1f);
+//		skill3evt3.m_motion = new Vector3(1f,0f,0f);
+//		skill3evt3.m_moveTime = 0.5f;
+		skill3.hitBoundList.Add(skill3evt3);
+
 		SkillEffectAddEvent skill3evt4 = new SkillEffectAddEvent();
 		skill3evt4.m_startTime = 0.1f;
 		skill3evt4.m_asset = "Assets/SourceData/Prefabs/Effect/Effect4.prefab";
@@ -176,6 +178,8 @@ public class RoleDataLocal : DkSerializeData
 		skillJump.skillIndex = 0;
 		skillJump.skillId = 4;
 		skillJump.durationTime = 0.9f;
+		skillJump.hitData.hitTimes = 2;
+		skillJump.hitData.hitInterval = 0.4f;
 		
 		SkillAniChEvent aniEvent1 = new SkillAniChEvent();
 		aniEvent1.m_aniName = AnimationNameDef.Attack1;
@@ -195,16 +199,15 @@ public class RoleDataLocal : DkSerializeData
 		//		aniEvent3.m_duration = 0.27f;
 		//		skill1.aniList.Add(aniEvent3);
 		
-		//		SkillHitBoundAddEvent hitEvent1 = new SkillHitBoundAddEvent();
-		//		hitEvent1.m_startTime = 0.1f;
-		//		hitEvent1.m_duration = 0.6f;
-		//		hitEvent1.m_localPos = new Vector3(1f,1f,0f);
-		//		hitEvent1.m_boundSize = new Vector3(1f,1f,1f);
-		//		hitEvent1.m_motion = new Vector3(1f,0f,0f);
-		//		hitEvent1.m_moveTime = 0.5f;
-		//		skill1.hitBoundList.Add(hitEvent1);
-		//		//SkillPosChEvent moveEvent = new SkillPosChEvent();
-		//
+		SkillHitBoundAddEvent skillJumpevt3 = new SkillHitBoundAddEvent();
+		skillJumpevt3.m_startTime = 0.1f;
+		skillJumpevt3.m_duration = 0.6f;
+		skillJumpevt3.m_localPos = new Vector3(1f,1f,0f);
+		skillJumpevt3.m_boundSize = new Vector3(1f,1f,1f);
+//		skillJumpevt3.m_motion = new Vector3(1f,0f,0f);
+//		skillJumpevt3.m_moveTime = 0.5f;
+		skillJump.hitBoundList.Add(skillJumpevt3);
+
 		SkillEffectAddEvent effectEvent4 = new SkillEffectAddEvent();
 		effectEvent4.m_startTime = 0.1f;
 		effectEvent4.m_asset = "Assets/SourceData/Prefabs/Effect/Effect4.prefab";

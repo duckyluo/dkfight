@@ -18,7 +18,8 @@ public class RoleInputJumpCN : RoleBaseSelectorNode
 		if(InputManager.HasJumpKey && InputManager.IsConsumeKeyEnalbe && GetRunTimeData.ActiveChStateEnalbe)
 		{
 			if(GetRunTimeData.StateType == eStateType.State_Idle || 
-			   GetRunTimeData.StateType == eStateType.State_Move)
+			   GetRunTimeData.StateType == eStateType.State_Move || 
+			   GetRunTimeData.StateType == eStateType.State_Attack)
 			{
 				return true;
 			}

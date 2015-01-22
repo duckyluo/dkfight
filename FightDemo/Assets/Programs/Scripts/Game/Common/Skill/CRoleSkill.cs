@@ -105,8 +105,7 @@ public class CRoleSkillItem : IComparable
 	public int skillIndex = -1;
 	public int skillId = -1;
 	public float durationTime = -1;
-	public int hitTimes = 1;
-	public float hitInterval = 0f;
+	public SHitData hitData = null;
 
 	public List<SkillProcessEvent> skillEvents = new List<SkillProcessEvent>();
 	
@@ -115,8 +114,7 @@ public class CRoleSkillItem : IComparable
 		skillIndex = sItem.skillIndex;
 		skillId = sItem.skillId;
 		durationTime = sItem.durationTime;
-		hitTimes = sItem.hitTimes;
-		hitInterval = sItem.hitInterval;
+		hitData = sItem.hitData;
 
 		AddEventFromList(sItem.aniList);
 		AddEventFromList(sItem.posList);

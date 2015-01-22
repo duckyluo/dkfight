@@ -6,6 +6,7 @@ public enum eMoveMethod
 	Gravity,
 	Direction,
 	Jump,
+	ForceSpeed,
 	RootPoint,
 	Position,
 	Path,
@@ -74,9 +75,11 @@ public enum eActionType
 	Skill,
 	Die,
 	ForceHit,
+	ForceFloatHit,
+	//ForceFloatDown,
 	ForceBack,
-	ForceUp,
-	ForceDown,
+	ForceFly,
+	ForceFallDown,
 }
 
 public enum eLookDirection

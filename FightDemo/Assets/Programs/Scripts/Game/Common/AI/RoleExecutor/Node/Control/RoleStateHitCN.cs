@@ -10,6 +10,9 @@ public class RoleStateHitCN : RoleBaseSelectorNode
 	{
 		this.m_name = "StateHit";
 		base.Initalize ();
+		this.AddChild(new RoleForceFloatHitAN());
+		this.AddChild(new RoleForceFallDownAN());
+		this.AddChild(new RoleForceFlyAN());
 		this.AddChild(new RoleForceHitAN());
 	}
 	
@@ -31,12 +34,6 @@ public class RoleStateHitCN : RoleBaseSelectorNode
 			if(GetFrontWaitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
 				return true;
-//				THitMessage msg = GetFrontWaitMsg as THitMessage;
-//				if(msg.hitResultType == eHitResultType.Force)
-//				{
-//					return true;
-//				}
-//				else return false;
 			}
 			else return false;
 		}

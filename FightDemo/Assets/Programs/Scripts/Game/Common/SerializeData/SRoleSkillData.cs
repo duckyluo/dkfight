@@ -21,8 +21,7 @@ public class SRoleSkillItem
 	public int skillIndex = 0;
 	public int skillId = -1;
 	public float durationTime = -1;
-	public int hitTimes = 0;
-	public float hitInterval = 0f;
+	public SHitData hitData = new SHitData();
 	
 	public List<SkillAniChEvent> aniList = new List<SkillAniChEvent>();
 	public List<SkillPosChEvent> posList = new List<SkillPosChEvent>();
@@ -32,8 +31,6 @@ public class SRoleSkillItem
 	public List<SkillEffectAddEvent> effectList = new List<SkillEffectAddEvent>();
 	public List<SkillHitBoundAddEvent> hitBoundList = new List<SkillHitBoundAddEvent>();
 	public List<SkillMagicAddEvent> magicList = new List<SkillMagicAddEvent>();
-
-
 }
 
 [System.Serializable]
@@ -179,20 +176,27 @@ public class SkillMagicAddEvent : SkillProcessEvent
 	}
 }
 
-//[System.Serializable]
-//public class SkillEffect
-//{
-//	public int m_effectId = -1;
-//	public Vector3 m_offset = Vector3.zero;
-//}
-//
-//[System.Serializable]
-//public class SkillCollider
-//{
-//	public Vector3 m_colVector = Vector3.zero;
-//	public Vector3 m_offset = Vector3.zero;
-//}
-//
+[System.Serializable]
+public class SHitData
+{
+	public int hitTimes = 1;
+	public float hitInterval = 0f;
+	public eSkillHitForce hitForce = eSkillHitForce.Not_Use;
+}
+
+
+[System.Serializable]
+public enum eSkillHitForce
+{
+	Not_Use = 0,
+	None,
+	Force_Hit,
+	Force_Back,
+	Force_FlyUp,
+	Force_FallDown,
+	Force_Stun,
+	Force_Caught ,
+}
 
 [System.Serializable]
 public enum eSkillMoveMethod
@@ -202,11 +206,3 @@ public enum eSkillMoveMethod
 	Translation,
 }
 
-[System.Serializable]
-public enum eSkillHitMethod
-{
-	Not_Use,
-	None,
-	Once,
-	Loop,
-}

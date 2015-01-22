@@ -18,7 +18,11 @@ public class RoleAskMoveAN : RoleAskActionNode
 	public override bool Evaluate (DkBtInputParam input)
 	{
 		//return true;
-		if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
+		if(GetRunTimeData.MoveEnable == false)
+		{
+			return false;
+		}
+		else if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
 		{
 			return true;
 		}

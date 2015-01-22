@@ -7,15 +7,7 @@ using Dk.Util;
 public class RoleCtrlTransform
 {
 	protected bool m_isInited = false;
-
-	public float m_defaultSpeed = 2.5f;
-
-	protected float m_standHeight = 0.1f;
-	public float StandHeight
-	{
-		get{return m_standHeight;} 
-	}
-	
+		
 	protected GameObject m_mainObj;
 	
 	protected GameObject m_modelObj;
@@ -26,16 +18,17 @@ public class RoleCtrlTransform
 
 	protected eLookDirection m_curLook = eLookDirection.None;
 
+	protected float m_curXSpeed = 2.5f;
+	
+	protected float m_bodyHeight = 1.6f;
+	
+	protected float m_bodyRadius = 0.5f;
+
 	protected float m_curAlpha = 1f;
 
 	protected float m_curScale = 1f;
 
 	protected float m_curGravity = GravityDef.Nomal;
-//	public float Gravity
-//	{
-//		set{m_gravity = value;}
-//		get{return m_gravity;}
-//	}
 	
 	protected CharacterController m_characterController;
 	public CharacterController CharController
@@ -69,9 +62,22 @@ public class RoleCtrlTransform
 
 	public void Update()
 	{
+		UpdateTrigger ();
 		UpdateAlpha ();
 		UpdateScale ();
 		UpdatePos ();
+	}
+
+	protected void UpdateTrigger()
+	{
+		if(GetRunTimeData.IsTrigger && this.CharController.enabled)
+		{
+			this.CharController.enabled = false;
+		}
+		else if(GetRunTimeData.IsTrigger == false && this.CharController.enabled == false)
+		{
+			this.CharController.enabled = true;
+		}
 	}
 
 	protected void UpdateScale()
@@ -99,11 +105,23 @@ public class RoleCtrlTransform
 		
 		switch(moveMothod)
 		{
+		case eMoveMethod.Gravity:
+			MovoToGround();
+			break;
 		case eMoveMethod.Direction:
 			MoveToDirection();
 			break;
 		case eMoveMethod.Jump:
 			MoveToJump();
+			break;
+		case eMoveMethod.ForceSpeed:
+			MoveToForceSpeed();
+			break;
+		case eMoveMethod.Motion:
+			MoveToMotion();
+			break;
+		case eMoveMethod.RootPoint:
+			MoveToRootPoint();
 			break;
 		case eMoveMethod.Position:
 			//MoveToPosition();
@@ -111,18 +129,21 @@ public class RoleCtrlTransform
 		case eMoveMethod.Path:
 			//MoveToPath();
 			break;
-		case eMoveMethod.RootPoint:
-			MoveToRootPoint();
-			break;
-		case eMoveMethod.Motion:
-			MoveToMotion();
-			break;
-		case eMoveMethod.Gravity:
-			MovoToGround();
-			break;
 		}
 		
 		GetRunTimeData.CurPos = GetTramsForm.position;
+	}
+
+	protected void MovoToGround()
+	{
+		if(!IsGround)
+		{
+			ApplyGravity();
+			
+			Vector3 motion = Vector3.zero;
+			motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
+			MoveCollision(motion);
+		}
 	}
 	
 	protected void MoveToDirection()
@@ -131,11 +152,11 @@ public class RoleCtrlTransform
 
 		if(GetRunTimeData.MoveDirection == eMoveDirection.Left)
 		{
-			motion.x = -m_defaultSpeed * Time.deltaTime;
+			motion.x = -m_curXSpeed * Time.deltaTime;
 		}
 		else if(GetRunTimeData.MoveDirection == eMoveDirection.Right)
 		{
-			motion.x = m_defaultSpeed * Time.deltaTime;
+			motion.x = m_curXSpeed * Time.deltaTime;
 		}
 
 		if(GetRunTimeData.UseGravity == eUseGravity.Yes)
@@ -144,7 +165,7 @@ public class RoleCtrlTransform
 			motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
 		}
 
-		Move(motion);
+		MoveCollision(motion);
 	}
 
 	protected void MoveToJump()
@@ -154,33 +175,33 @@ public class RoleCtrlTransform
 
 		if(GetRunTimeData.MoveDirection == eMoveDirection.Left)
 		{
-			motion.x = -m_defaultSpeed * Time.deltaTime;
+			motion.x = -m_curXSpeed * Time.deltaTime;
 		}
 		else if(GetRunTimeData.MoveDirection == eMoveDirection.Right)
 		{
-			motion.x = m_defaultSpeed * Time.deltaTime;
+			motion.x = m_curXSpeed * Time.deltaTime;
 		}
 
 		MoveTo(new Vector3(GetRunTimeData.CurPos.x+motion.x,GetRunTimeData.CurPos.y+motion.y,GetRunTimeData.CurPos.z));
 		//Move(motion);
 	}
 
-//	protected void MoveToSpeed()
-//	{
-//		Vector3 motion = Vector3.zero;	
-//		Move(motion);
-//	}
-//	
-//	protected void MoveToPosition()
-//	{
-//
-//	}
-//
-//	protected void MoveToPath()
-//	{
-//
-//	}
+	protected void MoveToForceSpeed()
+	{
+		Vector3 motion = Vector3.zero;
+		motion.x = GetRunTimeData.ForceSpeed.x * Time.deltaTime;
+		motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
+		motion.z = GetRunTimeData.ForceSpeed.z * Time.deltaTime;
 
+		MoveTo(new Vector3(GetRunTimeData.CurPos.x+motion.x,GetRunTimeData.CurPos.y+motion.y,GetRunTimeData.CurPos.z));
+	}
+	
+	protected void MoveToMotion()
+	{
+		Vector3 motion = GetRunTimeData.ForceSpeed;
+		MoveLimit(motion);
+	}
+	
 	protected void MoveToRootPoint()
 	{
 		if(GetAniCtrl.GetCurState.time > 0)
@@ -195,40 +216,79 @@ public class RoleCtrlTransform
 				motion -= RootPoint.UpdateRecord(); 
 			}
 			 
-			Move(motion);
+			MoveCollision(motion);
 		}
 	}
 
-	protected void MovoToGround()
-	{
-		if(!IsGround)
-		{
-			ApplyGravity();
+	//	
+	//	protected void MoveToPosition()
+	//	{
+	//
+	//	}
+	//
+	//	protected void MoveToPath()
+	//	{
+	//
+	//	}
 
-			Vector3 motion = Vector3.zero;
-			motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
-			//Debug.Log("2 motion " + motion.ToString() + "  | " +GetRunTimeData.YSpeed);
-			Move(motion);
-		}
-	}
-	
-	protected void MoveToMotion()
-	{
-		Vector3 motion = GetRunTimeData.ForceSpeed;
-		Move(motion);
-	}
-
-	public void Move( Vector3 motion )
+	protected void MoveCollision( Vector3 motion )
 	{
 		if(motion.magnitude == 0)
 		{
 			return;
 		}
 
-		if(this.m_characterController != null)
+		if(this.m_characterController != null && this.m_characterController.enabled == true)
 		{
 			GetRunTimeData.CollisionFlag = m_characterController.Move(motion);
 		}
+		else
+		{
+			Debug.Log("========================== [error] id "+ m_bbData.DataInfo.index + " move" + GetRunTimeData.MoveMethod + " ");
+		}
+	}
+
+	public void MoveFree( Vector3 motion)
+	{
+		if(motion.magnitude == 0)
+		{
+			return;
+		}
+
+		Vector3 nextPos = new Vector3(GetTramsForm.position.x + motion.x , GetTramsForm.position.y + motion.y ,GetTramsForm.position.z + motion.z );
+		MoveTo(nextPos);
+	}
+
+	public void MoveLimit( Vector3 motion)
+	{
+		if(motion.magnitude == 0)
+		{
+			return;
+		}
+
+		Vector3 nextPos = new Vector3(GetTramsForm.position.x + motion.x , GetTramsForm.position.y + motion.y ,GetTramsForm.position.z + motion.z );
+
+		if( nextPos.x < (RoomColliderManager.GetXMin + m_bodyRadius))
+		{
+			nextPos.x = RoomColliderManager.GetXMin + m_bodyRadius;
+		}
+		else if( nextPos.x > (RoomColliderManager.GetXMax - m_bodyRadius))
+		{
+			nextPos.x = RoomColliderManager.GetXMax - m_bodyRadius;
+		}
+
+		if( nextPos.y < RoomColliderManager.GetYMin )
+		{
+			nextPos.y = RoomColliderManager.GetYMin;
+		}
+
+		MoveTo(nextPos);
+	}
+	
+	protected void MoveTo(Vector3 pos)
+	{
+		GetTramsForm.position = pos;
+		GetRunTimeData.CurPos = GetTramsForm.position;
 	}
 
 	protected void ApplyGravity()
@@ -238,7 +298,6 @@ public class RoleCtrlTransform
 			if(!IsGround)
 			{
 				float yspeed = GetRunTimeData.ForceSpeed.y - m_curGravity * Time.deltaTime;
-				//Debug.Log("111111111111   "+yspeed);
 				GetRunTimeData.ForceSpeed = new Vector3(GetRunTimeData.ForceSpeed.x,yspeed,GetRunTimeData.ForceSpeed.z);
 			}
 			else
@@ -247,76 +306,7 @@ public class RoleCtrlTransform
 			}
 		}
 	}
-
-	public bool IsGround
-	{
-		get{return GetRunTimeData.IsGround;}
-	}
-
-	protected Transform GetTramsForm
-	{
-		get
-		{
-			if(this.m_mainObj != null)
-			{
-				return this.m_mainObj.transform;
-			}
-			else return null;
-		}
-	}
 	
-	protected RoleDataRunTime GetRunTimeData
-	{
-		get
-		{
-			if(m_bbData != null)
-			{
-				return m_bbData.DataRunTime;
-			}
-			else return null;
-		}
-	}
-	
-	protected RoleCtrlAnimation GetAniCtrl
-	{
-		get{return m_bbData.CtrlAnimation;}
-	}
-
-	private void setMainObj(GameObject obj)
-	{
-		m_mainObj = obj;
-		if(m_mainObj != null)
-		{
-			m_mainObj.transform.position = m_bbData.DataInfo.initPos; //new Vector3(2,StandHeight,0);
-			
-			if(m_modelObj != null)
-			{
-				m_modelObj.transform.parent = m_mainObj.transform;
-				m_modelObj.transform.localPosition = Vector3.zero;
-			}
-			
-			m_characterController = m_mainObj.AddComponent<CharacterController>();
-			m_characterController.height = 1.6f;
-			m_characterController.center = new Vector3(0f,0.8f,0f);
-		}
-	}
-	
-	private void setModelObj(GameObject obj)
-	{
-		m_modelObj = obj;
-		if(m_modelObj != null)
-		{
-			if(m_mainObj != null)
-			{
-				m_modelObj.transform.parent = m_mainObj.transform;
-				m_modelObj.transform.localPosition = Vector3.zero;
-				//m_modelObj.transform.Rotate(new Vector3(0,180,0));
-			}
-			
-			m_rootPoint = m_modelObj.GetComponentInChildren<RoleRootPoint>();
-		}
-	}
-
 	public void ChangeLook(eLookDirection look)
 	{
 		if(this.m_isInited)
@@ -374,11 +364,88 @@ public class RoleCtrlTransform
 		GetRunTimeData.MoveMethod = method;
 	}
 
-	public void MoveTo(Vector3 pos)
+	public bool IsGround
 	{
-		GetTramsForm.position = pos;
-		GetRunTimeData.CurPos = GetTramsForm.position;
+		get{return GetRunTimeData.IsGround;}
+	}
+
+	public float GetFloorHeight
+	{
+		get{return RoomColliderManager.GetYMin;}
+	}
+
+	//====================================================================//
+
+	private void setMainObj(GameObject obj)
+	{
+		m_mainObj = obj;
+		if(m_mainObj != null)
+		{
+			m_mainObj.transform.position = m_bbData.DataInfo.initPos; //new Vector3(2,StandHeight,0);
+			
+			if(m_modelObj != null)
+			{
+				m_modelObj.transform.parent = m_mainObj.transform;
+				m_modelObj.transform.localPosition = Vector3.zero;
+			}
+			
+			m_characterController = m_mainObj.AddComponent<CharacterController>();
+			m_characterController.slopeLimit = 0;
+			m_characterController.stepOffset = 0;
+			m_characterController.height = m_bodyHeight;
+			m_characterController.radius = m_bodyRadius;;
+			m_characterController.center = new Vector3(0f,m_bodyHeight/2,0f);
+
+			BoxCollider box =  m_mainObj.AddComponent<BoxCollider>();
+			box.center = new Vector3(0f,m_bodyHeight/2,0f);
+			box.size = new Vector3(m_bodyRadius,m_bodyHeight,m_bodyRadius);
+			box.isTrigger = true;
+		}
 	}
 	
+	private void setModelObj(GameObject obj)
+	{
+		m_modelObj = obj;
+		if(m_modelObj != null)
+		{
+			if(m_mainObj != null)
+			{
+				m_modelObj.transform.parent = m_mainObj.transform;
+				m_modelObj.transform.localPosition = Vector3.zero;
+				//m_modelObj.transform.Rotate(new Vector3(0,180,0));
+			}
+			
+			m_rootPoint = m_modelObj.GetComponentInChildren<RoleRootPoint>();
+		}
+	}
 
+
+	protected Transform GetTramsForm
+	{
+		get
+		{
+			if(this.m_mainObj != null)
+			{
+				return this.m_mainObj.transform;
+			}
+			else return null;
+		}
+	}
+	
+	protected RoleDataRunTime GetRunTimeData
+	{
+		get
+		{
+			if(m_bbData != null)
+			{
+				return m_bbData.DataRunTime;
+			}
+			else return null;
+		}
+	}
+	
+	protected RoleCtrlAnimation GetAniCtrl
+	{
+		get{return m_bbData.CtrlAnimation;}
+	}
 }

@@ -10,13 +10,9 @@ public class RoleCtrlSkill
 	protected bool m_isInited = false;
 
 	protected RoleBlackBoard m_bbData;
+
+	protected CRoleSkillItem m_skillItem;
 	
-	protected int m_curSkillId = 0;
-
-	protected int m_hitTimes = 0;
-
-	protected float m_hitInterval = 0f;
-
 	protected SkillProcess m_skillProcess = new SkillProcess();
 
 	protected PosProcess m_posProcess = new PosProcess();
@@ -55,13 +51,9 @@ public class RoleCtrlSkill
 		{
 			FinishSkillProcess();
 		}
-		//m_curSkillIndex = index;
-		CRoleSkillItem skillItem = GetLocalData.GetSkillGroup(key).MoveToIndex(index);
-		m_curSkillId = skillItem.skillId;
-		m_hitTimes = skillItem.hitTimes;
-		m_hitInterval = skillItem.hitInterval;
 
-		m_skillProcess.Reset(skillItem);
+		m_skillItem = GetLocalData.GetSkillGroup(key).MoveToIndex(index);
+		m_skillProcess.Reset(m_skillItem);
 		m_skillProcess.Start();
 
 		m_curSkillStatus = eProcessStatus.Run;
@@ -119,7 +111,7 @@ public class RoleCtrlSkill
 		if(this.m_hitTargetDict.ContainsKey(target.DataInfo.index) == false)
 		{
 			HitTargetProcess hitTarget = new HitTargetProcess();
-			hitTarget.Initalize(target,m_hitTimes,m_hitInterval);
+			hitTarget.Initalize(target,m_skillItem.hitData);
 			m_hitTargetDict.Add(target.DataInfo.index,hitTarget);
 		}
 	}
@@ -134,7 +126,7 @@ public class RoleCtrlSkill
 			{
 				Vector3 motion = m_posProcess.GetEndPos - GetRunTimeData.CurPos;
 				Debug.LogError("[warn] skill Finish but move not finsih , must motion :"+ motion);
-				GetTransformCtrl.Move(motion);
+				GetTransformCtrl.MoveLimit(motion);
 			}
 			
 			if(m_alphaProcess.IsRunning)

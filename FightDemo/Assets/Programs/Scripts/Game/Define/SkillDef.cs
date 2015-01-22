@@ -78,14 +78,3 @@ public enum eDamageType
 	Miss = 4,
 }
 
-//public enum eDamageForce
-//{
-//	Not_Use = 0,
-//	None,
-//	Force_Hit,
-//	Force_Back,
-//	Force_Up,
-//	Force_Down,
-//	Force_Stun,
-//	Force_Caught ,
-//}

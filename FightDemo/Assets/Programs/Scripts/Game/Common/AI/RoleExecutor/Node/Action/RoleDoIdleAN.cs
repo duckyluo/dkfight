@@ -24,18 +24,20 @@ public class RoleDoIdleAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		InputManager.KeyJumpEnalbe = true;
+		CheckSelfRule();
 
-		GetRunTimeData.ActionType = eActionType.Idle;
-		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+		GetRunTimeData.ActionType = eActionType.None;
+		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_Stand;
+		GetRunTimeData.PostureType = ePostureType.Pose_None;
 
 		GetRunTimeData.MoveEnable = true;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
-
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
+		GetRunTimeData.IsTrigger = false;
+
+		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
 		GetRunTimeData.CurScale = 1f;
 
@@ -94,14 +96,33 @@ public class RoleDoIdleAN : RoleBaseActionNode
 
 	protected void UpdateCurMsg()
 	{
-		if(m_nextMsg == null)
-		{
-			UpdateAnimation();
-		}
-		else
+		if(m_nextMsg != null)
 		{
 			Exit(null);
 		}
+		else if(GetRunTimeData.ActionType == eActionType.None)
+		{
+			StartIdle();
+		}
+		else
+		{
+			DoIdle();
+		}
+
+	}
+
+	protected void StartIdle()
+	{
+		GetRunTimeData.ActionType = eActionType.Idle;
+		GetRunTimeData.MoveMethod = eMoveMethod.Gravity;
+		GetRunTimeData.PostureType = ePostureType.Pose_Stand;
+
+		UpdateAnimation();
+	}
+
+	protected void DoIdle()
+	{
+
 	}
 	
 	protected void UpdateAnimation()
@@ -116,6 +137,14 @@ public class RoleDoIdleAN : RoleBaseActionNode
 	{
 		m_nextMsg = null;
 		base.Exit (input);
+	}
+
+	protected void CheckSelfRule()
+	{
+		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
+		{
+			InputManager.KeyJumpEnalbe = true;
+		}
 	}
 
 }

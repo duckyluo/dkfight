@@ -3,23 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
-using Dk.Event;
 
-public class RoleDoAttackAN : RoleBaseActionNode
+public class RoleForceFallDownAN : RoleBaseActionNode
 {
-	protected TAttackMessage m_curMsg = null;
+	protected THitMessage m_curMsg = null;
 	
 	protected TimeLineMessage m_nextMsg = null;
-
+	
 	public override void Initalize ()
 	{
-		this.m_name = "DoAttack";
+		this.m_name = "ForceFallDown";
 		base.Initalize ();
 	}
 	
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(GetFrontWaitMsg.GetActionType == eActionType.Attack)
+		if(GetFrontWaitMsg.GetActionType == eActionType.ForceFallDown)
 		{
 			return true;
 		}
@@ -29,7 +28,7 @@ public class RoleDoAttackAN : RoleBaseActionNode
 	protected override void Enter (DkBtInputParam input)
 	{
 		CheckSelfRule();
-
+		
 		GetRunTimeData.ActionType = eActionType.None;
 		GetRunTimeData.MoveMethod = eMoveMethod.None;
 		GetRunTimeData.MoveDirection = eMoveDirection.None;
@@ -45,8 +44,8 @@ public class RoleDoAttackAN : RoleBaseActionNode
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
 		GetRunTimeData.CurScale = 1f;
-
-		m_curMsg = GetFrontWaitMsg as TAttackMessage;
+		
+		m_curMsg = GetFrontWaitMsg as THitMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
 		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
 		
@@ -59,7 +58,7 @@ public class RoleDoAttackAN : RoleBaseActionNode
 	{
 		UpdateCurStatus();
 	}
-
+	
 	protected void UpdateCurStatus()
 	{
 		CheckNextMsg();
@@ -67,18 +66,20 @@ public class RoleDoAttackAN : RoleBaseActionNode
 		UpdateMoveMsg();
 		UpdateCurMsg();
 	}
-
+	
 	protected void CheckNextMsg()
 	{
 		while(GetFrontWaitMsg != null)
 		{
 			TimeLineMessage waitMsg = GetFrontWaitMsg;
+			
 			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
 			{
 				if(waitMsg.GetActionType == eActionType.Not_Use)
 				{
 					GetMsgCtrl.AddRunTLMsg(waitMsg);
 					GetMsgCtrl.RemoveWaitMsg(waitMsg);
+					
 					continue;
 				}
 				else
@@ -87,7 +88,7 @@ public class RoleDoAttackAN : RoleBaseActionNode
 					break;
 				}
 			}
-			else
+			else 
 			{
 				m_nextMsg = waitMsg;
 				break;
@@ -110,57 +111,108 @@ public class RoleDoAttackAN : RoleBaseActionNode
 			GetMsgCtrl.MoveList.Clear();// to do
 		}
 	}
-
+	
 	protected void UpdateCurMsg()
 	{
 		if(m_nextMsg != null)
 		{
-			//Debug.Log("Break Skill !!!! ");
-			GetSkillCtrl.FinishSkillProcess();
 			Exit(null);
 		}
 		else if(GetRunTimeData.ActionType == eActionType.None)
 		{
-			StartAttack();
+			StartFloatDown();
 		}
 		else
 		{
-			DoAttack();
+			DoFloatDowning();
 		}
 	}
 
-	private void StartAttack()
+	private float m_jumpFloatTime = 0.5f; //浮空时间
+	private float m_jumpFloatLastTime = 0f; //浮空剩余时间
+	private float m_jumpDownAV = 30f; //下降加速度
+	
+	private void StartFloatDown()
 	{
-		GetRunTimeData.ActionType = eActionType.Attack;
-		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
-		GetSkillCtrl.StartSkillProcess(eSkillKey.Attack,m_curMsg.skillIndex);
+		GetRunTimeData.ActionType = eActionType.ForceFallDown;
+		GetRunTimeData.MoveMethod = eMoveMethod.ForceSpeed;
+		GetRunTimeData.PostureType = ePostureType.Pose_HitFlyFloat;
+		GetRunTimeData.CollisionFlag = CollisionFlags.None;
+		
+		m_jumpFloatLastTime = m_jumpFloatTime;
 	}
-
-	private void DoAttack()
+	
+	private void DoFloatDowning()
 	{
-		if(GetSkillCtrl.CurSkillStatus == eProcessStatus.Run)
+		switch(GetRunTimeData.PostureType)
 		{
-			GetSkillCtrl.UpdateSkillProcess();
-
-			if(GetSkillCtrl.CurSkillStatus != eProcessStatus.Run)
-			{
-				Exit(null);
-			}
+		case ePostureType.Pose_HitFlyFloat:
+			FlyFloat();
+			break;
+		case ePostureType.Pose_HitFlyDown:
+			FlyDown();
+			break;
+		}
+	}
+	
+	private void FlyFloat()
+	{
+		GetRunTimeData.ActiveChStateEnalbe = false;
+		
+		m_jumpFloatLastTime -= Time.deltaTime;
+		if(m_jumpFloatLastTime <= 0)
+		{
+			GetRunTimeData.PostureType = ePostureType.Pose_HitFlyDown;
+		}
+		
+		GetRunTimeData.ForceSpeed = new Vector3(0,0,0);
+	}
+	
+	private void FlyDown()
+	{
+		GetRunTimeData.ActiveChStateEnalbe = false;
+		
+		float yspeed =  GetRunTimeData.ForceSpeed.y;
+		yspeed -= m_jumpDownAV * TimerManager.Instance.GetDeltaTime;//Time.deltaTime;
+		float nextYPos = GetRunTimeData.CurPos.y + yspeed * TimerManager.Instance.GetDeltaTime;//Time.deltaTime;//to fix resource ! shit	
+		if(nextYPos <= GetTransformCtrl.GetFloorHeight)
+		{
+			Vector3 motion = new Vector3(0,GetTransformCtrl.GetFloorHeight - GetRunTimeData.CurPos.y,0);
+			GetTransformCtrl.MoveLimit(motion);
+			//GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetTransformCtrl.GetFloorHeight,GetRunTimeData.CurPos.z));
+			GetRunTimeData.ForceSpeed = Vector3.zero;
+			Exit(null);
+		}
+		else
+		{
+			GetRunTimeData.ForceSpeed = new Vector3(0,yspeed,0);
 		}
 	}
 
+
+//	protected void UpdateAnimation()
+//	{
+//		if(GetAniCtrl != null)
+//		{
+//			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
+//		}
+//	}
+	
 	protected override void Exit (DkBtInputParam input)
 	{
 		m_curMsg = null;
 		m_nextMsg = null;
+
 		base.Exit (input);
 	}
-
+	
 	protected void CheckSelfRule()
 	{
 		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
 		{
-			InputManager.KeyJumpEnalbe = true;
+			InputManager.KeyJumpEnalbe = false;
 		}
 	}
 }
+
+
