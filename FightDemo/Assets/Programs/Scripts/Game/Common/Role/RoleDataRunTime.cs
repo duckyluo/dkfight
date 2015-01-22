@@ -48,6 +48,13 @@ public class RoleDataRunTime
 		get{ return m_curScale; }
 	}
 
+	protected Vector3 m_curRotation = Vector3.zero;
+	public Vector3 CurRotation
+	{
+		set{ m_curRotation = value;}
+		get{ return m_curRotation; }
+	}
+
 //	protected Vector3 m_logicPos = Vector3.zero;
 //	public Vector3 LogicPos
 //	{

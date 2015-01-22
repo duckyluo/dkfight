@@ -44,6 +44,7 @@ public class RoleDoJumpDownAN : RoleBaseActionNode
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
 		GetRunTimeData.CurScale = 1f;
+		GetRunTimeData.CurRotation = Vector3.zero;
 		
 		m_curMsg = GetFrontWaitMsg as TMoveMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);

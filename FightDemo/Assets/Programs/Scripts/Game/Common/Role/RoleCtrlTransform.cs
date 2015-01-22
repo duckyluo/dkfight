@@ -28,6 +28,8 @@ public class RoleCtrlTransform
 
 	protected float m_curScale = 1f;
 
+	protected Vector3 m_curRotation = Vector3.zero;
+
 	protected float m_curGravity = GravityDef.Nomal;
 	
 	protected CharacterController m_characterController;
@@ -62,10 +64,11 @@ public class RoleCtrlTransform
 
 	public void Update()
 	{
-		UpdateTrigger ();
-		UpdateAlpha ();
-		UpdateScale ();
-		UpdatePos ();
+		UpdateTrigger();
+		UpdateRotation();
+		UpdateAlpha();
+		UpdateScale();
+		UpdatePos();
 	}
 
 	protected void UpdateTrigger()
@@ -77,6 +80,15 @@ public class RoleCtrlTransform
 		else if(GetRunTimeData.IsTrigger == false && this.CharController.enabled == false)
 		{
 			this.CharController.enabled = true;
+		}
+	}
+
+	protected void UpdateRotation()
+	{
+		if(GetRunTimeData.CurRotation != m_curRotation)
+		{
+			m_curRotation = GetRunTimeData.CurRotation;
+			ChangeRotation(m_curRotation);
 		}
 	}
 
@@ -364,6 +376,15 @@ public class RoleCtrlTransform
 		GetRunTimeData.MoveMethod = method;
 	}
 
+	protected void ChangeRotation(Vector3 angles)
+	{
+		angles.y = 90f;
+		angles.z = 0f;
+		Quaternion rotation = Quaternion.identity;
+		rotation.eulerAngles = angles;
+		this.m_modelObj.transform.localRotation = rotation;
+	}
+
 	public bool IsGround
 	{
 		get{return GetRunTimeData.IsGround;}
@@ -418,8 +439,7 @@ public class RoleCtrlTransform
 			m_rootPoint = m_modelObj.GetComponentInChildren<RoleRootPoint>();
 		}
 	}
-
-
+	
 	protected Transform GetTramsForm
 	{
 		get

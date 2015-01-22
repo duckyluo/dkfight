@@ -44,6 +44,7 @@ public class RoleForceFallDownAN : RoleBaseActionNode
 		GetRunTimeData.ForceSpeed = Vector3.zero;
 		GetRunTimeData.CurAlpha = 1f;
 		GetRunTimeData.CurScale = 1f;
+		GetRunTimeData.CurRotation = new Vector3(-20f,0,0);
 		
 		m_curMsg = GetFrontWaitMsg as THitMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
