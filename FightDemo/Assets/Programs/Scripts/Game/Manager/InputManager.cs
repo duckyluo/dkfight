@@ -133,22 +133,22 @@ public class InputManager
 		{
 			CacheKeyInput(eInputActiveKey.Attack);
 		}
-		else if(Input.GetKeyDown(KeyCode.Y))
+		else if(Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			CacheKeyInput(eInputActiveKey.Skill_One);
 		}
-		else if(Input.GetKeyDown(KeyCode.U))
+		else if(Input.GetKeyDown(KeyCode.Alpha2))
 		{
 			CacheKeyInput(eInputActiveKey.Skill_Two);
 		}
-		else if(Input.GetKeyDown(KeyCode.I))
-		{
-			CacheKeyInput(eInputActiveKey.Skill_Three);
-		}
-		else if(Input.GetKeyDown(KeyCode.O))
-		{
-			CacheKeyInput(eInputActiveKey.Skill_Four);
-		}
+//		else if(Input.GetKeyDown(KeyCode.Alpha3))
+//		{
+//			CacheKeyInput(eInputActiveKey.Skill_Three);
+//		}
+//		else if(Input.GetKeyDown(KeyCode.Alpha4))
+//		{
+//			CacheKeyInput(eInputActiveKey.Skill_Four);
+//		}
 		else if(Input.GetKeyDown(KeyCode.Space)&&KeyJumpEnalbe)
 		{
 			CacheKeyInput(eInputActiveKey.Jump);

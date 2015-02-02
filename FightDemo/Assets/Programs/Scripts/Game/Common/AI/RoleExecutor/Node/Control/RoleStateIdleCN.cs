@@ -11,6 +11,8 @@ public class RoleStateIdleCN : RoleBaseSelectorNode
 		this.m_name = "StateIdle";
 		this.m_isDebug = false;
 		base.Initalize ();
+		this.AddChild(new RoleJoinLieAN());
+		this.AddChild(new RoleDoShakeAN());
 		this.AddChild(new RoleDoIdleAN());
 	}
 	

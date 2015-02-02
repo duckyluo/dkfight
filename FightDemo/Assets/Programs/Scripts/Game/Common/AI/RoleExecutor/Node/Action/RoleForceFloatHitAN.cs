@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleForceFloatHitAN : RoleBaseActionNode
+public class RoleForceFloatHitAN : RoleDoAction
 {
 	protected THitMessage m_curMsg = null;
-	
-	protected TimeLineMessage m_nextMsg = null;
 	
 	public override void Initalize ()
 	{
@@ -27,149 +25,58 @@ public class RoleForceFloatHitAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		CheckSelfRule();
-		
-		GetRunTimeData.ActionType = eActionType.None;
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
-		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		//GetRunTimeData.LookDirection = eLookDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_None;
-		
-		GetRunTimeData.MoveEnable = false;
-		GetRunTimeData.ActiveChStateEnalbe = false;
-		GetRunTimeData.PassiveChStateEnalbe = false;
-		GetRunTimeData.UseGravity = eUseGravity.No;
-		GetRunTimeData.IsTrigger = false;
-		
-		GetRunTimeData.ForceSpeed = Vector3.zero;
-		GetRunTimeData.CurAlpha = 1f;
-		GetRunTimeData.CurScale = 1f;
-		GetRunTimeData.CurRotation = new Vector3(-20f,0,0);
-		
+		base.Enter(null);
+
 		m_curMsg = GetFrontWaitMsg as THitMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
 		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
-		
-		m_nextMsg = null;
-		
-		base.Enter(input);
 	}
-	
-	protected override void Exectue (DkBtInputParam input)
-	{
-		UpdateCurStatus();
-	}
-	
-	protected void UpdateCurStatus()
-	{
-		CheckNextMsg();
-		UpdateHitMsg();
-		UpdateMoveMsg();
-		UpdateCurMsg();
-	}
-	
-	protected void CheckNextMsg()
-	{
-		while(GetFrontWaitMsg != null)
-		{
-			TimeLineMessage waitMsg = GetFrontWaitMsg;
-			
-			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
-			{
-				if(waitMsg.GetActionType == eActionType.Not_Use)
-				{
-					GetMsgCtrl.AddRunTLMsg(waitMsg);
-					GetMsgCtrl.RemoveWaitMsg(waitMsg);
 
-					continue;
-				}
-				else
-				{
-					m_nextMsg = waitMsg;
-					break;
-				}
-			}
-			else 
-			{
-				m_nextMsg = waitMsg;
-				break;
-			}
-		}
-	}
-	
-	protected void UpdateHitMsg()
-	{
-		if (GetMsgCtrl.HitList.Count > 0) 
-		{
-			GetMsgCtrl.HitList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateMoveMsg()
-	{
-		if(GetMsgCtrl.MoveList.Count > 0)
-		{
-			GetMsgCtrl.MoveList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateCurMsg()
-	{
-		m_timeCount += TimerManager.Instance.GetDeltaTime;
 
-		if(m_nextMsg != null)
-		{
-			Exit(null);
-		}
-		else if(GetRunTimeData.ActionType == eActionType.None)
-		{
-			StartHit();
-		}
-		else
-		{
-			DoHit();
-		}
-	}
-	
-	protected float m_durationTime = 0f;
-	protected float m_timeCount = 0f;
+	protected const float m_floatTime = 0.1f;
+	protected float m_remainTime = 0f;
 
-	protected void StartHit()
+	protected override void StartAction()
 	{
 		GetRunTimeData.ActionType = eActionType.ForceHit;
 		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
 		GetRunTimeData.PostureType = ePostureType.Pose_HitFlyFloat;
-		
-		m_durationTime = GetAniCtrl.GetState(AnimationNameDef.Hit1).length;
-		m_timeCount = 0;
-		
+
 		UpdateAnimation();
+
+		m_remainTime = GetAniCtrl.GetState(AnimationNameDef.Hit1).length +  m_floatTime;
 	}
 	
-	protected void DoHit()
+	protected override void DoAction()
 	{
-		if(m_timeCount == 0)
-		{
-			UpdateAnimation();
-		}
-		else if(m_timeCount >= m_durationTime)
+		m_remainTime -= TimerManager.Instance.GetDeltaTime;
+
+		if(m_remainTime <= 0 )
 		{
 			ToFallDown();
 		}
 	}
 
+	protected override void NextAction()
+	{
+		base.NextAction();
+	}
+
 	protected void ToFallDown()
 	{
-		THitMessage msg = new THitMessage();
+		TNextMessage msg = new TNextMessage();
 		msg.GetCmdType = eCommandType.Cmd_Hit;
-		msg.GetActionType = eActionType.ForceFallDown;
-		this.GetMsgCtrl.WaitList.Insert(0,msg);
+		msg.GetActionType = eActionType.JoinFallen;
+		msg.GetLookDirection = GetRunTimeData.LookDirection;
+		this.GetMsgCtrl.NextTLMsg(msg);
 
 		Exit(null);
 	}
 	
 	protected void UpdateAnimation()
 	{
+		GetRunTimeData.CurRotation = RoleRationDef.FloatHitRotation;
+
 		if(GetAniCtrl != null)
 		{
 			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
@@ -179,18 +86,12 @@ public class RoleForceFloatHitAN : RoleBaseActionNode
 	protected override void Exit (DkBtInputParam input)
 	{
 		m_curMsg = null;
-		m_nextMsg = null;
-		m_durationTime = 0f;
-		m_timeCount = 0f;
 		base.Exit (input);
 	}
 	
-	protected void CheckSelfRule()
+	protected override void CheckSelfRule()
 	{
-		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
-		{
-			InputManager.KeyJumpEnalbe = false;
-		}
+		base.CheckSelfRule();
 	}
 }
 

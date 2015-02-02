@@ -6,7 +6,7 @@ using Dk.Util;
 
 public class RoleDataRunTime 
 {
-	protected eUseGravity m_useGravity = eUseGravity.Yes;
+	protected eUseGravity m_useGravity = eUseGravity.No;
 	public eUseGravity UseGravity
 	{
 		set{m_useGravity = value;}
@@ -18,6 +18,13 @@ public class RoleDataRunTime
 	{
 		set{m_isTrigger = value;}
 		get{return m_isTrigger;}
+	}
+
+	protected bool m_isShake = false;
+	public bool IsShake
+	{
+		set{m_isShake = value;}
+		get{return m_isShake;}
 	}
 	
 	protected Vector3 m_forceSpeed = new Vector3();
@@ -104,20 +111,6 @@ public class RoleDataRunTime
 		get{ return m_action; }
 	}
 
-//	protected string m_animationName = string.Empty;
-//	public string AnimationName
-//	{
-//		set{m_animationName = value;}
-//		get{return m_animationName;}
-//	}
-
-//	protected eDamageForce m_damageforce = eDamageForce.Not_Use;
-//	public eDamageForce DamageForce
-//	{
-//		set{ m_damageforce = value;}
-//		get{ return m_damageforce; }
-//	}
-	
 	protected CollisionFlags m_collisionFlag = CollisionFlags.None;
 	public CollisionFlags CollisionFlag
 	{
@@ -125,21 +118,21 @@ public class RoleDataRunTime
 		get{return m_collisionFlag;}
 	}
 	
-	protected bool m_moveEnable = true;
+	protected bool m_moveEnable = false;
 	public bool MoveEnable
 	{
 		set{m_moveEnable = value;}
 		get{return m_moveEnable;}
 	}
 
-	protected bool m_activeChStateEnable = true; //enable change state actively
+	protected bool m_activeChStateEnable = false; //enable change state actively
 	public bool ActiveChStateEnalbe
 	{
 		set{m_activeChStateEnable = value;}
 		get{return m_activeChStateEnable;}
 	}
 
-	protected bool m_passiveChStateEnalbe = true; //enable other change target state
+	protected bool m_passiveChStateEnalbe = false; //enable other change target state
 	public bool PassiveChStateEnalbe
 	{
 		set{m_passiveChStateEnalbe = value;}
@@ -167,35 +160,30 @@ public class RoleDataRunTime
 		get{return (CollisionFlags.CollidedBelow & CollisionFlag) != 0;}
 	}
 
+	public bool JumpAtkEnable
+	{
+		get{ return (CurPos.y >= RoleHeightDef.JumpAtkHeight);}
+	}
+
 	public bool IsOnAir
 	{
 		get
 		{
-			if(this.m_posture == ePostureType.Pose_JumpUp ||
-			   this.m_posture == ePostureType.Pose_JumpFloat ||
-			   this.m_posture == ePostureType.Pose_JumpDown ||
-			   this.m_posture == ePostureType.Pose_HitFlyUp ||
-			   this.m_posture == ePostureType.Pose_HitFlyFloat ||
-			   this.m_posture == ePostureType.Pose_HitFlyDown )
-			{
-				return true;
-			}
-			else return false;
+			return !IsGround;
+//			if(this.m_posture == ePostureType.Pose_JumpUp ||
+//			   this.m_posture == ePostureType.Pose_JumpFloat ||
+//			   this.m_posture == ePostureType.Pose_JumpDown ||
+//			   this.m_posture == ePostureType.Pose_HitFlyUp ||
+//			   this.m_posture == ePostureType.Pose_HitFlyFloat ||
+//			   this.m_posture == ePostureType.Pose_HitFlyDown ||
+//			   this.m_posture == ePostureType.Pose_JumpAttack)
+//			{
+//				return true;
+//			}
+//			else return false;
 		}
 	}
-
-//	public void ResetAll()
-//	{
-//		MoveMethod = eMoveMethod.None;
-//		MoveDirection = eMoveDirection.None;
-//		UseGravity = eUseGravity.Yes;
-//		PostureType = ePostureType.Pose_None;
-//		ForceSpeed = Vector3.zero;
-//		MoveEnable = true;
-//		ActiveChStateEnalbe = true;
-//		PassiveChStateEnalbe = true;
-//	}
-
+	
 	public eLookDirection GetLookDirectionToPos(Vector3 pos)
 	{
 		eLookDirection look = LookDirection;
@@ -220,12 +208,8 @@ public class RoleDataRunTime
 		str += "[MoveDirection] "+MoveDirection + " , ";
 
 		str += "[UseGravity] "+UseGravity + " , ";
-		//str += "[Gravity] "+Gravity + " , ";
 		str += "[CurPos] "+CurPos + " , ";
-		//str += "[LogicPos] "+LogicPos + " , ";
 		str += "[ForceSpeed] "+ForceSpeed + " , ";
-
-		//str += "[DamageForce] "+DamageForce + " , ";
 		str += "[MoveEnable] "+MoveEnable + " , ";
 		str += "[CollisionFlags] "+CollisionFlag + " , ";
 		str += "[IsPaused] "+IsPaused + " , ";

@@ -11,21 +11,23 @@ public class RoleCtrlSkill
 
 	protected RoleBlackBoard m_bbData;
 
-	protected CRoleSkillItem m_skillItem;
+	protected CRoleSkillItem m_curSkillItem;
 	
-	protected SkillProcess m_skillProcess = new SkillProcess();
+	protected SkillProcess m_curSkillProcess = new SkillProcess();
 
-	protected PosProcess m_posProcess = new PosProcess();
+	protected PosProcess m_curPosProcess = new PosProcess();
 
-	protected AlphaProcess m_alphaProcess = new AlphaProcess();
+	protected AlphaProcess m_curAlphaProcess = new AlphaProcess();
 
-	protected ScaleProcess m_scaleProcess = new ScaleProcess();
+	protected ScaleProcess m_curScaleProcess = new ScaleProcess();
 
-	protected List<EffectProcess> m_effectList = new List<EffectProcess>();
+	protected List<EffectProcess> m_curEffectList = new List<EffectProcess>();
 
-	protected List<HitBoundProcess> m_hitBoundList = new List<HitBoundProcess>();
+	protected List<HitBoundProcess> m_curHitBoundList = new List<HitBoundProcess>();
 
-	protected Dictionary<int,HitTargetProcess> m_hitTargetDict = new Dictionary<int, HitTargetProcess>();
+	protected Dictionary<int,HitTarget> m_curHitTargetDict = new Dictionary<int, HitTarget>();
+
+	protected Dictionary<eSkillKey,RoleSkillCoolTime> m_skillCoolTimeDict = new Dictionary<eSkillKey, RoleSkillCoolTime>();
 
 	protected eProcessStatus m_curSkillStatus = eProcessStatus.None;
 	public eProcessStatus CurSkillStatus
@@ -41,8 +43,49 @@ public class RoleCtrlSkill
 			m_bbData = bbData;
 
 			Action<DkEvent> action = OnSkillEnterHandler;
-			m_skillProcess.AddEventListen(SkillProcess.SKILL_EVENT_ENTER,action);
+			m_curSkillProcess.AddEventListen(SkillProcess.SKILL_EVENT_ENTER,action);
 		}
+	}
+
+	public void Update()
+	{
+		UpdateSkillCoolTime();
+	}
+
+	protected void UpdateSkillCoolTime()
+	{
+		foreach(KeyValuePair<eSkillKey,RoleSkillCoolTime> pair in m_skillCoolTimeDict)
+		{
+			if(pair.Value.IsCoolTime)
+			{
+				pair.Value.UpdateCoolTime();
+			}
+		}
+	}
+
+	protected void AddSkillCoolTime(eSkillKey key , float coolTime)
+	{
+		RoleSkillCoolTime skillCoolTime = null;
+
+		if(!m_skillCoolTimeDict.TryGetValue(key,out skillCoolTime))
+		{
+			skillCoolTime = new RoleSkillCoolTime();
+			m_skillCoolTimeDict.Add(key,skillCoolTime);
+		}
+
+		skillCoolTime.StartCoolTime(coolTime);
+	}
+
+	public bool IsKeyCool(eSkillKey key)
+	{
+		RoleSkillCoolTime skillCoolTime = null;
+		if(!m_skillCoolTimeDict.TryGetValue(key,out skillCoolTime))
+		{
+			skillCoolTime = new RoleSkillCoolTime();
+			m_skillCoolTimeDict.Add(key,skillCoolTime);
+		}
+
+		return skillCoolTime.IsCoolTime;
 	}
 
 	public void StartSkillProcess(eSkillKey key, int index)
@@ -52,9 +95,16 @@ public class RoleCtrlSkill
 			FinishSkillProcess();
 		}
 
-		m_skillItem = GetLocalData.GetSkillGroup(key).MoveToIndex(index);
-		m_skillProcess.Reset(m_skillItem);
-		m_skillProcess.Start();
+		CRoleSkillGroup group = GetLocalData.GetSkillGroup(key);
+		m_curSkillItem = group.MoveToIndex(index);
+
+		if(group.IsLastIndex)
+		{
+			AddSkillCoolTime(key,-1);
+		}
+
+		m_curSkillProcess.Reset(m_curSkillItem);
+		m_curSkillProcess.Start();
 
 		m_curSkillStatus = eProcessStatus.Run;
 	}
@@ -63,28 +113,28 @@ public class RoleCtrlSkill
 	{
 		m_curSkillStatus = eProcessStatus.None;
 		//to do;
-		m_skillProcess.Stop();
-		m_posProcess.Stop();
-		m_alphaProcess.Stop();
-		m_scaleProcess.Stop();
+		m_curSkillProcess.Stop();
+		m_curPosProcess.Stop();
+		m_curAlphaProcess.Stop();
+		m_curScaleProcess.Stop();
 
-		foreach(EffectProcess effect in m_effectList)
+		foreach(EffectProcess effect in m_curEffectList)
 		{
 			effect.Destroy();
 		}
-		m_effectList.Clear();
+		m_curEffectList.Clear();
 
-		foreach(HitBoundProcess hit in m_hitBoundList)
+		foreach(HitBoundProcess hit in m_curHitBoundList)
 		{
 			hit.Destroy();
 		}
-		m_hitBoundList.Clear();
+		m_curHitBoundList.Clear();
 
-	    foreach(KeyValuePair<int,HitTargetProcess> pair in m_hitTargetDict)
+	    foreach(KeyValuePair<int,HitTarget> pair in m_curHitTargetDict)
 		{
 			pair.Value.Destroy();
 		}
-		m_hitTargetDict.Clear();
+		m_curHitTargetDict.Clear();
 	}
 
 	public void UpdateSkillProcess()
@@ -106,35 +156,46 @@ public class RoleCtrlSkill
 		}
 	}
 
-	public void AddHitTarget(RoleBlackBoard target)
+	public void HitTargetEnter(RoleBlackBoard target , int boundIndex , SkillHitData hitData)
 	{
-		if(this.m_hitTargetDict.ContainsKey(target.DataInfo.index) == false)
+		HitTarget hitTarget = null;
+		if(!m_curHitTargetDict.TryGetValue(target.DataInfo.index, out hitTarget))
 		{
-			HitTargetProcess hitTarget = new HitTargetProcess();
-			hitTarget.Initalize(target,m_skillItem.hitData);
-			m_hitTargetDict.Add(target.DataInfo.index,hitTarget);
+			hitTarget = new HitTarget();
+			hitTarget.Initalize(m_curSkillItem.hitMethod,target,m_bbData);
+			m_curHitTargetDict.Add(target.DataInfo.index,hitTarget);
+		}
+		hitTarget.TargetEnter(boundIndex,hitData);
+	}
+
+	public void HitTargetOut(RoleBlackBoard target , int boundIndex)
+	{
+		HitTarget hitTarget = null;
+		if(m_curHitTargetDict.TryGetValue(target.DataInfo.index,out hitTarget))
+		{
+			hitTarget.TargetOut(boundIndex);
 		}
 	}
 
 	private void CheckAllProcessStatus()
 	{
-		if(m_skillProcess.Status == eProcessStatus.End)
+		if(m_curSkillProcess.Status == eProcessStatus.End)
 		{
 			m_curSkillStatus = eProcessStatus.End;
 
-			if(m_posProcess.IsRunning)
+			if(m_curPosProcess.IsRunning)
 			{
-				Vector3 motion = m_posProcess.GetEndPos - GetRunTimeData.CurPos;
+				Vector3 motion = m_curPosProcess.GetEndPos - GetRunTimeData.CurPos;
 				Debug.LogError("[warn] skill Finish but move not finsih , must motion :"+ motion);
 				GetTransformCtrl.MoveLimit(motion);
 			}
 			
-			if(m_alphaProcess.IsRunning)
+			if(m_curAlphaProcess.IsRunning)
 			{
 				GetRunTimeData.CurAlpha = 1f;
 			}
 			
-			if(m_scaleProcess.IsRunning)
+			if(m_curScaleProcess.IsRunning)
 			{
 				GetRunTimeData.CurScale = 1;
 			}
@@ -145,15 +206,15 @@ public class RoleCtrlSkill
 
 	private void ProcessSkill()
 	{
-		m_skillProcess.Update();
+		m_curSkillProcess.Update();
 	}
 	
 	private void ProcessPos()
 	{
-		if(m_posProcess.IsRunning)
+		if(m_curPosProcess.IsRunning)
 		{
-			Vector3 motion = m_posProcess.UpdateMotion();
-			if(!m_posProcess.IsRunning)
+			Vector3 motion = m_curPosProcess.UpdateMotion();
+			if(!m_curPosProcess.IsRunning)
 			{
 				GetRunTimeData.MoveMethod = eMoveMethod.None;
 				GetRunTimeData.ForceSpeed = Vector3.zero;
@@ -168,26 +229,26 @@ public class RoleCtrlSkill
 	
 	private void ProcessAlpha()
 	{
-		if(m_alphaProcess.IsRunning)
+		if(m_curAlphaProcess.IsRunning)
 		{
-			m_alphaProcess.UpdateAlpha();
-			GetRunTimeData.CurAlpha = m_alphaProcess.GetCurAlpha;
+			m_curAlphaProcess.UpdateAlpha();
+			GetRunTimeData.CurAlpha = m_curAlphaProcess.GetCurAlpha;
 		}
 	}
 	
 	private void ProcessScale()
 	{
-		if(m_scaleProcess.IsRunning)
+		if(m_curScaleProcess.IsRunning)
 		{
-			m_scaleProcess.UpdateScale();
-			GetRunTimeData.CurScale = m_scaleProcess.GetCurScale;
+			m_curScaleProcess.UpdateScale();
+			GetRunTimeData.CurScale = m_curScaleProcess.GetCurScale;
 		}
 	}
 
 	private void ProcessEffect()
 	{
 		List<EffectProcess> list = new List<EffectProcess>();
-		foreach(EffectProcess effect in m_effectList)
+		foreach(EffectProcess effect in m_curEffectList)
 		{
 			effect.Update();
 			if(effect.Status == eProcessStatus.End)
@@ -198,7 +259,7 @@ public class RoleCtrlSkill
 		
 		foreach(EffectProcess item in list)
 		{
-			m_effectList.Remove(item);
+			m_curEffectList.Remove(item);
 			item.Destroy();
 		}
 		
@@ -208,7 +269,7 @@ public class RoleCtrlSkill
 	private void ProcessHitBound()
 	{
 		List<HitBoundProcess> list = new List<HitBoundProcess>();
-		foreach(HitBoundProcess hitBound in m_hitBoundList)
+		foreach(HitBoundProcess hitBound in m_curHitBoundList)
 		{
 			hitBound.Update();
 			if(hitBound.Status == eProcessStatus.End)
@@ -219,7 +280,7 @@ public class RoleCtrlSkill
 
 		foreach(HitBoundProcess item in list)
 		{
-			m_hitBoundList.Remove(item);
+			m_curHitBoundList.Remove(item);
 			item.Destroy();
 		}
 
@@ -228,9 +289,10 @@ public class RoleCtrlSkill
 
 	protected void ProcessHitTarget()
 	{
-		foreach(KeyValuePair<int,HitTargetProcess> pair in m_hitTargetDict)
+		foreach(KeyValuePair<int,HitTarget> pair in m_curHitTargetDict)
 		{
-			pair.Value.Update();
+			HitTarget hitTarget = pair.Value;
+			hitTarget.Update(m_curSkillProcess.GetPassTime);
 		}
 	}
 
@@ -291,9 +353,14 @@ public class RoleCtrlSkill
 			Vector3 motionDis = skillPosEvent.m_motion;
 			if(GetRunTimeData.LookDirection == eLookDirection.Left)
 			{
+				GetRunTimeData.MoveDirection = eMoveDirection.Left;
 				motionDis.x = -motionDis.x;
 			}
-			m_posProcess.Restart(GetRunTimeData.CurPos,motionDis,skillPosEvent.m_duration,skillPosEvent.m_aSpeed);
+			else
+			{
+				GetRunTimeData.MoveDirection = eMoveDirection.Right;
+			}
+			m_curPosProcess.Restart(GetRunTimeData.CurPos,motionDis,skillPosEvent.m_duration,skillPosEvent.m_aSpeed);
 		}
 	}
 	
@@ -309,7 +376,7 @@ public class RoleCtrlSkill
 		{
 			skillAlphaEvent.m_startAlpha = GetRunTimeData.CurAlpha;
 		}
-		m_alphaProcess.Restart(skillAlphaEvent.m_startAlpha,skillAlphaEvent.m_endAlpha,skillAlphaEvent.m_duration);
+		m_curAlphaProcess.Restart(skillAlphaEvent.m_startAlpha,skillAlphaEvent.m_endAlpha,skillAlphaEvent.m_duration);
 	}
 	
 	private void ScaleEventHandler(SkillScaleChEvent skillScaleEvent)
@@ -324,12 +391,16 @@ public class RoleCtrlSkill
 		{
 			skillScaleEvent.m_startScale = GetRunTimeData.CurScale;
 		}
-		m_scaleProcess.Restart(skillScaleEvent.m_startScale,skillScaleEvent.m_endScale,skillScaleEvent.m_duration);
+		m_curScaleProcess.Restart(skillScaleEvent.m_startScale,skillScaleEvent.m_endScale,skillScaleEvent.m_duration);
 	}
 
 	private void AttributeEventHandler(SkillAttributeChEvent skillAttrubuteEvent)
 	{
 		GetRunTimeData.ActiveChStateEnalbe = skillAttrubuteEvent.m_activeChStateEnable;
+		if(skillAttrubuteEvent.m_activeChStateEnable)
+		{
+			GetRunTimeData.MoveEnable = skillAttrubuteEvent.m_activeChStateEnable;
+		}
 	}
 
 	private void EffectEventHandler(SkillEffectAddEvent skillEffectEvent)
@@ -342,7 +413,7 @@ public class RoleCtrlSkill
 
 		EffectProcess process = new EffectProcess();
 		process.Initalize(m_bbData,skillEffectEvent);
-		m_effectList.Add(process);
+		m_curEffectList.Add(process);
 	}
 
 	private void HitBoundEventHandler(SkillHitBoundAddEvent skillHitBoundEvent)
@@ -355,7 +426,7 @@ public class RoleCtrlSkill
 
 		HitBoundProcess process = new HitBoundProcess();
 		process.Initalize(m_bbData,skillHitBoundEvent);
-		m_hitBoundList.Add(process);
+		m_curHitBoundList.Add(process);
 	}
 
 	private void MagicEventHandler(SkillMagicAddEvent skillMagicEvent)
@@ -388,5 +459,62 @@ public class RoleCtrlSkill
 	protected RoleCtrlAnimation GetAniCtrl
 	{
 		get{return m_bbData.CtrlAnimation;}
+	}
+}
+
+
+public class RoleSkillCoolTime
+{
+	protected const float DefalueCoolTime = 1.5f;
+
+	protected float m_remainTime = 0f;
+	public float GetRemainTime
+	{
+		get{return m_remainTime;}
+	}
+
+	public eProcessStatus m_status = eProcessStatus.None;
+
+	public void StartCoolTime(float coolTime)
+	{
+		if(coolTime >= 0)
+		{
+			m_remainTime = coolTime;
+		}
+		else
+		{
+			m_remainTime = DefalueCoolTime;
+		}
+		m_status = eProcessStatus.Start;
+	}
+
+	public void UpdateCoolTime()
+	{
+		if(m_status == eProcessStatus.Start)
+		{
+			m_status = eProcessStatus.Run;
+		}
+		else if(m_status == eProcessStatus.Run)
+		{
+			if(m_remainTime > 0)
+			{
+				m_remainTime -= TimerManager.Instance.GetDeltaTime;
+			}
+
+			if(m_remainTime <= 0)
+			{
+				m_remainTime = 0;
+				m_status = eProcessStatus.End;
+			}
+		}
+		else if(m_status == eProcessStatus.End)
+		{
+			m_status = eProcessStatus.None;
+		}
+	}	
+
+	public bool IsCoolTime
+	{
+		get{return (m_remainTime > 0);}
 	}
 }

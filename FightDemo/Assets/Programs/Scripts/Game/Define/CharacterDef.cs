@@ -55,10 +55,8 @@ public enum eStateType
 	State_Move = 2,
 	State_Attack = 3,
 	State_Hit = 4,
-	State_Hide = 5,
+	State_Born = 5,
 	State_Die = 6,
-	State_Appear = 7,
-	State_Disappear = 8,
 }
 
 public enum eActionType
@@ -66,6 +64,8 @@ public enum eActionType
 	Not_Use,
 	None,
 	Idle,
+	Shake,
+	Hide,
 	Move,
 	Stop,
 	Jump,
@@ -76,10 +76,12 @@ public enum eActionType
 	Die,
 	ForceHit,
 	ForceFloatHit,
-	//ForceFloatDown,
 	ForceBack,
 	ForceFly,
 	ForceFallDown,
+	ForceDown,
+	Appear,
+	Disappear,
 }
 
 public enum eLookDirection
@@ -91,6 +93,14 @@ public enum eLookDirection
 }
 
 public enum eMoveDirection
+{
+	Not_Use,
+	None,
+	Left,
+	Right,
+}
+
+public enum eJumpDirection
 {
 	Not_Use,
 	None,
@@ -113,11 +123,3 @@ public enum eUseGravity
 	No,
 	Yes,
 }
-
-public class GravityDef
-{
-	public const float Nomal = 10.0f;
-	public const float Air = 30.0f;
-}
-
-

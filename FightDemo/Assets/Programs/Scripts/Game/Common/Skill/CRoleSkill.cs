@@ -94,6 +94,18 @@ public class CRoleSkillGroup
 		else return null;
 	}
 
+	public bool IsLastIndex
+	{
+		get
+		{
+			if(m_curIndex == (skillList.Count - 1))
+			{
+				return true;
+			}
+			else return false;
+		}
+	}
+
 	public void Reset()
 	{
 		m_curIndex = -1;
@@ -105,7 +117,7 @@ public class CRoleSkillItem : IComparable
 	public int skillIndex = -1;
 	public int skillId = -1;
 	public float durationTime = -1;
-	public SHitData hitData = null;
+	public eHitMethod hitMethod = eHitMethod.Not_Use;
 
 	public List<SkillProcessEvent> skillEvents = new List<SkillProcessEvent>();
 	
@@ -114,7 +126,7 @@ public class CRoleSkillItem : IComparable
 		skillIndex = sItem.skillIndex;
 		skillId = sItem.skillId;
 		durationTime = sItem.durationTime;
-		hitData = sItem.hitData;
+		hitMethod = sItem.hitMethod;
 
 		AddEventFromList(sItem.aniList);
 		AddEventFromList(sItem.posList);
@@ -157,10 +169,4 @@ public class CRoleSkillItem : IComparable
 		}
 		return res;
 	}
-	//	public void CopyFrom(CRoleSkillItem item)
-//	{
-//		skillEvents.Clear();
-//		skillEvents.AddRange(item.
-//	}
-
 }

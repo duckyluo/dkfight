@@ -19,8 +19,6 @@ public enum eInputActiveKey
 	Skill_Four,
 }
 
-
-
 //public enum eActionKey
 //{
 //	Not_Use,

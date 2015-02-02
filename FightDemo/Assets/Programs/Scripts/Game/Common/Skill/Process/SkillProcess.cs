@@ -17,6 +17,10 @@ public class SkillProcess : DkEventDispatch
 	protected float m_startTime = 0;
 
 	protected float m_passTime = 0;
+	public float GetPassTime
+	{
+		get{return m_passTime;}
+	}
 
 	protected float m_finishTime = 0;
 

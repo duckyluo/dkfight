@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleForceFallDownAN : RoleBaseActionNode
+public class RoleForceFallDownAN : RoleDoAction
 {
 	protected THitMessage m_curMsg = null;
-	
-	protected TimeLineMessage m_nextMsg = null;
 	
 	public override void Initalize ()
 	{
@@ -27,123 +25,44 @@ public class RoleForceFallDownAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		CheckSelfRule();
-		
-		GetRunTimeData.ActionType = eActionType.None;
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
-		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		//GetRunTimeData.LookDirection = eLookDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_None;
-		
-		GetRunTimeData.MoveEnable = false;
-		GetRunTimeData.ActiveChStateEnalbe = false;
-		GetRunTimeData.PassiveChStateEnalbe = false;
-		GetRunTimeData.UseGravity = eUseGravity.No;
-		GetRunTimeData.IsTrigger = true;
+		base.Enter(input);
 
-		GetRunTimeData.ForceSpeed = Vector3.zero;
-		GetRunTimeData.CurAlpha = 1f;
-		GetRunTimeData.CurScale = 1f;
-		GetRunTimeData.CurRotation = new Vector3(-20f,0,0);
-		
 		m_curMsg = GetFrontWaitMsg as THitMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
 		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
-		
-		m_nextMsg = null;
-		
-		base.Enter(input);
-	}
-	
-	protected override void Exectue (DkBtInputParam input)
-	{
-		UpdateCurStatus();
-	}
-	
-	protected void UpdateCurStatus()
-	{
-		CheckNextMsg();
-		UpdateHitMsg();
-		UpdateMoveMsg();
-		UpdateCurMsg();
-	}
-	
-	protected void CheckNextMsg()
-	{
-		while(GetFrontWaitMsg != null)
-		{
-			TimeLineMessage waitMsg = GetFrontWaitMsg;
-			
-			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
-			{
-				if(waitMsg.GetActionType == eActionType.Not_Use)
-				{
-					GetMsgCtrl.AddRunTLMsg(waitMsg);
-					GetMsgCtrl.RemoveWaitMsg(waitMsg);
-					
-					continue;
-				}
-				else
-				{
-					m_nextMsg = waitMsg;
-					break;
-				}
-			}
-			else 
-			{
-				m_nextMsg = waitMsg;
-				break;
-			}
-		}
-	}
-	
-	protected void UpdateHitMsg()
-	{
-		if (GetMsgCtrl.HitList.Count > 0) 
-		{
-			GetMsgCtrl.HitList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateMoveMsg()
-	{
-		if(GetMsgCtrl.MoveList.Count > 0)
-		{
-			GetMsgCtrl.MoveList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateCurMsg()
-	{
-		if(m_nextMsg != null)
-		{
-			Exit(null);
-		}
-		else if(GetRunTimeData.ActionType == eActionType.None)
-		{
-			StartFloatDown();
-		}
-		else
-		{
-			DoFloatDowning();
-		}
 	}
 
-	private float m_jumpFloatTime = 0.5f; //浮空时间
+	private float m_jumpFloatTime = 0f; //浮空时间
 	private float m_jumpFloatLastTime = 0f; //浮空剩余时间
-	private float m_jumpDownAV = 30f; //下降加速度
+
+	private Vector3 m_hitSpeed = Vector3.zero;
 	
-	private void StartFloatDown()
+	protected override void StartAction()
 	{
 		GetRunTimeData.ActionType = eActionType.ForceFallDown;
 		GetRunTimeData.MoveMethod = eMoveMethod.ForceSpeed;
-		GetRunTimeData.PostureType = ePostureType.Pose_HitFlyFloat;
+		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
+		GetRunTimeData.MoveDirection = CharacterUtil.GetMoveDirectionBySpeed(m_curMsg.hitSpeed.x);
+
+		GetRunTimeData.IsTrigger = true;
 		GetRunTimeData.CollisionFlag = CollisionFlags.None;
-		
+
 		m_jumpFloatLastTime = m_jumpFloatTime;
+		m_hitSpeed = m_curMsg.hitSpeed;
+
+		if(m_jumpFloatLastTime > 0)
+		{
+			GetRunTimeData.PostureType = ePostureType.Pose_HitFlyFloat;
+		}
+		else
+		{
+			GetRunTimeData.PostureType = ePostureType.Pose_HitFlyDown;
+		}
+
+		UpdateAnimation();
 	}
 	
-	private void DoFloatDowning()
+	protected override void DoAction()
 	{
 		switch(GetRunTimeData.PostureType)
 		{
@@ -155,11 +74,16 @@ public class RoleForceFallDownAN : RoleBaseActionNode
 			break;
 		}
 	}
+
+	protected override void NextAction ()
+	{
+		base.NextAction ();
+	}
 	
 	private void FlyFloat()
 	{
 		GetRunTimeData.ActiveChStateEnalbe = false;
-		
+
 		m_jumpFloatLastTime -= Time.deltaTime;
 		if(m_jumpFloatLastTime <= 0)
 		{
@@ -172,47 +96,68 @@ public class RoleForceFallDownAN : RoleBaseActionNode
 	private void FlyDown()
 	{
 		GetRunTimeData.ActiveChStateEnalbe = false;
+
+		float xSpeed = 0f;
+		float ySpeed = 0f;
+		float zSpeed = 0f;
 		
-		float yspeed =  GetRunTimeData.ForceSpeed.y;
-		yspeed -= m_jumpDownAV * TimerManager.Instance.GetDeltaTime;//Time.deltaTime;
-		float nextYPos = GetRunTimeData.CurPos.y + yspeed * TimerManager.Instance.GetDeltaTime;//Time.deltaTime;//to fix resource ! shit	
+		if(m_hitSpeed.magnitude != 0)
+		{
+			xSpeed = CharacterUtil.GetXSpeed(m_hitSpeed.x, RoleASpeedDef.AirXResistance,GetRunTimeData.MoveDirection);
+			ySpeed = -Mathf.Abs(m_hitSpeed.y) - RoleASpeedDef.GravityAir * TimerManager.Instance.GetDeltaTime;
+		
+			m_hitSpeed = Vector3.zero;
+		}
+		else
+		{
+			xSpeed = CharacterUtil.GetXSpeed(GetRunTimeData.ForceSpeed.x, RoleASpeedDef.AirXResistance,GetRunTimeData.MoveDirection);
+			ySpeed = GetRunTimeData.ForceSpeed.y - RoleASpeedDef.GravityAir * TimerManager.Instance.GetDeltaTime;
+		}
+
+		GetRunTimeData.ForceSpeed = new Vector3(xSpeed,ySpeed,zSpeed);
+
+		float nextYPos = GetRunTimeData.CurPos.y + ySpeed * TimerManager.Instance.GetDeltaTime;//Time.deltaTime;//to fix resource ! shit	
 		if(nextYPos <= GetTransformCtrl.GetFloorHeight)
 		{
 			Vector3 motion = new Vector3(0,GetTransformCtrl.GetFloorHeight - GetRunTimeData.CurPos.y,0);
 			GetTransformCtrl.MoveLimit(motion);
-			//GetTransformCtrl.MoveTo(new Vector3(GetRunTimeData.CurPos.x,GetTransformCtrl.GetFloorHeight,GetRunTimeData.CurPos.z));
-			GetRunTimeData.ForceSpeed = Vector3.zero;
-			Exit(null);
+
+			ToJoinImpact();
 		}
-		else
+	}
+	
+	protected void UpdateAnimation()
+	{
+		GetRunTimeData.CurRotation =  RoleRationDef.FallRotation;
+
+		if(GetAniCtrl != null)
 		{
-			GetRunTimeData.ForceSpeed = new Vector3(0,yspeed,0);
+			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
 		}
 	}
 
-
-//	protected void UpdateAnimation()
-//	{
-//		if(GetAniCtrl != null)
-//		{
-//			GetAniCtrl.Play(AnimationNameDef.Hit1, WrapMode.ClampForever,true,1);
-//		}
-//	}
+	protected void ToJoinImpact()
+	{
+		TNextMessage msg = new TNextMessage();
+		msg.GetCmdType = eCommandType.Cmd_Hit;
+		msg.GetActionType = eActionType.JoinImpact;
+		msg.GetLookDirection = GetRunTimeData.LookDirection;
+		msg.hitSpeed = GetRunTimeData.ForceSpeed;
+		msg.impactMothod = eImpactMothod.Ground;
+		this.GetMsgCtrl.NextTLMsg(msg);
+		
+		Exit(null);
+	}
 	
 	protected override void Exit (DkBtInputParam input)
 	{
 		m_curMsg = null;
-		m_nextMsg = null;
-
 		base.Exit (input);
 	}
 	
-	protected void CheckSelfRule()
+	protected  override void CheckSelfRule()
 	{
-		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
-		{
-			InputManager.KeyJumpEnalbe = false;
-		}
+		base.CheckSelfRule();
 	}
 }
 

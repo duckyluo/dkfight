@@ -7,9 +7,9 @@ public enum eCommandType
 	Cmd_Move = 1,
 	Cmd_Attack = 2,
 	Cmd_Hit = 3,
-	Cmd_Appear = 4,
-	Cmd_Disapper = 5,
-	Cmd_Die = 6,
+	Cmd_Born = 4,
+	Cmd_Die = 5,
+	Cmd_Action = 6,
 }
 
 public class TimeLineMessage
@@ -78,6 +78,9 @@ public class TimeLineMessage
 		case eCommandType.Cmd_Hit:
 			msg = new THitMessage();
 			break;
+		case eCommandType.Cmd_Action:
+			msg = new TActionMessage();
+			break;
 		}
 
 		if(msg != null)
@@ -92,13 +95,12 @@ public class TimeLineMessage
 	}
 }
 
-/// <summary>
-/// T move message.
-/// </summary>
+//============================================================================//
+
 public class TMoveMessage : TimeLineMessage
 {
 	public eMoveMethod moveMethod = eMoveMethod.Not_Use;
-	public eMoveDirection moveDirection = eMoveDirection.Not_Use;
+	public eJumpDirection jumpDirection = eJumpDirection.Not_Use;
 	
 	public TMoveMessage()
 	{
@@ -109,15 +111,13 @@ public class TMoveMessage : TimeLineMessage
 	{
 		base.Init(fsmMsg);
 		moveMethod = fsmMsg.moveMethod;
-		moveDirection = fsmMsg.moveDirection;
+		jumpDirection = fsmMsg.jumpDirection;
 	}
 }
 
-/// <summary>
-/// T skill message.
-/// </summary>
 public class TAttackMessage : TimeLineMessage
 {
+	public eSkillKey skillKey = eSkillKey.Not_Use;
 	public int skillIndex = -1;
 
 	public TAttackMessage()
@@ -128,17 +128,16 @@ public class TAttackMessage : TimeLineMessage
 	public override void Init(RoleFsmMessage fsmMsg)
 	{
 		base.Init(fsmMsg);
+		skillKey = fsmMsg.skillKey;
 		skillIndex = fsmMsg.skillIndex;
 	}
 }
 
-/// <summary>
-/// T hit message.
-/// </summary>
 public class THitMessage : TimeLineMessage
 {
-	public int hitId = -1;
 	public eDamageType damageType = eDamageType.Not_Use;
+	public int hitId = -1;
+	public Vector3 hitSpeed = Vector3.zero;
 
 	//public eHitResultType hitResultType = eHitResultType.Not_Use;
 	//public eDamageForce damageForce = eDamageForce.Not_Use;
@@ -151,7 +150,29 @@ public class THitMessage : TimeLineMessage
 	public override void Init(RoleFsmMessage fsmMsg)
 	{
 		base.Init(fsmMsg);
-		hitId = fsmMsg.hitId;
 		damageType = fsmMsg.damageType;
+		hitId = fsmMsg.hitId;
+		hitSpeed = fsmMsg.hitSpeed;
 	}
+}
+
+public class TActionMessage : TimeLineMessage
+{
+	public TActionMessage()
+	{
+		m_cmdType = eCommandType.Cmd_Action;
+	}
+
+	public override void Init(RoleFsmMessage fsmMsg)
+	{
+		base.Init(fsmMsg);
+	}
+}
+
+//=============================================================//
+
+public class TNextMessage : TimeLineMessage
+{
+	public Vector3 hitSpeed = Vector3.zero;
+	public eImpactMothod impactMothod = eImpactMothod.Not_Use;
 }

@@ -17,20 +17,13 @@ public class RoleInputMoveCN : RoleBaseSelectorNode
 	{
 		if(InputManager.HasDirectKey && InputManager.IsConsumeKeyEnalbe && GetRunTimeData.MoveEnable)
 		{
-			if(GetRunTimeData.StateType == eStateType.State_Idle ||
-			   GetRunTimeData.StateType == eStateType.State_Move ||
-			   GetRunTimeData.StateType == eStateType.State_Attack)
+			if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
 			{
-				//return true;
-				if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
-				{
-					return true;
-				}
-				else if(InputManager.GetInputDirect == eInputDirect.RIGHT && GetRunTimeData.MoveDirection != eMoveDirection.Right)
-				{
-					return true;
-				}
-				else return false;
+				return true;
+			}
+			else if(InputManager.GetInputDirect == eInputDirect.RIGHT && GetRunTimeData.MoveDirection != eMoveDirection.Right)
+			{
+				return true;
 			}
 			else return false;
 		}

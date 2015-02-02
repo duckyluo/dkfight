@@ -40,13 +40,14 @@ public class RoleFsmMessage : FsmMsg
 	public eLookDirection lookDirection = eLookDirection.Not_Use;
 
 	public eMoveMethod moveMethod = eMoveMethod.Not_Use;
-	public eMoveDirection moveDirection = eMoveDirection.Not_Use;
-	
+	public eJumpDirection jumpDirection = eJumpDirection.Not_Use;
+
+	public eSkillKey skillKey = eSkillKey.Not_Use;
 	public int skillIndex = -1;
-
-	public int hitId = -1;
+	
 	public eDamageType damageType = eDamageType.Not_Use;
-
+	public int hitId = -1;
+	public Vector3 hitSpeed = Vector3.zero;
 	
 	public RoleFsmMessage()
 	{

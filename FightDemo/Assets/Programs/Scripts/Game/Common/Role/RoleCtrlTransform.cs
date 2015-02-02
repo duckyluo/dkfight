@@ -17,8 +17,6 @@ public class RoleCtrlTransform
 	protected eMoveMethod m_oldMethod = eMoveMethod.Not_Use;
 
 	protected eLookDirection m_curLook = eLookDirection.None;
-
-	protected float m_curXSpeed = 2.5f;
 	
 	protected float m_bodyHeight = 1.6f;
 	
@@ -30,7 +28,13 @@ public class RoleCtrlTransform
 
 	protected Vector3 m_curRotation = Vector3.zero;
 
-	protected float m_curGravity = GravityDef.Nomal;
+	protected float m_curGravity = RoleASpeedDef.GravityNomal;
+
+	protected TweenTool m_tweenTool;
+	public TweenTool GetTweenTool
+	{
+		get{return m_tweenTool;}
+	}
 	
 	protected CharacterController m_characterController;
 	public CharacterController CharController
@@ -58,6 +62,7 @@ public class RoleCtrlTransform
 		else 
 		{
 			m_isInited = true;
+			m_tweenTool = m_modelObj.AddComponent<TweenTool>();
 			ChangeLook(eLookDirection.Right);
 		}
 	}
@@ -87,8 +92,9 @@ public class RoleCtrlTransform
 	{
 		if(GetRunTimeData.CurRotation != m_curRotation)
 		{
+			float time = Mathf.Abs(GetRunTimeData.CurRotation.x - m_curRotation.x)/90;
 			m_curRotation = GetRunTimeData.CurRotation;
-			ChangeRotation(m_curRotation);
+			ChangeRotation(m_curRotation,time);
 		}
 	}
 
@@ -143,7 +149,7 @@ public class RoleCtrlTransform
 			break;
 		}
 		
-		GetRunTimeData.CurPos = GetTramsForm.position;
+		GetRunTimeData.CurPos = GetTramsForm.localPosition;
 	}
 
 	protected void MovoToGround()
@@ -162,14 +168,7 @@ public class RoleCtrlTransform
 	{
 		Vector3 motion = Vector3.zero;
 
-		if(GetRunTimeData.MoveDirection == eMoveDirection.Left)
-		{
-			motion.x = -m_curXSpeed * Time.deltaTime;
-		}
-		else if(GetRunTimeData.MoveDirection == eMoveDirection.Right)
-		{
-			motion.x = m_curXSpeed * Time.deltaTime;
-		}
+		motion.x = GetRunTimeData.ForceSpeed.x * Time.deltaTime;
 
 		if(GetRunTimeData.UseGravity == eUseGravity.Yes)
 		{
@@ -183,16 +182,9 @@ public class RoleCtrlTransform
 	protected void MoveToJump()
 	{
 		Vector3 motion = Vector3.zero;
-		motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
 
-		if(GetRunTimeData.MoveDirection == eMoveDirection.Left)
-		{
-			motion.x = -m_curXSpeed * Time.deltaTime;
-		}
-		else if(GetRunTimeData.MoveDirection == eMoveDirection.Right)
-		{
-			motion.x = m_curXSpeed * Time.deltaTime;
-		}
+		motion.x = GetRunTimeData.ForceSpeed.x * Time.deltaTime;
+		motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
 
 		MoveTo(new Vector3(GetRunTimeData.CurPos.x+motion.x,GetRunTimeData.CurPos.y+motion.y,GetRunTimeData.CurPos.z));
 		//Move(motion);
@@ -205,7 +197,8 @@ public class RoleCtrlTransform
 		motion.y = GetRunTimeData.ForceSpeed.y * Time.deltaTime;
 		motion.z = GetRunTimeData.ForceSpeed.z * Time.deltaTime;
 
-		MoveTo(new Vector3(GetRunTimeData.CurPos.x+motion.x,GetRunTimeData.CurPos.y+motion.y,GetRunTimeData.CurPos.z));
+		MoveLimit(motion);
+		//MoveTo(new Vector3(GetRunTimeData.CurPos.x+motion.x,GetRunTimeData.CurPos.y+motion.y,GetRunTimeData.CurPos.z));
 	}
 	
 	protected void MoveToMotion()
@@ -278,7 +271,7 @@ public class RoleCtrlTransform
 			return;
 		}
 
-		Vector3 nextPos = new Vector3(GetTramsForm.position.x + motion.x , GetTramsForm.position.y + motion.y ,GetTramsForm.position.z + motion.z );
+		Vector3 nextPos = new Vector3(GetTramsForm.localPosition.x + motion.x , GetTramsForm.localPosition.y + motion.y ,GetTramsForm.localPosition.z + motion.z );
 
 		if( nextPos.x < (RoomColliderManager.GetXMin + m_bodyRadius))
 		{
@@ -299,8 +292,8 @@ public class RoleCtrlTransform
 	
 	protected void MoveTo(Vector3 pos)
 	{
-		GetTramsForm.position = pos;
-		GetRunTimeData.CurPos = GetTramsForm.position;
+		GetTramsForm.localPosition = pos;
+		GetRunTimeData.CurPos = GetTramsForm.localPosition;
 	}
 
 	protected void ApplyGravity()
@@ -376,13 +369,23 @@ public class RoleCtrlTransform
 		GetRunTimeData.MoveMethod = method;
 	}
 
-	protected void ChangeRotation(Vector3 angles)
+	protected void ChangeRotation(Vector3 angles , float time)
 	{
 		angles.y = 90f;
 		angles.z = 0f;
-		Quaternion rotation = Quaternion.identity;
-		rotation.eulerAngles = angles;
-		this.m_modelObj.transform.localRotation = rotation;
+
+
+		if(angles.x == 0)
+		{
+			m_tweenTool.StopRotation();
+			Quaternion rotation = Quaternion.identity;
+			rotation.eulerAngles = angles;
+			this.m_modelObj.transform.localRotation = rotation;
+		}
+		else
+		{
+			m_tweenTool.RotateTo(angles,time,angles,false);
+		}
 	}
 
 	public bool IsGround
@@ -402,7 +405,7 @@ public class RoleCtrlTransform
 		m_mainObj = obj;
 		if(m_mainObj != null)
 		{
-			m_mainObj.transform.position = m_bbData.DataInfo.initPos; //new Vector3(2,StandHeight,0);
+			m_mainObj.transform.localPosition = m_bbData.DataInfo.initPos; //new Vector3(2,StandHeight,0);
 			
 			if(m_modelObj != null)
 			{
@@ -416,11 +419,17 @@ public class RoleCtrlTransform
 			m_characterController.height = m_bodyHeight;
 			m_characterController.radius = m_bodyRadius;;
 			m_characterController.center = new Vector3(0f,m_bodyHeight/2,0f);
+			m_characterController.detectCollisions = false;
 
 			BoxCollider box =  m_mainObj.AddComponent<BoxCollider>();
 			box.center = new Vector3(0f,m_bodyHeight/2,0f);
 			box.size = new Vector3(m_bodyRadius,m_bodyHeight,m_bodyRadius);
 			box.isTrigger = true;
+
+			Rigidbody rigidBody = m_mainObj.AddComponent<Rigidbody>();
+			rigidBody.isKinematic = true;
+			rigidBody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+			rigidBody.detectCollisions = true;
 		}
 	}
 	

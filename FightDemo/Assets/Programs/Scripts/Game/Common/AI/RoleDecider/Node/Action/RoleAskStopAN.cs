@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleAskStopAN : RoleAskActionNode
+public class RoleAskStopAN : RoleAskAction
 {
 	protected RoleFsmMessage askMsg = null;
 
@@ -15,15 +15,9 @@ public class RoleAskStopAN : RoleAskActionNode
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(GetRunTimeData.StateType == eStateType.State_Move 
-		   || GetRunTimeData.StateType == eStateType.State_Attack)
+		if(GetRunTimeData.ActionType == eActionType.Move && !InputManager.HasDirectKey)
 		{
-			if(GetRunTimeData.MoveMethod == eMoveMethod.Direction 
-			   && !InputManager.HasDirectKey)
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
 		else return false;
 	}
@@ -44,7 +38,6 @@ public class RoleAskStopAN : RoleAskActionNode
 			askMsg.cmdType = eCommandType.Cmd_Move;
 			askMsg.actionType = eActionType.Stop;
 			askMsg.moveMethod = eMoveMethod.Gravity;
-			askMsg.moveDirection = eMoveDirection.None;
 			askMsg.lookDirection = GetRunTimeData.LookDirection;
 			askMsg.curPos = GetRunTimeData.CurPos;
 

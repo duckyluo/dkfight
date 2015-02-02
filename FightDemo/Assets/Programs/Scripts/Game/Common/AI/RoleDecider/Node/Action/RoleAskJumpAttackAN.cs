@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleAskJumpAttackAN : RoleAskActionNode
+public class RoleAskJumpAttackAN : RoleAskAction
 {
 	protected RoleFsmMessage askMsg = null;
 	
@@ -20,7 +20,7 @@ public class RoleAskJumpAttackAN : RoleAskActionNode
 		   	GetRunTimeData.ActionType == eActionType.JumpDown ||
 			GetRunTimeData.ActionType == eActionType.JumpAttack )
 		{
-			if(InputManager.HasAttackKey)
+			if(InputManager.HasAttackKey && GetRunTimeData.JumpAtkEnable)
 			{
 				return true;
 			}
@@ -39,26 +39,36 @@ public class RoleAskJumpAttackAN : RoleAskActionNode
 				this.m_status = eDkBtRuningStatus.End;
 				return;
 			}
-			
-			int nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.JumpAttack).NextSkillIndex();
-			if(nextSkillIndex >= 0)
+
+			if(GetSkillCtrl.IsKeyCool(eSkillKey.JumpAttack))
 			{
-				askMsg = new RoleFsmMessage();
-				askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
-				askMsg.cmdType = eCommandType.Cmd_Attack;
-				askMsg.actionType = eActionType.JumpAttack;
-				askMsg.lookDirection = GetRunTimeData.LookDirection;
-				askMsg.curPos = GetRunTimeData.CurPos;
-				askMsg.moveMethod = eMoveMethod.RootPoint;
-				askMsg.skillIndex = nextSkillIndex;
-				
-				GetMsgCtrl.AddLocalFsmMsg(askMsg);
+				Debug.Log("[info] : "+eSkillKey.JumpAttack + " is cool ");
+				this.m_status = eDkBtRuningStatus.End;
+				return;
 			}
 			else
 			{
-				Debug.Log("[error][RoleAskAttackAN] role "+GetRoleBBData.DataInfo.index+" can not find attack skill");
-				this.m_status = eDkBtRuningStatus.End;
+				int nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.JumpAttack).NextSkillIndex();
+				if(nextSkillIndex >= 0)
+				{
+					askMsg = new RoleFsmMessage();
+					askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
+					askMsg.cmdType = eCommandType.Cmd_Attack;
+					askMsg.actionType = eActionType.JumpAttack;
+					askMsg.lookDirection = GetRunTimeData.LookDirection;
+					askMsg.curPos = GetRunTimeData.CurPos;
+					askMsg.skillKey = eSkillKey.JumpAttack;
+					askMsg.skillIndex = nextSkillIndex;
+					
+					GetMsgCtrl.AddLocalFsmMsg(askMsg);
+				}
+				else
+				{
+					Debug.Log("[error][RoleAskAttackAN] role "+GetRoleBBData.DataInfo.index+" can not find attack skill");
+					this.m_status = eDkBtRuningStatus.End;
+				}
 			}
+
 		}
 		else
 		{

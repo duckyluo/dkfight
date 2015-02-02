@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleAskJumpAN : RoleAskActionNode
+public class RoleAskJumpAN : RoleAskAction
 {
 	protected RoleFsmMessage askMsg = null;
 
@@ -16,7 +16,7 @@ public class RoleAskJumpAN : RoleAskActionNode
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(InputManager.ConsumeActiveKey() == eInputActiveKey.Jump)
+		if(InputManager.HasJumpKey)
 		{
 			return true;
 		}
@@ -27,6 +27,13 @@ public class RoleAskJumpAN : RoleAskActionNode
 	{
 		if(askMsg == null)
 		{
+			if(InputManager.ConsumeActiveKey() != eInputActiveKey.Jump)
+			{
+				Debug.Log("[error][RoleAskJumpAN] the input thing is error");
+				this.m_status = eDkBtRuningStatus.End;
+				return;
+			}
+
 			askMsg = new RoleFsmMessage();
 			askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
 			askMsg.cmdType = eCommandType.Cmd_Move;
@@ -37,17 +44,16 @@ public class RoleAskJumpAN : RoleAskActionNode
 			if(InputManager.GetInputDirect == eInputDirect.LEFT)
 			{
 				askMsg.lookDirection = eLookDirection.Left;
-				askMsg.moveDirection = eMoveDirection.Left;
+				askMsg.jumpDirection = eJumpDirection.Left;
 			}
 			else if(InputManager.GetInputDirect == eInputDirect.RIGHT)
 			{
 				askMsg.lookDirection = eLookDirection.Right;
-				askMsg.moveDirection = eMoveDirection.Right;
+				askMsg.jumpDirection = eJumpDirection.Right;
 			}
 			else 
 			{
 				askMsg.lookDirection = GetRunTimeData.LookDirection;
-				askMsg.moveDirection = eMoveDirection.None;
 			}
 
 			GetMsgCtrl.AddLocalFsmMsg(askMsg);

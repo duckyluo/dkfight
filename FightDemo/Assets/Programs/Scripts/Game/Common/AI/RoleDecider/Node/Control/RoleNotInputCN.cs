@@ -15,12 +15,7 @@ public class RoleNotInputCN : RoleBaseSelectorNode
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(GetRunTimeData.StateType == eStateType.Not_Use 
-		   || GetRunTimeData.StateType == eStateType.State_None)
-		{
-			return false;
-		}
-		else if(!InputManager.HasDirectKey || !InputManager.HasActiveKey)
+		if(!InputManager.HasDirectKey || !InputManager.HasActiveKey)
 		{
 			return true;
 		}

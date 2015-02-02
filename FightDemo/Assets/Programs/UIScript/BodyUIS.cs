@@ -12,4 +12,10 @@ public class BodyUIS : MonoBehaviour {
 	void Update () {
 	
 	}
+
+//	protected void OnCompleteShake()
+//	{
+//		Debug.Log(" ================================ OnCompleteShake");
+//		this.transform.localPosition = Vector3.zero;
+//	}
 }

@@ -10,6 +10,7 @@ public class RoleStateAttackCN : RoleBaseSelectorNode
 	{
 		this.m_name = "StateAttack";
 		base.Initalize ();
+		this.AddChild(new RoleDoSkillAN());
 		this.AddChild(new RoleDoAttackAN());
 		this.AddChild(new RoleDoJumpAttackAN());
 	}

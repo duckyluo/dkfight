@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Dk.BehaviourTree;
 using UnityEngine;
 
-public class RoleAskMoveAN : RoleAskActionNode
+public class RoleAskMoveAN : RoleAskAction
 {
 	protected RoleFsmMessage askMsg = null;
 
@@ -17,16 +17,7 @@ public class RoleAskMoveAN : RoleAskActionNode
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		//return true;
-		if(GetRunTimeData.MoveEnable == false)
-		{
-			return false;
-		}
-		else if(InputManager.GetInputDirect == eInputDirect.LEFT && GetRunTimeData.MoveDirection != eMoveDirection.Left)
-		{
-			return true;
-		}
-		else if(InputManager.GetInputDirect == eInputDirect.RIGHT && GetRunTimeData.MoveDirection != eMoveDirection.Right)
+		if(GetRunTimeData.IsGround)
 		{
 			return true;
 		}
@@ -50,12 +41,10 @@ public class RoleAskMoveAN : RoleAskActionNode
 			if(inputDirect == eInputDirect.LEFT)
 			{
 				askMsg.lookDirection = eLookDirection.Left;
-				askMsg.moveDirection = eMoveDirection.Left;
 			}
 			else if(inputDirect == eInputDirect.RIGHT)
 			{
 				askMsg.lookDirection = eLookDirection.Right;
-				askMsg.moveDirection = eMoveDirection.Right;
 			}
 
 			GetMsgCtrl.AddLocalFsmMsg(askMsg);

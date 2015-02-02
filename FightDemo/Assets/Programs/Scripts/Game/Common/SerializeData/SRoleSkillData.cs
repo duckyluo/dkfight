@@ -21,7 +21,7 @@ public class SRoleSkillItem
 	public int skillIndex = 0;
 	public int skillId = -1;
 	public float durationTime = -1;
-	public SHitData hitData = new SHitData();
+	public eHitMethod hitMethod = eHitMethod.Not_Use;
 	
 	public List<SkillAniChEvent> aniList = new List<SkillAniChEvent>();
 	public List<SkillPosChEvent> posList = new List<SkillPosChEvent>();
@@ -117,6 +117,7 @@ public class SkillAlphaChEvent : SkillProcessEvent
 	}
 }
 
+[System.Serializable]
 public class SkillScaleChEvent : SkillProcessEvent
 {
 	public float m_startScale = -1f;
@@ -156,10 +157,13 @@ public class SkillEffectAddEvent : SkillProcessEvent
 [System.Serializable]
 public class SkillHitBoundAddEvent : SkillProcessEvent
 {
+	public int 	   m_boundIndex = 0;
 	public Vector3 m_boundSize = Vector3.zero;
 	public Vector3 m_localPos = Vector3.zero;
 	public Vector3 m_motion = Vector3.zero;
 	public float   m_moveTime = 0f;
+	public bool    m_IsLocal = true;
+	public SkillHitData m_hitData = new SkillHitData();
 	
 	public SkillHitBoundAddEvent()
 	{
@@ -177,32 +181,14 @@ public class SkillMagicAddEvent : SkillProcessEvent
 }
 
 [System.Serializable]
-public class SHitData
+public class SkillHitData
 {
-	public int hitTimes = 1;
+	public int hitTimes = 1;				//次数
 	public float hitInterval = 0f;
 	public eSkillHitForce hitForce = eSkillHitForce.Not_Use;
+	public eHitMoment hitMoment = eHitMoment.Not_Use;
+	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.OppositeAttackerLook;
+	public Vector3 hitSpeed = Vector3.zero;
 }
 
-
-[System.Serializable]
-public enum eSkillHitForce
-{
-	Not_Use = 0,
-	None,
-	Force_Hit,
-	Force_Back,
-	Force_FlyUp,
-	Force_FallDown,
-	Force_Stun,
-	Force_Caught ,
-}
-
-[System.Serializable]
-public enum eSkillMoveMethod
-{
-	Not_Use,
-	None,
-	Translation,
-}
 

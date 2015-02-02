@@ -18,12 +18,14 @@ public class RoleAskSkillAN : RoleBaseActionNode
 	{
 		if(InputManager.HasSkillKey)
 		{
-			if(GetRunTimeData.ActionType == eActionType.Jump ||
-			   GetRunTimeData.ActionType == eActionType.JumpAttack)
+			if(GetRunTimeData.ActionType == eActionType.Idle ||
+			   GetRunTimeData.ActionType == eActionType.Move ||
+			   GetRunTimeData.ActionType == eActionType.Skill||
+			   GetRunTimeData.ActionType == eActionType.Attack)
 			{
-				return false;
+				return true;
 			}
-			else return true;
+			else return false;
 		}
 		else return false;
 	}
@@ -32,22 +34,28 @@ public class RoleAskSkillAN : RoleBaseActionNode
 	{
 		if(askMsg == null)
 		{
+			eSkillKey skillKey = eSkillKey.None;
 			int nextSkillIndex = -1;
 			eInputActiveKey inputKey = InputManager.ConsumeActiveKey();
+
 			if(inputKey == eInputActiveKey.Skill_One)
 			{
+				skillKey = eSkillKey.SkillOne;
 				nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.SkillOne).NextSkillIndex();
 			}
 			else if(inputKey == eInputActiveKey.Skill_Two)
 			{
+				skillKey = eSkillKey.SkillTwo;
 				nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.SkillTwo).NextSkillIndex();
 			}
 			else if(inputKey == eInputActiveKey.Skill_Three)
 			{
+				skillKey = eSkillKey.SkillThree;
 				nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.SkillThree).NextSkillIndex();
 			}
 			else if(inputKey == eInputActiveKey.Skill_Four)
 			{
+				skillKey = eSkillKey.SkillFour;
 				nextSkillIndex = GetLocalData.GetSkillGroup(eSkillKey.SkillFour).NextSkillIndex();
 			}
 			else
@@ -57,8 +65,27 @@ public class RoleAskSkillAN : RoleBaseActionNode
 				return;
 			}
 			
+			if( GetSkillCtrl.IsKeyCool(skillKey) )
+			{
 
-			if(nextSkillIndex >= 0)
+				if(GetRunTimeData.StateType == eStateType.State_Attack)
+				{
+					this.m_status = eDkBtRuningStatus.End;
+				}
+				else
+				{
+					askMsg = new RoleFsmMessage();
+					askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
+					askMsg.cmdType = eCommandType.Cmd_Action;
+					askMsg.actionType = eActionType.Shake;
+					askMsg.lookDirection = GetRunTimeData.LookDirection;
+					askMsg.curPos = GetRunTimeData.CurPos;
+					
+					GetMsgCtrl.AddLocalFsmMsg(askMsg);
+				}
+
+			}
+			else if(nextSkillIndex >= 0)
 			{
 				askMsg = new RoleFsmMessage();
 				askMsg.receiveIndex = GetRoleBBData.DataInfo.index;
@@ -66,7 +93,7 @@ public class RoleAskSkillAN : RoleBaseActionNode
 				askMsg.actionType = eActionType.Attack;
 				askMsg.lookDirection = GetRunTimeData.LookDirection;
 				askMsg.curPos = GetRunTimeData.CurPos;
-				askMsg.moveMethod = eMoveMethod.RootPoint;
+				askMsg.skillKey = skillKey;
 				askMsg.skillIndex = nextSkillIndex;
 				
 				GetMsgCtrl.AddLocalFsmMsg(askMsg);

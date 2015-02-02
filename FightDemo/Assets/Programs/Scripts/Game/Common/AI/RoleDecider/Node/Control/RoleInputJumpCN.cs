@@ -15,15 +15,10 @@ public class RoleInputJumpCN : RoleBaseSelectorNode
 
 	public override bool Evaluate (DkBtInputParam input)
 	{
-		if(InputManager.HasJumpKey && InputManager.IsConsumeKeyEnalbe && GetRunTimeData.ActiveChStateEnalbe)
+		if(InputManager.HasJumpKey && InputManager.IsConsumeKeyEnalbe && 
+		   GetRunTimeData.ActiveChStateEnalbe)
 		{
-			if(GetRunTimeData.StateType == eStateType.State_Idle || 
-			   GetRunTimeData.StateType == eStateType.State_Move || 
-			   GetRunTimeData.StateType == eStateType.State_Attack)
-			{
-				return true;
-			}
-			else return false;
+			return true;
 		}
 		else return false;
 	}

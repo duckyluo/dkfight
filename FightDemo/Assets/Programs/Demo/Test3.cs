@@ -7,7 +7,8 @@ public class Test3 : MonoBehaviour
 
 	void Start () 
 	{
-	
+		iTween.Defaults.isLocal = true;
+
 		TimerManager.Instance.Initalize();
 
 		SceneManager.Initalize();

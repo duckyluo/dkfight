@@ -10,6 +10,8 @@ public class RoleStateHitCN : RoleBaseSelectorNode
 	{
 		this.m_name = "StateHit";
 		base.Initalize ();
+		this.AddChild(new RoleJoinFallenAN());
+		this.AddChild(new RoleJoinImpactAN());
 		this.AddChild(new RoleForceFloatHitAN());
 		this.AddChild(new RoleForceFallDownAN());
 		this.AddChild(new RoleForceFlyAN());

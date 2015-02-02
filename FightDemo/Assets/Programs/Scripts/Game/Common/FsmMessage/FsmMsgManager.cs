@@ -8,24 +8,6 @@ public interface IFsmReceiver
 	void OnFsmReceive(IFsmMsg msg);
 }
 
-//public interface IFsmSender
-//{
-//	void SendFsmMsg(IFsmMsg msg);
-//}
-//
-//
-//public class FsmObj : IFsmReceiver , IFsmSender
-//{
-//	public virtual void OnFsmReceive(IFsmMsg msg)
-//	{
-//	}
-//	
-//	public virtual void SendFsmMsg(IFsmMsg msg)
-//	{
-//		FsmMsgManager.SendFsmMsg(msg);
-//	}
-//}
-
 public class FsmMsgManager
 {
 	protected static Dictionary<eFsmMsgType,List<IFsmReceiver>> dict = new Dictionary<eFsmMsgType, List<IFsmReceiver>>();

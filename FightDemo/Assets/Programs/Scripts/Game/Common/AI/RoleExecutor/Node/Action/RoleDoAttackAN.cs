@@ -5,12 +5,10 @@ using Dk.BehaviourTree;
 using UnityEngine;
 using Dk.Event;
 
-public class RoleDoAttackAN : RoleBaseActionNode
+public class RoleDoAttackAN : RoleDoAction
 {
 	protected TAttackMessage m_curMsg = null;
 	
-	protected TimeLineMessage m_nextMsg = null;
-
 	public override void Initalize ()
 	{
 		this.m_name = "DoAttack";
@@ -28,116 +26,30 @@ public class RoleDoAttackAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		CheckSelfRule();
-
-		GetRunTimeData.ActionType = eActionType.None;
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
-		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		//GetRunTimeData.LookDirection = eLookDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_None;
-		
-		GetRunTimeData.MoveEnable = false;
-		GetRunTimeData.ActiveChStateEnalbe = false;
-		GetRunTimeData.PassiveChStateEnalbe = false;
-		GetRunTimeData.UseGravity = eUseGravity.No;
-		GetRunTimeData.IsTrigger = true;
-
-		GetRunTimeData.ForceSpeed = Vector3.zero;
-		GetRunTimeData.CurAlpha = 1f;
-		GetRunTimeData.CurScale = 1f;
-		GetRunTimeData.CurRotation = Vector3.zero;
+		base.Enter(input);
 
 		m_curMsg = GetFrontWaitMsg as TAttackMessage;
 		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
 		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
-		
-		m_nextMsg = null;
-		
-		base.Enter(input);
-	}
-	
-	protected override void Exectue (DkBtInputParam input)
-	{
-		UpdateCurStatus();
 	}
 
-	protected void UpdateCurStatus()
+	protected override void StartAction()
 	{
-		CheckNextMsg();
-		UpdateHitMsg();
-		UpdateMoveMsg();
-		UpdateCurMsg();
-	}
-
-	protected void CheckNextMsg()
-	{
-		while(GetFrontWaitMsg != null)
+		if(m_curMsg.skillKey != eSkillKey.Attack && m_curMsg.skillIndex < 0)
 		{
-			TimeLineMessage waitMsg = GetFrontWaitMsg;
-			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
-			{
-				if(waitMsg.GetActionType == eActionType.Not_Use)
-				{
-					GetMsgCtrl.AddRunTLMsg(waitMsg);
-					GetMsgCtrl.RemoveWaitMsg(waitMsg);
-					continue;
-				}
-				else
-				{
-					m_nextMsg = waitMsg;
-					break;
-				}
-			}
-			else
-			{
-				m_nextMsg = waitMsg;
-				break;
-			}
-		}
-	}
-	
-	protected void UpdateHitMsg()
-	{
-		if (GetMsgCtrl.HitList.Count > 0) 
-		{
-			GetMsgCtrl.HitList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateMoveMsg()
-	{
-		if(GetMsgCtrl.MoveList.Count > 0)
-		{
-			GetMsgCtrl.MoveList.Clear();// to do
-		}
-	}
-
-	protected void UpdateCurMsg()
-	{
-		if(m_nextMsg != null)
-		{
-			//Debug.Log("Break Skill !!!! ");
-			GetSkillCtrl.FinishSkillProcess();
+			Debug.LogError(" skill msg error ! key : "+m_curMsg.skillKey + " index : "+m_curMsg.skillIndex );
 			Exit(null);
+			return;
 		}
-		else if(GetRunTimeData.ActionType == eActionType.None)
-		{
-			StartAttack();
-		}
-		else
-		{
-			DoAttack();
-		}
-	}
 
-	private void StartAttack()
-	{
 		GetRunTimeData.ActionType = eActionType.Attack;
 		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
-		GetSkillCtrl.StartSkillProcess(eSkillKey.Attack,m_curMsg.skillIndex);
+		GetRunTimeData.IsTrigger = true;
+
+		GetSkillCtrl.StartSkillProcess(m_curMsg.skillKey,m_curMsg.skillIndex);
 	}
 
-	private void DoAttack()
+	protected override void DoAction()
 	{
 		if(GetSkillCtrl.CurSkillStatus == eProcessStatus.Run)
 		{
@@ -150,18 +62,21 @@ public class RoleDoAttackAN : RoleBaseActionNode
 		}
 	}
 
+	protected override void NextAction ()
+	{
+		GetSkillCtrl.FinishSkillProcess();
+		base.NextAction ();
+	}
+
 	protected override void Exit (DkBtInputParam input)
 	{
 		m_curMsg = null;
-		m_nextMsg = null;
 		base.Exit (input);
 	}
 
-	protected void CheckSelfRule()
+	protected override void CheckSelfRule()
 	{
-		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
-		{
-			InputManager.KeyJumpEnalbe = true;
-		}
+		base.CheckSelfRule();
+		InputManager.KeyJumpEnalbe = true;
 	}
 }

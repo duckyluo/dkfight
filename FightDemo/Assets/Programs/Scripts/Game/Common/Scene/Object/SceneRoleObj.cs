@@ -143,6 +143,7 @@ public class SceneRoleObj : SceneObj
 		m_deciderTree.Update(null);
 		m_msgCtrl.Update();
 		m_executorTree.Update(null);
+		m_skillCtrl.Update();
 		m_moveCtrl.Update();
 	}
 		

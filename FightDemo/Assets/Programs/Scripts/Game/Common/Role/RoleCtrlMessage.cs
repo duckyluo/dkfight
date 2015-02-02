@@ -29,36 +29,29 @@ public class RoleCtrlMessage
 	{
 		get{return m_waitList;}
 	}
-
-//	protected List<TimeLineMessage> m_runList = null;
-//	public List<TimeLineMessage> RunList
-//	{
-//		get{return m_runList;}
-//	}
-
-	//
+	
 	protected List<TimeLineMessage> m_moveList = null;
 	public List<TimeLineMessage> MoveList
 	{
 		get{return m_moveList;}
 	}
 
-	protected List<TimeLineMessage> m_skillList = null;
-	public List<TimeLineMessage> SkillList
+	protected List<TimeLineMessage> m_actionList = null;
+	public List<TimeLineMessage> ActionList
 	{
-		get{return m_skillList;}
+		get{return m_actionList;}
 	}
+	
+//	protected List<TimeLineMessage> m_skillList = null;
+//	public List<TimeLineMessage> SkillList
+//	{
+//		get{return m_skillList;}
+//	}
 
 	protected List<TimeLineMessage> m_hitList = null;
 	public List<TimeLineMessage> HitList
 	{
 		get{return m_hitList;}
-	}
-
-	protected List<TimeLineMessage> m_actionList = null;
-	public List<TimeLineMessage> ActionList
-	{
-		get{return m_actionList;}
 	}
 	
 	public void Initalize(RoleBlackBoard bbData)
@@ -71,7 +64,8 @@ public class RoleCtrlMessage
 
 		m_waitList = new List<TimeLineMessage>();
 		m_moveList = new List<TimeLineMessage>();
-		m_skillList = new List<TimeLineMessage>();
+		//m_skillList = new List<TimeLineMessage>();
+		m_actionList = new List<TimeLineMessage>();
 		m_hitList = new List<TimeLineMessage>();
 	}
 
@@ -85,6 +79,8 @@ public class RoleCtrlMessage
 		ProduceWaitList();
 		CheckWaitList();
 	}
+
+
 
 	public void AddLocalFsmMsg(RoleFsmMessage fsmMsg)
 	{
@@ -133,6 +129,11 @@ public class RoleCtrlMessage
 		else return null;
 	}
 
+	public void NextTLMsg(TimeLineMessage tlMsg)
+	{
+		WaitList.Insert(0,tlMsg);
+	}
+
 	public void RemoveWaitMsg(TimeLineMessage tlMsg)
 	{
 		if(m_waitList != null)
@@ -149,13 +150,11 @@ public class RoleCtrlMessage
 			this.MoveList.Add(tlMsg);
 			break;
 		case eCommandType.Cmd_Attack:
-			this.SkillList.Add(tlMsg);
+		case eCommandType.Cmd_Action:
+			this.ActionList.Add(tlMsg);
 			break;
 		case eCommandType.Cmd_Hit:
 			this.HitList.Add(tlMsg);
-			break;
-		default:
-			this.ActionList.Add(tlMsg);
 			break;
 		}
 	}
@@ -163,9 +162,8 @@ public class RoleCtrlMessage
 	public void CleanAllTLMsg()
 	{
 		MoveList.Clear();
-		SkillList.Clear();
-		HitList.Clear();
 		ActionList.Clear();
+		HitList.Clear();
 	}
 	
 	private RoleDataRunTime runTimeData

@@ -7,11 +7,9 @@ using UnityEngine;
 /// <summary>
 /// Role do move.
 /// </summary>
-public class RoleDoMoveDirectionAN : RoleBaseActionNode
+public class RoleDoMoveDirectionAN : RoleDoAction
 {
 	protected TMoveMessage m_curMsg = null;
-
-	protected TimeLineMessage m_nextMsg = null;
 
 	public override void Initalize ()
 	{
@@ -30,120 +28,59 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 	
 	protected override void Enter (DkBtInputParam input)
 	{
-		CheckSelfRule();
+		base.Enter(input);
 
-		GetRunTimeData.ActionType = eActionType.None;
-		GetRunTimeData.MoveMethod = eMoveMethod.None;
-		GetRunTimeData.MoveDirection = eMoveDirection.None;
-		//GetRunTimeData.LookDirection = eLookDirection.None;
-		GetRunTimeData.PostureType = ePostureType.Pose_None;
+		m_curMsg = GetFrontWaitMsg as TMoveMessage;
+		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
+		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
+	}
+	
+	protected float m_XSpeed = 0f;
+
+	protected override void StartAction()
+	{
+		GetRunTimeData.ActionType = eActionType.Move;
+		GetRunTimeData.MoveMethod = eMoveMethod.Direction;
+		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
+		GetRunTimeData.MoveDirection = CharacterUtil.GetMoveDirectionByLook(m_curMsg.GetLookDirection);
 
 		GetRunTimeData.MoveEnable = true;
 		GetRunTimeData.ActiveChStateEnalbe = true;
 		GetRunTimeData.PassiveChStateEnalbe = true;
 		GetRunTimeData.UseGravity = eUseGravity.Yes;
-		GetRunTimeData.IsTrigger = false;
 
-		GetRunTimeData.ForceSpeed = Vector3.zero;
-		GetRunTimeData.CurAlpha = 1f;
-		GetRunTimeData.CurScale = 1f;
-		GetRunTimeData.CurRotation = Vector3.zero;
+		UpdateAnimation();
 
-		m_curMsg = GetFrontWaitMsg as TMoveMessage;
-		GetMsgCtrl.AddRunTLMsg(GetFrontWaitMsg);
-		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
-
-		m_nextMsg = null;
-
-		base.Enter(input);
-	}
-	
-	protected override void Exectue (DkBtInputParam input)
-	{
-		UpdateCurStatus();
+		m_XSpeed = GetXSpeed();
 	}
 
-	protected void UpdateCurStatus()
+	protected override void DoAction()
 	{
-		CheckNextMsg();
-		UpdateHitMsg();
-		UpdateMoveMsg();
-		UpdateCurMsg();
-	}
-
-	protected void CheckNextMsg()
-	{
-		while(GetFrontWaitMsg != null)
+		if(GetRunTimeData.PostureType == ePostureType.Pose_None)
 		{
-			TimeLineMessage waitMsg = GetFrontWaitMsg;
-			if(waitMsg.GetCmdType == eCommandType.Cmd_Hit)
-			{
-				if(waitMsg.GetActionType == eActionType.Not_Use)
-				{
-					GetMsgCtrl.AddRunTLMsg(waitMsg);
-					GetMsgCtrl.RemoveWaitMsg(waitMsg);
-					continue;
-				}
-				else
-				{
-					m_nextMsg = waitMsg;
-					break;
-				}
-			}
-			else 
-			{
-				m_nextMsg = waitMsg;
-				break;
-			}
+			GetRunTimeData.PostureType = ePostureType.Pose_RUN;
+
+			GetRunTimeData.ForceSpeed = new Vector3(m_XSpeed,0,0);
 		}
 	}
 
-	protected void UpdateHitMsg()
+	protected override void NextAction ()
 	{
-		if (GetMsgCtrl.HitList.Count > 0) 
-		{
-			GetMsgCtrl.HitList.Clear();// to do
-		}
+		base.NextAction ();
 	}
 
-	protected void UpdateMoveMsg()
+	private float GetXSpeed()
 	{
-		if(GetMsgCtrl.MoveList.Count > 0)
+		float xSpeed = 0;
+		if(GetRunTimeData.MoveDirection == eMoveDirection.Right)
 		{
-			GetMsgCtrl.MoveList.Clear();// to do
-		}
-	}
-	
-	protected void UpdateCurMsg()
-	{
-		if(m_nextMsg != null)
-		{
-			Exit(null);//to do
-		}
-		else if(GetRunTimeData.ActionType == eActionType.None)
-		{
-			StartMove();
+			xSpeed = RoleSpeedDef.RunXSpeed;
 		}
 		else
 		{
-			DoMove();
+			xSpeed = -RoleSpeedDef.RunXSpeed;
 		}
-	}
-
-	protected void StartMove()
-	{
-		GetRunTimeData.ActionType = eActionType.Move;
-		GetRunTimeData.MoveMethod = eMoveMethod.Direction;
-		GetRunTimeData.MoveDirection = m_curMsg.moveDirection;
-		GetRunTimeData.LookDirection = m_curMsg.GetLookDirection;
-		GetRunTimeData.PostureType = ePostureType.Pose_RUN;
-
-		UpdateAnimation();
-	}
-
-	protected void DoMove()
-	{
-
+		return xSpeed;
 	}
 
 	protected void UpdateAnimation()
@@ -157,15 +94,12 @@ public class RoleDoMoveDirectionAN : RoleBaseActionNode
 	protected override void Exit (DkBtInputParam input)
 	{
 		m_curMsg = null;
-		m_nextMsg = null;
 		base.Exit (input);
 	}
 
-	protected void CheckSelfRule()
+	protected override void CheckSelfRule()
 	{
-		if(GetRoleBBData.DataInfo.team == eSceneTeamType.Me)
-		{
-			InputManager.KeyJumpEnalbe = true;
-		}
+		base.CheckSelfRule();
+		InputManager.KeyJumpEnalbe = true;
 	}
 }
