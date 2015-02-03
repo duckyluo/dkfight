@@ -46,6 +46,7 @@ public enum eSkillProcessEventType
 	ChAlpha,
 	ChScale,
 	ChAttribute,
+	ChCamera,
 	AddEffect,
 	AddHitBound,
 	AddMagic,
@@ -74,7 +75,7 @@ public enum eSkillHitLookDirection
 {
 	Not_Use,
 	None,
-	OppositeAttackerLook,
+	OppositeAttackerMove,
 	LookAttackerPos,
 }
 

@@ -32,6 +32,9 @@ public class Test3 : MonoBehaviour
 		SceneObj item2 = SceneManager.AddNewItem(info2);
 		item2.Initalize();
 		item2.Start();
+
+		CameraManager.Instance.Initalize();
+		CameraManager.Instance.ChangeCurMode(CameraMode.SceneMode);
 	}
 	
 

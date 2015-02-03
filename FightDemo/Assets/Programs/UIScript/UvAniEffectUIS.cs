@@ -31,10 +31,7 @@ public class UvAniEffectUIS : MonoBehaviour
 	public bool DestroyAtEnd = true;
 	public bool RandomStart = false;
 	public bool PauseEffect = false;
-
 	
-	//public float AniSpeed = 1f;
-	//public int LoopCount = 0;
 	protected Material m_material;
 
 	protected float m_timeCount = 0f;
@@ -46,10 +43,7 @@ public class UvAniEffectUIS : MonoBehaviour
 	protected eEffectRunStatus m_status = eEffectRunStatus.None;
 
 	protected bool m_isFinish = false;
-//	protected int LoopingCount = 0;	
-//	protected float DelayedTime = 0f;
-
-
+	
 	void Awake () 
 	{
 		m_material = renderer.material;
@@ -60,12 +54,10 @@ public class UvAniEffectUIS : MonoBehaviour
 		
 		m_material.mainTextureScale = m_curScale;
 
-		//m_intervalTime = DurationTime/
 	}
 	
 	void Start()
 	{
-		//DelayedTime = AniSpeed;
 		if( RandomStart )
 		{
 			m_curIndex = Random.Range( StartIndex, EndIndex );
@@ -74,15 +66,7 @@ public class UvAniEffectUIS : MonoBehaviour
 		{
 			m_curIndex = StartIndex;
 		}
-//		
-//		//if( AnimationWrapMode == EffectWrapMode.EWM_ONCE )
-//		{
-//			if( CurIndex == StartIndex )
-//				CloseIndex = EndIndex;
-//			else
-//				CloseIndex = CurIndex - 1;
-//		}
-//		
+
 		UpdatePos();
 
 		if(this.DurationTime > 0)
@@ -129,45 +113,7 @@ public class UvAniEffectUIS : MonoBehaviour
 			m_curIndex = stepCount % (EndIndex - StartIndex + 1) + StartIndex; 
 		}
 
-//		if( LoopCount != 0 &&
-//		   LoopCount < LoopingCount)				// delete
-//		{
-//			DestroyImmediate(gameObject );			
-//			return;
-//		}
-//		
-//		float CurDeltaTime = 0;
-//		
-//		if (PauseEffect == false)
-//		{
-//			CurDeltaTime = Time.deltaTime;
-//		}
-//		
-//		DelayedTime -= CurDeltaTime;
-//		
-//		if( DelayedTime <= 0f )				// update
-//		{
-//			if( CurIndex == CloseIndex )
-//				++LoopingCount;
-//			
-//			DelayedTime = AniSpeed;
-//			
-//			if( AnimationWrapMode == eEffectWrapMode.EWM_ONCE &&
-//			   CurIndex == CloseIndex )
-//			{
-//				DestroyImmediate(gameObject );
-//				return;
-//			}
-//			
-//			if( CurIndex == EndIndex )
-//			{
-//				CurIndex = StartIndex;
-//			}
-//			else
-//			{
-//				++CurIndex;				
-//			}
-//			
+
 		UpdatePos();
 	}
 	

@@ -15,6 +15,7 @@ public class TagDef
 	public const string MAP_COLLIDER = "MapCollision";
 
 	public const string Me = "Me";
+	public const string Enemy = "Enemy";
 	
 	public static Dictionary<string,GameObject> dict = new Dictionary<string, GameObject>();
 	

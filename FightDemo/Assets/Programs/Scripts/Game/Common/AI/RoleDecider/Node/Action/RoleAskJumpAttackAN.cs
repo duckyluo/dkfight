@@ -42,7 +42,7 @@ public class RoleAskJumpAttackAN : RoleAskAction
 
 			if(GetSkillCtrl.IsKeyCool(eSkillKey.JumpAttack))
 			{
-				Debug.Log("[info] : "+eSkillKey.JumpAttack + " is cool ");
+				//Debug.Log("[info] : "+eSkillKey.JumpAttack + " is cool ");
 				this.m_status = eDkBtRuningStatus.End;
 				return;
 			}

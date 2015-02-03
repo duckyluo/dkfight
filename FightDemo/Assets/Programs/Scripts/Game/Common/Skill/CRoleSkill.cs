@@ -136,6 +136,7 @@ public class CRoleSkillItem : IComparable
 		AddEventFromList(sItem.effectList);
 		AddEventFromList(sItem.hitBoundList);
 		AddEventFromList(sItem.magicList);
+		AddEventFromList(sItem.cameraList);
 
 		skillEvents.Sort();
 	}

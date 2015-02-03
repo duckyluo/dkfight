@@ -51,16 +51,16 @@ public class TimerManager : MonoBehaviour
 		switch(curMode)
 		{
 		case eTimerManagerRuningMode.Start:
-			DkGameTimer.Start();
+			DkTimer.Start();
 			curMode = eTimerManagerRuningMode.Runing;
 			break;
 		case eTimerManagerRuningMode.Runing:
-			DkGameTimer.Update();
+			DkTimer.Update();
 			InputManager.Update();
 			SceneManager.Update();
 			break;
 		case eTimerManagerRuningMode.Pause:
-			DkGameTimer.Pause();
+			DkTimer.Pause();
 			break;
 		case eTimerManagerRuningMode.Stop:
 			break;
@@ -77,11 +77,11 @@ public class TimerManager : MonoBehaviour
 
 	public float GetDeltaTime
 	{
-		get{return DkGameTimer.DeltaTime/1000;}
+		get{return DkTimer.DeltaTime;}
 	}
 
 	public float GetElapsedTime
 	{
-		get{return DkGameTimer.ElapsedTime/1000;}
+		get{return DkTimer.ElapsedTime;}
 	}
 }

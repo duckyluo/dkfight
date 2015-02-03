@@ -41,9 +41,9 @@ public class HitMethod
 		{
 			lookDirection = m_target.DataRunTime.GetLookDirectionToPos(m_self.DataRunTime.CurPos);
 		}
-		else if(hitLook == eSkillHitLookDirection.OppositeAttackerLook)
+		else if(hitLook == eSkillHitLookDirection.OppositeAttackerMove)
 		{
-			if(m_self.DataRunTime.LookDirection == eLookDirection.Right)
+			if(m_self.DataRunTime.MoveDirection == eMoveDirection.Right)
 			{
 				lookDirection = eLookDirection.Left;
 			}

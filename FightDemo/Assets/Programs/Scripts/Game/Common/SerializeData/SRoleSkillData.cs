@@ -31,6 +31,7 @@ public class SRoleSkillItem
 	public List<SkillEffectAddEvent> effectList = new List<SkillEffectAddEvent>();
 	public List<SkillHitBoundAddEvent> hitBoundList = new List<SkillHitBoundAddEvent>();
 	public List<SkillMagicAddEvent> magicList = new List<SkillMagicAddEvent>();
+	public List<SkillCameraEvent> cameraList = new List<SkillCameraEvent>();
 }
 
 [System.Serializable]
@@ -141,20 +142,6 @@ public class SkillAttributeChEvent : SkillProcessEvent
 }
 
 [System.Serializable]
-public class SkillEffectAddEvent : SkillProcessEvent
-{
-	public String  m_asset = string.Empty;
-	public Vector3 m_localPos = Vector3.zero;
-	public Vector3 m_motion = Vector3.zero;
-	public float   m_moveTime = 0f;
-
-	public SkillEffectAddEvent()
-	{
-		m_skillEventType = eSkillProcessEventType.AddEffect;
-	}
-}
-
-[System.Serializable]
 public class SkillHitBoundAddEvent : SkillProcessEvent
 {
 	public int 	   m_boundIndex = 0;
@@ -162,12 +149,27 @@ public class SkillHitBoundAddEvent : SkillProcessEvent
 	public Vector3 m_localPos = Vector3.zero;
 	public Vector3 m_motion = Vector3.zero;
 	public float   m_moveTime = 0f;
-	public bool    m_IsLocal = true;
+	public PlaceMode m_placeMode = PlaceMode.SelfInside;
 	public SkillHitData m_hitData = new SkillHitData();
 	
 	public SkillHitBoundAddEvent()
 	{
 		m_skillEventType = eSkillProcessEventType.AddHitBound;
+	}
+}
+
+[System.Serializable]
+public class SkillEffectAddEvent : SkillProcessEvent
+{
+	public String  m_asset = string.Empty;
+	public Vector3 m_localPos = Vector3.zero;
+	public Vector3 m_motion = Vector3.zero;
+	public float   m_moveTime = 0f;
+	public PlaceMode m_placeMode = PlaceMode.SelfInside;
+	
+	public SkillEffectAddEvent()
+	{
+		m_skillEventType = eSkillProcessEventType.AddEffect;
 	}
 }
 
@@ -181,14 +183,33 @@ public class SkillMagicAddEvent : SkillProcessEvent
 }
 
 [System.Serializable]
+public class SkillCameraEvent : SkillPosChEvent
+{
+	public SkillCameraEvent()
+	{
+		m_skillEventType = eSkillProcessEventType.ChCamera;
+	}
+}
+
+[System.Serializable]
 public class SkillHitData
 {
 	public int hitTimes = 1;				//次数
 	public float hitInterval = 0f;
 	public eSkillHitForce hitForce = eSkillHitForce.Not_Use;
 	public eHitMoment hitMoment = eHitMoment.Not_Use;
-	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.OppositeAttackerLook;
+	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.LookAttackerPos;
 	public Vector3 hitSpeed = Vector3.zero;
 }
 
+[System.Serializable]
+public enum PlaceMode
+{
+	Not_Use,
+	None,
+	SelfInside,
+	SelfOutside,
+	TargetInside,
+	TargetOutside,
+}
 

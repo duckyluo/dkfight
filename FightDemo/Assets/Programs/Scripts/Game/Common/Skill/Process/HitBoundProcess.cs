@@ -3,12 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class HitBoundProcess
+public class HitBoundProcess : IProcess
 {
 	protected GameObject m_hitBoundObj = null;
-	protected HitBoundRecord m_hitRecord ;
+	protected HitBoundRecord m_hitRecord = null;
 
 	protected int m_boundIndex = 0;
+	protected float m_duration = 0f;
 	
 	protected Vector3 m_direction = Vector3.zero;
 	protected float   m_Speed = 0f;
@@ -20,25 +21,22 @@ public class HitBoundProcess
 	protected bool m_isDestroyed = false;
 	
 	protected eProcessStatus m_status = eProcessStatus.None;
-	public eProcessStatus Status
-	{
-		get{return m_status;}
-	}
 	
-	public void Initalize(RoleBlackBoard bbData, SkillHitBoundAddEvent hitBound)
+	public void Initalize(RoleBlackBoard bbData, SkillHitBoundAddEvent hitBoundEvent)
 	{
 		m_selfBB = bbData;
-		m_boundIndex = hitBound.m_boundIndex;
-		m_hitData = hitBound.m_hitData;
+		m_boundIndex = hitBoundEvent.m_boundIndex;
+		m_duration = hitBoundEvent.m_duration;
+		m_hitData = hitBoundEvent.m_hitData;
 
-		Vector3 m_localPos = hitBound.m_localPos;
-		Vector3 m_motion = hitBound.m_motion;
+		Vector3 m_localPos = hitBoundEvent.m_localPos;
+		Vector3 m_motion = hitBoundEvent.m_motion;
 
 		m_direction = m_motion.normalized;
 
-		if(hitBound.m_moveTime > 0)
+		if(hitBoundEvent.m_moveTime > 0)
 		{
-			m_Speed = m_motion.magnitude/hitBound.m_moveTime;
+			m_Speed = m_motion.magnitude/hitBoundEvent.m_moveTime;
 		}
 		else
 		{
@@ -51,7 +49,7 @@ public class HitBoundProcess
 
 		BoxCollider box = m_hitBoundObj.AddComponent<BoxCollider>();
 		box.isTrigger = true;
-		box.size = hitBound.m_boundSize;
+		box.size = hitBoundEvent.m_boundSize;
 	
 		Rigidbody rigidBody = m_hitBoundObj.AddComponent<Rigidbody>();
 		rigidBody.isKinematic = true;
@@ -61,12 +59,12 @@ public class HitBoundProcess
 		m_hitRecord = m_hitBoundObj.AddComponent<HitBoundRecord>();
 		m_hitRecord.Initalize(m_boundIndex,m_hitData,m_selfBB);
 
-		if(hitBound.m_IsLocal)
+		if(hitBoundEvent.m_placeMode == PlaceMode.SelfInside)
 		{
 			m_hitBoundObj.transform.parent = m_selfBB.PrefabMain.transform;
 			m_hitBoundObj.transform.localPosition = m_localPos;
 		}
-		else
+		else if(hitBoundEvent.m_placeMode == PlaceMode.SelfOutside)
 		{
 			Vector3 pos = m_selfBB.DataRunTime.CurPos + m_localPos;
 			if(m_selfBB.DataRunTime.LookDirection == eLookDirection.Right)
@@ -79,8 +77,21 @@ public class HitBoundProcess
 				m_hitBoundObj.transform.localPosition = pos;
 			}
 		}
-		m_remainTime = hitBound.m_duration;
+		else
+		{
+			Debug.Log("Not Yet!!!!!!!!!!");
+		}
+	}
+
+	public void Start()
+	{
+		m_remainTime = m_duration;
 		m_status = eProcessStatus.Start;
+
+		if(m_remainTime <= 0)
+		{
+			Debug.LogError("HitBoundProcess duration error set!");
+		}
 	}
 	
 	public void Update()
@@ -99,11 +110,22 @@ public class HitBoundProcess
 				m_hitBoundObj.transform.localPosition += motion;
 			}
 			
-			if(m_remainTime <= 0)
+			if(m_duration > 0 && m_remainTime <= 0)
 			{
-				m_status = eProcessStatus.End;
+				End();
 			}
 		}
+	}
+
+	public void Stop()
+	{
+		Clean();
+	}
+
+	public void End()
+	{
+		m_remainTime = 0;
+		m_status = eProcessStatus.End;
 	}
 	
 	public void Destroy()
@@ -111,14 +133,49 @@ public class HitBoundProcess
 		if(m_isDestroyed == false)
 		{
 			m_isDestroyed = true;
-			m_status = eProcessStatus.None;
-			m_hitRecord.Destroy();
-			GameObject.Destroy(m_hitBoundObj);
-			m_selfBB = null;
-			m_hitRecord = null;
+			Clean();
 		}
 	}
+
+	protected void Clean()
+	{
+		if(m_hitRecord != null)
+		{
+			m_hitRecord.Destroy();
+			m_hitRecord = null;
+		}
+
+		if(m_hitBoundObj != null)
+		{
+			GameObject.Destroy(m_hitBoundObj);
+			m_hitBoundObj = null;
+		}
+
+		m_status = eProcessStatus.None;
+
+		m_boundIndex = 0;
+		m_duration = 0f;
+		
+		m_direction = Vector3.zero;
+		m_Speed = 0f;
+		m_remainTime = 0f;
+		
+		m_selfBB = null;
+		m_hitData = null;
+	}
+
+	public eProcessStatus GetStatus()
+	{
+		return m_status;
+	}
+	
+	public bool IsRunning()
+	{
+		return (m_status != eProcessStatus.None);
+	}
 }
+
+//==================================================================================//
 
 public class HitBoundRecord : MonoBehaviour
 {
@@ -148,7 +205,7 @@ public class HitBoundRecord : MonoBehaviour
 		m_hitData = null;
 		m_selfBB = null;
 	}
-
+	
 	public void OnParticleCollision(GameObject other)
 	{
 		Debug.Log(this.gameObject+" OnParticleCollision! ");

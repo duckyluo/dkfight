@@ -27,7 +27,7 @@ public class RoomColliderUIS : MonoBehaviour
 		get{return m_ymin;}
 	}
 	
-	void Start () 
+	void Awake () 
 	{
 		if(floorBox == null || leftBox == null || rightBox == null)
 		{
@@ -39,21 +39,12 @@ public class RoomColliderUIS : MonoBehaviour
 		m_xMin = leftBox.transform.localPosition.x + leftBox.size.x/2+0.1f;
 		m_xMax = rightBox.transform.localPosition.x - rightBox.size.x/2-0.1f;
 
-		//Debug.Log(" ============ "+ m_xMax + " "+m_ymin + " "+ m_xMin);
-
 		RoomColliderManager.CurRoom = this;
 	}
 }
 
 public class RoomColliderManager
 {
-//	protected static List<RoomColliderUIS> roomList = new List<RoomColliderUIS>();
-//
-//	public void AddRoom()
-//	{
-//
-//	}
-
 	protected static RoomColliderUIS m_room = null;
 	public static RoomColliderUIS CurRoom
 	{

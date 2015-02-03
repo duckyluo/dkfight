@@ -28,10 +28,10 @@ public class RoleDataLocal : DkSerializeData
 	{
 		m_bbData = bbData;
 
-//		if(m_bbData.DataInfo.team != eSceneTeamType.Enemy)
-//		{
-//			this.gameObject.tag = "Me";
-//		}
+		if(m_bbData.DataInfo.team == eSceneTeamType.Me)
+		{
+			this.gameObject.tag = TagDef.Me;
+		}
 
 
 		//========================== Skill 1 =================================//
@@ -116,9 +116,11 @@ public class RoleDataLocal : DkSerializeData
 		skill2Evt4.m_duration = 0.4f;
 		skill2Evt4.m_localPos = new Vector3(1.5f,0.8f,0f);
 		skill2Evt4.m_boundSize = new Vector3(4f,2f,1f);
-		skill2Evt4.m_IsLocal = false;
+		//skill2Evt4.m_IsLocal = false;
+		skill2Evt4.m_placeMode = PlaceMode.SelfOutside;
 		skill2Evt4.m_hitData.hitMoment = eHitMoment.MoveXPos;
 		skill2Evt4.m_hitData.hitTimes = 1;
+		skill2Evt4.m_hitData.hitLook = eSkillHitLookDirection.OppositeAttackerMove;
 		skill2Evt4.m_hitData.hitSpeed = new Vector3(3.5f,13f,0);
 //		skill2Evt4.m_motion = new Vector3(1f,0f,0f);
 //		skill2Evt4.m_moveTime = 0.5f;
@@ -162,7 +164,7 @@ public class RoleDataLocal : DkSerializeData
 		attack1Evt2.m_startTime = 0.1f;
 		attack1Evt2.m_duration = 0.3f;
 		attack1Evt2.m_localPos = new Vector3(0.5f,0.8f,0f);
-		attack1Evt2.m_boundSize = new Vector3(1.5f,1.4f,1f);
+		attack1Evt2.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack1Evt2.m_hitData.hitTimes = 1;
 		attack1.hitBoundList.Add(attack1Evt2);
 		
@@ -198,7 +200,7 @@ public class RoleDataLocal : DkSerializeData
 		attack2Evt3.m_startTime = 0f;
 		attack2Evt3.m_duration = 0.3f;
 		attack2Evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
-		attack2Evt3.m_boundSize = new Vector3(1.5f,1.4f,1f);
+		attack2Evt3.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack2Evt3.m_hitData.hitTimes = 1;
 		attack2.hitBoundList.Add(attack2Evt3);
 		
@@ -228,7 +230,7 @@ public class RoleDataLocal : DkSerializeData
 		attack3evt3.m_startTime = 0.1f;
 		attack3evt3.m_duration = 0.3f;
 		attack3evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
-		attack3evt3.m_boundSize = new Vector3(1.5f,1.4f,1f);
+		attack3evt3.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack3evt3.m_boundIndex = 0;
 		attack3evt3.m_hitData.hitTimes = 1;
 		//attack3evt3.m_hitData.hitForce = eSkillHitForce.Force_Hit;
@@ -238,7 +240,7 @@ public class RoleDataLocal : DkSerializeData
 		attack3evt4.m_startTime = 0.6f;
 		attack3evt4.m_duration = 0.3f;
 		attack3evt4.m_localPos = new Vector3(0.5f,0.8f,0f);
-		attack3evt4.m_boundSize = new Vector3(1.5f,1.4f,1f);
+		attack3evt4.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack3evt4.m_boundIndex = 1;
 		attack3evt4.m_hitData.hitTimes = 1;
 		attack3evt4.m_hitData.hitSpeed = new Vector3(0,14f,0);
@@ -283,8 +285,8 @@ public class RoleDataLocal : DkSerializeData
 		SkillHitBoundAddEvent jumpAttack1Evt2 = new SkillHitBoundAddEvent();
 		jumpAttack1Evt2.m_startTime = 0.1f;
 		jumpAttack1Evt2.m_duration = 0.3f;
-		jumpAttack1Evt2.m_localPos = new Vector3(0.8f,0.8f,0f);
-		jumpAttack1Evt2.m_boundSize = new Vector3(2f,1.6f,1f);
+		jumpAttack1Evt2.m_localPos = new Vector3(0.5f,0.8f,0f);
+		jumpAttack1Evt2.m_boundSize = new Vector3(2f,1.5f,1f);
 		jumpAttack1Evt2.m_hitData.hitTimes = 1;
 		jumpAttack1Evt2.m_hitData.hitSpeed = new Vector3(2f,6f,0);
 		jumpAttack1.hitBoundList.Add(jumpAttack1Evt2);
@@ -322,7 +324,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack2Evt4.m_startTime = 0f;
 		jumpAttack2Evt4.m_duration = 0.3f;
 		jumpAttack2Evt4.m_localPos = new Vector3(0.5f,0.8f,0f);
-		jumpAttack2Evt4.m_boundSize = new Vector3(2f,1.6f,1f);
+		jumpAttack2Evt4.m_boundSize = new Vector3(2f,1.5f,1f);
 		jumpAttack2Evt4.m_hitData.hitTimes = 1;
 		jumpAttack2Evt4.m_hitData.hitSpeed = new Vector3(2f,7f,0);
 		jumpAttack2.hitBoundList.Add(jumpAttack2Evt4);
@@ -340,7 +342,7 @@ public class RoleDataLocal : DkSerializeData
 		SRoleSkillItem jumpAttack3 = new SRoleSkillItem();
 		jumpAttack3.skillIndex = 2;
 		jumpAttack3.skillId = 4;
-		jumpAttack3.durationTime = 0.9f;
+		jumpAttack3.durationTime = 1f;
 		jumpAttack3.hitMethod = eHitMethod.HitAloneByNum;
 		
 		SkillAniChEvent jumpAttack3evt1 = new SkillAniChEvent();
@@ -351,7 +353,7 @@ public class RoleDataLocal : DkSerializeData
 		
 		SkillAniChEvent jumpAttack3evt2 = new SkillAniChEvent();
 		jumpAttack3evt2.m_aniName = AnimationNameDef.Attack2;
-		jumpAttack3evt2.m_startTime = 0.45f;
+		jumpAttack3evt2.m_startTime = 0.6f;
 		jumpAttack3evt2.m_duration = 0.33f;
 		jumpAttack3.aniList.Add(jumpAttack3evt2);
 
@@ -359,19 +361,24 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3Evt8.m_startTime = 0f;
 		jumpAttack3Evt8.m_duration = 0.3f;
 		jumpAttack3Evt8.m_skillMoveMethod = eSkillMoveMethod.Translation;
-		jumpAttack3Evt8.m_motion = new Vector3(0.5f,0.5f,0f);
+		jumpAttack3Evt8.m_motion = new Vector3(0.5f,0f,0f);
 		jumpAttack3.posList.Add(jumpAttack3Evt8);
 
 		SkillPosChEvent jumpAttack3Evt7 = new SkillPosChEvent();
 		jumpAttack3Evt7.m_startTime = 0.4f;
 		jumpAttack3Evt7.m_duration = 0.2f;
 		jumpAttack3Evt7.m_skillMoveMethod = eSkillMoveMethod.Translation;
-		jumpAttack3Evt7.m_motion = new Vector3(0f,2f,0f);
+		jumpAttack3Evt7.m_motion = new Vector3(0f,2.5f,0f);
 		jumpAttack3.posList.Add(jumpAttack3Evt7);
+
+		SkillCameraEvent jumpAttack3Evt9 = new SkillCameraEvent();
+		jumpAttack3Evt9.m_startTime = 0.6f;
+		jumpAttack3Evt9.m_duration = 0.4f;
+		jumpAttack3.cameraList.Add(jumpAttack3Evt9);
 		
 		SkillHitBoundAddEvent jumpAttack3evt3 = new SkillHitBoundAddEvent();
 		jumpAttack3evt3.m_startTime = 0.1f;
-		jumpAttack3evt3.m_duration = 0.3f;
+		jumpAttack3evt3.m_duration = 0.4f;
 		jumpAttack3evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
 		jumpAttack3evt3.m_boundSize = new Vector3(2f,1.5f,1f);
 		jumpAttack3evt3.m_boundIndex = 0;
@@ -380,7 +387,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3.hitBoundList.Add(jumpAttack3evt3);
 		
 		SkillHitBoundAddEvent jumpAttack3evt4 = new SkillHitBoundAddEvent();
-		jumpAttack3evt4.m_startTime = 0.5f;
+		jumpAttack3evt4.m_startTime = 0.6f;
 		jumpAttack3evt4.m_duration = 0.3f;
 		jumpAttack3evt4.m_localPos = new Vector3(0.5f,0.8f,0f);
 		jumpAttack3evt4.m_boundSize = new Vector3(2f,1.5f,1f);
@@ -396,7 +403,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3.effectList.Add(jumpAttack3evt5);
 		
 		SkillEffectAddEvent jumpAttack3evt6 = new SkillEffectAddEvent();
-		jumpAttack3evt6.m_startTime = 0.5f;
+		jumpAttack3evt6.m_startTime = 0.6f;
 		jumpAttack3evt6.m_asset = "Assets/SourceData/Prefabs/Effect/Effect5.prefab";
 		jumpAttack3evt6.m_localPos = new Vector3(1f,1f,0f);
 		jumpAttack3.effectList.Add(jumpAttack3evt6);

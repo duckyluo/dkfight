@@ -3,84 +3,80 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class EffectProcess
+public class EffectProcess : IProcess
 {
-	public RoleBlackBoard m_bbData = null;
-	public GameObject m_target = null;
+	protected RoleBlackBoard m_selfBB = null;
+	protected GameObject m_effectPrefab = null;
 
-	public Vector3 m_localPos = Vector3.zero;
-	public Vector3 m_motion = Vector3.zero;
-	public float   m_moveTime = 0f;
-	public float   m_duration = 0f;
+	protected Vector3 m_localPos = Vector3.zero;
+	protected Vector3 m_motion = Vector3.zero;
+	protected float   m_moveTime = 0f;
+	protected float   m_duration = 0f;
 
-	private Vector3 m_direction = Vector3.zero;
-	private float   m_Speed = 0f;
-	private float   m_timeCount = 0f;
+	protected Vector3 m_direction = Vector3.zero;
+	protected float   m_speed = 0f;
+	protected float   m_remainTime = 0f;
 
-	private List<ParticleSystem> m_list = new List<ParticleSystem>();
+	protected List<ParticleSystem> m_list = new List<ParticleSystem>();
 	
-	public bool m_isDestroyed = false;
+	protected bool m_isDestroyed = false;
 
 	protected eProcessStatus m_status = eProcessStatus.None;
-	public eProcessStatus Status
-	{
-		get{return m_status;}
-	}
 
-	public void Initalize(RoleBlackBoard bbData, SkillEffectAddEvent effect)
+	public void Initalize(RoleBlackBoard bbData, SkillEffectAddEvent effectEvent)
 	{
-		m_bbData = bbData;
-		m_localPos = effect.m_localPos;
-		m_motion = effect.m_motion;
+		m_selfBB = bbData;
+		m_localPos = effectEvent.m_localPos;
+		m_motion = effectEvent.m_motion;
 		m_direction = m_motion.normalized;
-		m_moveTime = effect.m_moveTime;
-		m_duration = effect.m_duration;
+		m_moveTime = effectEvent.m_moveTime;
+		m_duration = effectEvent.m_duration;
 
 		if(m_moveTime > 0)
 		{
-			m_Speed = m_motion.magnitude/m_moveTime;
+			m_speed = m_motion.magnitude/m_moveTime;
 		}
 		else
 		{
 			m_localPos += m_motion;
-			m_Speed = 0f;
+			m_speed = 0f;
 		}
 
-//		GameObject gameobject = new GameObject();
-//		gameobject.name = "gua";
-//		gameobject.transform.parent = m_bbData.PrefabMain.transform;
-//		gameobject.transform.localPosition = Vector3.zero;
-		//gameobject.transform.localScale = new Vector3(1f,1f,1f);
+		UnityEngine.Object obj = Resources.LoadAssetAtPath(effectEvent.m_asset,typeof(GameObject));
+		m_effectPrefab = GameObject.Instantiate(obj) as GameObject;
 
-		UnityEngine.Object obj = Resources.LoadAssetAtPath(effect.m_asset,typeof(GameObject));
-		m_target = GameObject.Instantiate(obj) as GameObject;
+//		m_effectPrefab.transform.parent = m_selfBB.PrefabMain.transform; 
+//		m_effectPrefab.transform.localScale = new Vector3(1f,1f,1f);
+//		m_effectPrefab.transform.localPosition = m_localPos;
 
-		m_target.transform.parent = m_bbData.PrefabMain.transform; //gameobject.transform;
-		m_target.transform.localScale = new Vector3(1f,1f,1f);
-		m_target.transform.localPosition = m_localPos;
+		if(effectEvent.m_placeMode == PlaceMode.SelfInside)
+		{
+			m_effectPrefab.transform.parent = m_selfBB.PrefabMain.transform; 
+			m_effectPrefab.transform.localPosition = m_localPos;
+			m_effectPrefab.transform.localScale = new Vector3(1f,1f,1f);
+		}
+		else if(effectEvent.m_placeMode == PlaceMode.SelfOutside)
+		{
+			Vector3 pos = m_selfBB.DataRunTime.CurPos + m_localPos;
+			if(m_selfBB.DataRunTime.LookDirection == eLookDirection.Right)
+			{
+				m_effectPrefab.transform.localPosition = pos;
+			}
+			else
+			{
+				pos.x = pos.x - m_localPos.x * 2;
+				m_effectPrefab.transform.localPosition = pos;
+			}
+		}
+		else
+		{
+			Debug.Log("Not Yet!!!!!!!!!!");
+		}
+	}
 
-//
-//
-//		if(m_bbData.PrefabMain.transform.localScale.x < 0)
-//		{
-//			Debug.Log(" ================ ");
-
-//			ParticleSystem[] particles = m_target.GetComponentsInChildren<ParticleSystem>();
-//			foreach(ParticleSystem item in particles)
-//			{
-//				item.startRotation = 180f; 
-//					//m_list.Add(item);
-//			}
-//			m_target.transform.localScale = new Vector3(-1f,1f,1f);
-//		}
-//		else
-//		{
-//			Debug.Log("=============  "+m_bbData.PrefabMain.transform.localScale);
-//		}
-
-		//m_target.transform.localScale = new Vector3(1,1,1);
-
-		m_timeCount = 0;
+	public void Start()
+	{
+		m_remainTime = m_duration;
 		m_status = eProcessStatus.Start;
 	}
 
@@ -89,25 +85,20 @@ public class EffectProcess
 		if(m_status == eProcessStatus.Start)
 		{
 			m_status = eProcessStatus.Run;
-
-//			foreach(ParticleSystem item in m_list)
-//			{
-//				item.Play();
-//			}
 		}
 		else if(m_status == eProcessStatus.Run)
 		{
-			m_timeCount += TimerManager.Instance.GetDeltaTime;
+			m_remainTime -= TimerManager.Instance.GetDeltaTime;
 
-			if(m_Speed != 0)
+			if(m_speed != 0)
 			{
-				Vector3 motion = m_direction*m_Speed*TimerManager.Instance.GetDeltaTime;
-				m_target.transform.localPosition += motion;
+				Vector3 motion = m_direction * m_speed * TimerManager.Instance.GetDeltaTime;
+				m_effectPrefab.transform.localPosition += motion;
 			}
 
-			if(m_duration > 0 && m_timeCount > m_duration)
+			if(m_duration > 0 && m_remainTime <= 0)
 			{
-				m_status = eProcessStatus.End;
+				End();
 			}
 		}
 	}
@@ -116,10 +107,45 @@ public class EffectProcess
 	{
 		if(m_isDestroyed == false)
 		{
-			m_bbData = null;
-			GameObject.Destroy(m_target);
-			m_status = eProcessStatus.None;
+			m_isDestroyed = true;
+			GameObject.Destroy(m_effectPrefab);
+			m_selfBB = null;
+			m_effectPrefab = null;
 			m_list.Clear();
+
+			m_status = eProcessStatus.None;
 		}
+	}
+
+	public void Stop()
+	{
+		Destroy();
+	}
+
+	public void End()
+	{
+		m_status = eProcessStatus.End;
+	}
+
+	protected void Clean()
+	{
+		m_localPos = Vector3.zero;
+		m_motion = Vector3.zero;
+		m_moveTime = 0f;
+		m_duration = 0f;
+		
+		m_direction = Vector3.zero;
+		m_speed = 0f;
+		m_remainTime = 0f;
+	}
+
+	public eProcessStatus GetStatus()
+	{
+		return m_status;
+	}
+	
+	public bool IsRunning()
+	{
+		return (m_status != eProcessStatus.None);
 	}
 }
