@@ -35,7 +35,7 @@ public class RoleJoinFallenAN : RoleDoAction
 	protected const float FloatTime = 0f; //浮空时间
 	protected float m_floatLastTime = 0f; //浮空剩余时间
 	
-	private Vector3 m_hitSpeed = Vector3.zero;
+	//private Vector3 m_hitSpeed = Vector3.zero;
 	
 	protected override void StartAction()
 	{

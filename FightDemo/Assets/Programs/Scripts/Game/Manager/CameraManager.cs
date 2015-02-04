@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class CameraManager
 {
-	protected Dictionary<CameraDef,CameraUIS> m_cameraDict = new Dictionary<CameraDef, CameraUIS>();
+	protected Dictionary<CameraDef,UisCameraObj> m_cameraDict = new Dictionary<CameraDef, UisCameraObj>();
 
 	protected Dictionary<CameraMode,List<CameraDef>> m_modeDict = new Dictionary<CameraMode,List<CameraDef>>();
 
 	protected CameraMode m_curMode = CameraMode.Not_Use;
 
-	protected List<CameraUIS> m_curCameras = new List<CameraUIS>();
+	protected List<UisCameraObj> m_curCameras = new List<UisCameraObj>();
 	
 	private static CameraManager s_instance = null;
 	
@@ -44,7 +44,7 @@ public class CameraManager
 		m_cameraDict.Clear();
 	}
 	
-	public void addCamera(CameraUIS value)
+	public void addCamera(UisCameraObj value)
 	{
 		if(m_cameraDict.ContainsKey(value.type) == false)
 		{
@@ -56,7 +56,7 @@ public class CameraManager
 		}
 	}
 	
-	public CameraUIS getCamera(CameraDef type)
+	public UisCameraObj getCamera(CameraDef type)
 	{
 		if(m_cameraDict.ContainsKey(type))
 		{
@@ -87,7 +87,7 @@ public class CameraManager
 		m_curCameras.Clear();
 		if(m_modeDict.TryGetValue(m_curMode,out mode))
 		{
-			foreach(KeyValuePair<CameraDef,CameraUIS> pair in m_cameraDict)
+			foreach(KeyValuePair<CameraDef,UisCameraObj> pair in m_cameraDict)
 			{
 				if(mode.Contains(pair.Key))
 				{
@@ -108,7 +108,7 @@ public class CameraManager
 
 	protected void UpdateFollow()
 	{
-		foreach(CameraUIS item in m_curCameras)
+		foreach(UisCameraObj item in m_curCameras)
 		{
 			if(item.type == CameraDef.Player)
 			{

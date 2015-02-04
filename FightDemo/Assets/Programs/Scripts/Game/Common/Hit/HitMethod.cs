@@ -52,6 +52,17 @@ public class HitMethod
 				lookDirection = eLookDirection.Right;
 			}
 		}
+		else if(hitLook == eSkillHitLookDirection.OppositeAttackerLook)
+		{
+			if(m_self.DataRunTime.LookDirection == eLookDirection.Right)
+			{
+				lookDirection = eLookDirection.Left;
+			}
+			else
+			{
+				lookDirection = eLookDirection.Right;
+			}
+		}
 
 		return lookDirection;
 	}
@@ -128,23 +139,20 @@ public class HitMethod
 					bol = true;
 				}
 			}
-//			else
-//			{
-//				Debug.Log("Skill MoveDirection Error !!!!!!!!!!!!!!!!!!!!!!!!!! ===================");
-//			}
 		}
+
+		if(hitData.timeScaleMoment == SkillTimeScaleMoment.HitMoment)
+		{
+			TimerManager.Instance.ChangeTimeScale(0.08f,0.15f);
+		}
+
 		return bol;
 	}
-}
 
-//[System.Serializable]
-//public enum eHitMethod
-//{
-//	Not_Use,
-//	None,
-//	HitCommonByNum, 	//公共碰撞承受次数伤害(根据碰撞后绝对间隔时间,离开碰撞区域依然受伤害)
-//	HitCommonByStay, 	//公共碰撞承受停留伤害(没有固定伤害,根据停留时间,离开碰撞区域不受伤害)
-//	HitAloneByNum, 	 	//每次碰撞造成不同的伤害(间隔根据碰撞,相同碰撞不重复受伤害)
-//}
+	virtual	protected void SendHitMsg()
+	{
+		SoundManager.PlaySound(SoundDef.SWORD_HIT);
+	}
+}
 
 

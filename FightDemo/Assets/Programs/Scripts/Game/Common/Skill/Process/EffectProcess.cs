@@ -49,13 +49,13 @@ public class EffectProcess : IProcess
 //		m_effectPrefab.transform.localScale = new Vector3(1f,1f,1f);
 //		m_effectPrefab.transform.localPosition = m_localPos;
 
-		if(effectEvent.m_placeMode == PlaceMode.SelfInside)
+		if(effectEvent.m_placeMode == SkillPlaceMode.SelfInside)
 		{
 			m_effectPrefab.transform.parent = m_selfBB.PrefabMain.transform; 
 			m_effectPrefab.transform.localPosition = m_localPos;
 			m_effectPrefab.transform.localScale = new Vector3(1f,1f,1f);
 		}
-		else if(effectEvent.m_placeMode == PlaceMode.SelfOutside)
+		else if(effectEvent.m_placeMode == SkillPlaceMode.SelfOutside)
 		{
 			Vector3 pos = m_selfBB.DataRunTime.CurPos + m_localPos;
 			if(m_selfBB.DataRunTime.LookDirection == eLookDirection.Right)

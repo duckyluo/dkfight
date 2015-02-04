@@ -76,6 +76,7 @@ public enum eSkillHitLookDirection
 	Not_Use,
 	None,
 	OppositeAttackerMove,
+	OppositeAttackerLook,
 	LookAttackerPos,
 }
 

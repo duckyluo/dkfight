@@ -75,26 +75,32 @@ public class HitCommonByStayProcess : HitMethod
 		{
 			m_hitCount++;
 			
-			SceneObjInfo info = m_target.DataInfo;
-			
-			RoleFsmMessage fsmMsg = new RoleFsmMessage();
-			fsmMsg.receiveIndex = info.index;
-			fsmMsg.cmdType = eCommandType.Cmd_Hit;
-			fsmMsg.curPos = m_target.DataRunTime.CurPos;			
-			fsmMsg.actionType = GetActionByHitForce(m_hitData.hitForce, m_hitData.hitSpeed);
-			fsmMsg.hitSpeed = m_hitData.hitSpeed;
-			fsmMsg.lookDirection = GetLookDirection(m_hitData.hitLook);
-			
-			if(fsmMsg.lookDirection == eLookDirection.Right)
-			{
-				fsmMsg.hitSpeed.x = -m_hitData.hitSpeed.x;
-			}
-
-			FsmMsgManager.SendFsmMsg(fsmMsg);
+			SendHitMsg();
 
 			return true;
 		}
 		else return false;
+	}
+
+	protected override void SendHitMsg ()
+	{
+		base.SendHitMsg ();
+		SceneObjInfo info = m_target.DataInfo;
+		
+		RoleFsmMessage fsmMsg = new RoleFsmMessage();
+		fsmMsg.receiveIndex = info.index;
+		fsmMsg.cmdType = eCommandType.Cmd_Hit;
+		fsmMsg.curPos = m_target.DataRunTime.CurPos;			
+		fsmMsg.actionType = GetActionByHitForce(m_hitData.hitForce, m_hitData.hitSpeed);
+		fsmMsg.hitSpeed = m_hitData.hitSpeed;
+		fsmMsg.lookDirection = GetLookDirection(m_hitData.hitLook);
+		
+		if(fsmMsg.lookDirection == eLookDirection.Right)
+		{
+			fsmMsg.hitSpeed.x = -m_hitData.hitSpeed.x;
+		}
+		
+		FsmMsgManager.SendFsmMsg(fsmMsg);
 	}
 }
 

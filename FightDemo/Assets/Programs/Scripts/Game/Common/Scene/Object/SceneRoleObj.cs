@@ -88,7 +88,7 @@ public class SceneRoleObj : SceneObj
 		{
 			m_mainPrefab = GameObject.Instantiate(prefab) as GameObject;
 			m_mainPrefab.name = Info.nick;
-			m_modelPrefab = m_mainPrefab.GetComponentInChildren<BodyUIS>().gameObject;
+			m_modelPrefab = m_mainPrefab.GetComponentInChildren<UisRoleBodyObj>().gameObject;
 			return true;
 		}
 		else

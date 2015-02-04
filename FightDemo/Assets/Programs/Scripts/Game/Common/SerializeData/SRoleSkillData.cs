@@ -149,7 +149,7 @@ public class SkillHitBoundAddEvent : SkillProcessEvent
 	public Vector3 m_localPos = Vector3.zero;
 	public Vector3 m_motion = Vector3.zero;
 	public float   m_moveTime = 0f;
-	public PlaceMode m_placeMode = PlaceMode.SelfInside;
+	public SkillPlaceMode m_placeMode = SkillPlaceMode.SelfInside;
 	public SkillHitData m_hitData = new SkillHitData();
 	
 	public SkillHitBoundAddEvent()
@@ -165,7 +165,7 @@ public class SkillEffectAddEvent : SkillProcessEvent
 	public Vector3 m_localPos = Vector3.zero;
 	public Vector3 m_motion = Vector3.zero;
 	public float   m_moveTime = 0f;
-	public PlaceMode m_placeMode = PlaceMode.SelfInside;
+	public SkillPlaceMode m_placeMode = SkillPlaceMode.SelfInside;
 	
 	public SkillEffectAddEvent()
 	{
@@ -198,12 +198,13 @@ public class SkillHitData
 	public float hitInterval = 0f;
 	public eSkillHitForce hitForce = eSkillHitForce.Not_Use;
 	public eHitMoment hitMoment = eHitMoment.Not_Use;
-	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.LookAttackerPos;
+	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.OppositeAttackerLook;
 	public Vector3 hitSpeed = Vector3.zero;
+	public SkillTimeScaleMoment timeScaleMoment = SkillTimeScaleMoment.Not_Use; 
 }
 
 [System.Serializable]
-public enum PlaceMode
+public enum SkillPlaceMode
 {
 	Not_Use,
 	None,
@@ -211,5 +212,13 @@ public enum PlaceMode
 	SelfOutside,
 	TargetInside,
 	TargetOutside,
+}
+
+[System.Serializable]
+public enum SkillTimeScaleMoment
+{
+	Not_Use,
+	None,
+	HitMoment,
 }
 

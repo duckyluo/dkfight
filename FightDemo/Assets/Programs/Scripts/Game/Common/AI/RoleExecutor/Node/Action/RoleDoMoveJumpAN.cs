@@ -32,13 +32,13 @@ public class RoleDoMoveJumpAN : RoleDoAction
 		GetMsgCtrl.RemoveWaitMsg(GetFrontWaitMsg);
 	}
 	
-	private float m_jumpHeight = 1.6f; //上升高度
-	private float m_jumpUpTime = 0.3f; //上升时间
-	private float m_jumpUpAV = 0f; //上升加速度
-	private float m_jumpFloatTime = 0.3f; //浮空时间
-	private float m_jumpFloatLastTime = 0f; //浮空剩余时间
-	private float m_jumpDownAV = 0f; //下降加速度
-	private Vector3 m_startJumpSpeed = Vector3.zero;
+	protected float m_jumpHeight = 1.6f; //上升高度
+	protected float m_jumpUpTime = 0.3f; //上升时间
+	protected float m_jumpUpAV = 0f; //上升加速度
+	protected float m_jumpFloatTime = 0.3f; //浮空时间
+	protected float m_jumpFloatLastTime = 0f; //浮空剩余时间
+	protected float m_jumpDownAV = 0f; //下降加速度
+	protected Vector3 m_startJumpSpeed = Vector3.zero;
 	
 	protected override void StartAction()
 	{

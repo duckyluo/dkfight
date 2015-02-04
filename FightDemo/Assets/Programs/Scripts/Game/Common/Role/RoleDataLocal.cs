@@ -117,7 +117,7 @@ public class RoleDataLocal : DkSerializeData
 		skill2Evt4.m_localPos = new Vector3(1.5f,0.8f,0f);
 		skill2Evt4.m_boundSize = new Vector3(4f,2f,1f);
 		//skill2Evt4.m_IsLocal = false;
-		skill2Evt4.m_placeMode = PlaceMode.SelfOutside;
+		skill2Evt4.m_placeMode = SkillPlaceMode.SelfOutside;
 		skill2Evt4.m_hitData.hitMoment = eHitMoment.MoveXPos;
 		skill2Evt4.m_hitData.hitTimes = 1;
 		skill2Evt4.m_hitData.hitLook = eSkillHitLookDirection.OppositeAttackerMove;
@@ -394,6 +394,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3evt4.m_boundIndex = 1;
 		jumpAttack3evt4.m_hitData.hitTimes = 1;
 		jumpAttack3evt4.m_hitData.hitSpeed = new Vector3(13,-5f,0);
+		jumpAttack3evt4.m_hitData.timeScaleMoment = SkillTimeScaleMoment.HitMoment;
 		jumpAttack3.hitBoundList.Add(jumpAttack3evt4);
 		
 		SkillEffectAddEvent jumpAttack3evt5 = new SkillEffectAddEvent();

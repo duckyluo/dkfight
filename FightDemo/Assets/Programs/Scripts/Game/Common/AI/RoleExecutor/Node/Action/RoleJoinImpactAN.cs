@@ -87,6 +87,8 @@ public class RoleJoinImpactAN : RoleDoAction
 			ySpeed = m_hitSpeed.y - RoleASpeedDef.GravityAir * TimerManager.Instance.GetDeltaTime;
 			
 			m_hitSpeed = Vector3.zero;
+
+			SoundManager.PlaySound(SoundDef.FallOne);
 			//Debug.Log(" ==================== "+GetRunTimeData.MoveDirection + " "+ xSpeed + " "+m_hitSpeed.x);
 		}
 		else
@@ -133,6 +135,7 @@ public class RoleJoinImpactAN : RoleDoAction
 			Vector3 motion = new Vector3(0,GetTransformCtrl.GetFloorHeight - GetRunTimeData.CurPos.y,0);
 			GetTransformCtrl.MoveLimit(motion);
 
+			SoundManager.PlaySound(SoundDef.FallTwo);
 			ToJoinLie();
 		}
 		else

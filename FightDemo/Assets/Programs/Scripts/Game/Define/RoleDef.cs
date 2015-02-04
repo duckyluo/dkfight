@@ -134,7 +134,6 @@ public class RoleSpeedDef
 	public const float RunXSpeed = 2.5f;
 }
 
-
 public class RoleASpeedDef
 {
 	public const float GravityNomal = 10f;

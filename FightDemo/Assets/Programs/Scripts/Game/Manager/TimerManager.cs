@@ -48,6 +48,7 @@ public class TimerManager : MonoBehaviour
 
 	protected void Update () 
 	{
+		UpdateTimeScale();
 		switch(curMode)
 		{
 		case eTimerManagerRuningMode.Start:
@@ -72,6 +73,32 @@ public class TimerManager : MonoBehaviour
 		if(curMode != mode)
 		{
 			curMode = mode;
+		}
+	}
+
+	protected float m_timeScaleRemain = 0;
+	protected float m_curTimeScale = 1f;
+
+	public void ChangeTimeScale(float timeScale , float duration)
+	{
+		m_timeScaleRemain = duration;
+		if(m_curTimeScale != timeScale)
+		{
+			m_curTimeScale = timeScale;
+			Time.timeScale = m_curTimeScale;
+		}
+	}
+
+	protected void UpdateTimeScale()
+	{
+		if(m_timeScaleRemain > 0)
+		{
+			m_timeScaleRemain -= GetDeltaTime;
+			if(m_timeScaleRemain <= 0)
+			{
+				m_timeScaleRemain = 0;
+				Time.timeScale = m_curTimeScale = 1;
+			}
 		}
 	}
 

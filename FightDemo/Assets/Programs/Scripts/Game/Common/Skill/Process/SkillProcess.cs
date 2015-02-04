@@ -58,6 +58,9 @@ public class SkillProcess : DkEventDispatch , IProcess
 		{
 			m_remainTime = m_duration;
 			m_status = eProcessStatus.Run;
+
+			SoundManager.PlaySound(SoundDef.SWORD);
+
 		}
 		else
 		{

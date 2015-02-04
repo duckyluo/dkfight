@@ -59,12 +59,12 @@ public class HitBoundProcess : IProcess
 		m_hitRecord = m_hitBoundObj.AddComponent<HitBoundRecord>();
 		m_hitRecord.Initalize(m_boundIndex,m_hitData,m_selfBB);
 
-		if(hitBoundEvent.m_placeMode == PlaceMode.SelfInside)
+		if(hitBoundEvent.m_placeMode == SkillPlaceMode.SelfInside)
 		{
 			m_hitBoundObj.transform.parent = m_selfBB.PrefabMain.transform;
 			m_hitBoundObj.transform.localPosition = m_localPos;
 		}
-		else if(hitBoundEvent.m_placeMode == PlaceMode.SelfOutside)
+		else if(hitBoundEvent.m_placeMode == SkillPlaceMode.SelfOutside)
 		{
 			Vector3 pos = m_selfBB.DataRunTime.CurPos + m_localPos;
 			if(m_selfBB.DataRunTime.LookDirection == eLookDirection.Right)

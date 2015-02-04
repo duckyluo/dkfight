@@ -22,7 +22,7 @@ public class CameraProcess : IProcess
 	{
 		if(m_selfBB.DataInfo.team == eSceneTeamType.Me)
 		{
-			Time.timeScale = 0.2f;
+			//Time.timeScale = 0.1f;
 			m_remainTime = m_duration;
 			m_status = eProcessStatus.Start;
 		}
@@ -30,7 +30,7 @@ public class CameraProcess : IProcess
 
 	public void Stop()
 	{
-		Time.timeScale = 1f;
+		//Time.timeScale = 1f;
 		CameraManager.Instance.ChangeCurMode(CameraMode.SceneMode);
 		Clean();
 	}
