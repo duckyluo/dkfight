@@ -85,6 +85,9 @@ public enum eSkillHitForce
 {
 	Not_Use = 0,
 	None,
+	Force_Speed,
+	Force_Motion,
+	Force_ComeUp,
 	Force_Stun,
 	Force_Caught,
 }

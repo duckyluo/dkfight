@@ -72,6 +72,7 @@ public class RoleDataLocal : DkSerializeData
 		skill1Evt4.m_boundSize = new Vector3(2f,1.5f,1f);
 		skill1Evt4.m_hitData.hitTimes = 4;
 		skill1Evt4.m_hitData.hitInterval = 0.2f;
+		skill1Evt4.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		//skill1Evt4.m_hitData.hitForce = eSkillHitForce.Force_Hit;
 		skill1.hitBoundList.Add(skill1Evt4);
 		
@@ -121,7 +122,8 @@ public class RoleDataLocal : DkSerializeData
 		skill2Evt4.m_hitData.hitMoment = eHitMoment.MoveXPos;
 		skill2Evt4.m_hitData.hitTimes = 1;
 		skill2Evt4.m_hitData.hitLook = eSkillHitLookDirection.OppositeAttackerMove;
-		skill2Evt4.m_hitData.hitSpeed = new Vector3(3.5f,13f,0);
+		skill2Evt4.m_hitData.hitSpeed = new Vector3(3.5f,14f,0);
+		skill2Evt4.m_hitData.hitSound = SoundDef.SWORD_HIT;
 //		skill2Evt4.m_motion = new Vector3(1f,0f,0f);
 //		skill2Evt4.m_moveTime = 0.5f;
 		skill2.hitBoundList.Add(skill2Evt4);
@@ -132,6 +134,7 @@ public class RoleDataLocal : DkSerializeData
 		skill2Evt6.m_localPos = new Vector3(0.8f,0.8f,0f);
 		skill2Evt6.m_boundSize = new Vector3(3f,1.5f,1f);
 		skill2Evt6.m_hitData.hitTimes = 1;
+		skill2Evt6.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		//skill2Evt6.m_hitData.hitSpeed = new Vector3(3.5f,13f,0);
 		//		skill2Evt4.m_motion = new Vector3(1f,0f,0f);
 		//		skill2Evt4.m_moveTime = 0.5f;
@@ -145,6 +148,133 @@ public class RoleDataLocal : DkSerializeData
 		skill2.effectList.Add(skill2Evt5);
 		
 		m_cRoleSkill.AddSkillItem(eSkillKey.SkillTwo,skill2);
+
+		//===========================  Skill 3    ==============================//
+
+		SRoleSkillItem skill3 = new SRoleSkillItem();
+		skill3.skillIndex = 1;
+		skill3.skillId = 1;
+		skill3.sound = SoundDef.Air;
+		skill3.hitMethod = eHitMethod.HitCommonByNum;
+	
+		SkillAniChEvent skill3Evt1 = new SkillAniChEvent();
+		skill3Evt1.m_aniName = AnimationNameDef.Skill3;
+		skill3Evt1.m_startTime = 0f;
+		skill3Evt1.m_duration = 0.8f;
+		skill3Evt1.m_speed = 1f;
+		skill3.aniList.Add(skill3Evt1);
+
+		SkillHitBoundAddEvent skill3Evt2 = new SkillHitBoundAddEvent();
+		skill3Evt2.m_startTime = 0.2f;
+		skill3Evt2.m_duration = 0.4f;
+		skill3Evt2.m_localPos = new Vector3(0f,0.8f,0f);
+		skill3Evt2.m_boundSize = new Vector3(1f,1.5f,1f);
+		skill3Evt2.m_placeMode = SkillPlaceMode.TargetInside;
+		skill3Evt2.m_hitData.hitTimes = 1;
+		skill3Evt2.m_hitData.hitForce = eSkillHitForce.Force_ComeUp;
+		skill3Evt2.m_hitData.hitDuration = 0.3f;
+		//skill3Evt2.m_hitData.hitSound = SoundDef.Air;
+		//skill1Evt4.m_hitData.hitForce = eSkillHitForce.Force_Hit;
+		skill3.hitBoundList.Add(skill3Evt2);
+
+		SkillEffectAddEvent skill3Evt3 = new SkillEffectAddEvent();
+		skill3Evt3.m_startTime = 0.2f;
+		skill3Evt3.m_asset = "Assets/SourceData/Prefabs/Effect/Effect6.prefab";
+		skill3Evt3.m_effectMethod = eSkillEffectMethod.Link;
+		skill3Evt3.m_placeMode = SkillPlaceMode.TargetInside;
+		skill3Evt3.m_localPos = new Vector3(0f,1f,0f);
+		skill3.effectList.Add(skill3Evt3);
+		
+		m_cRoleSkill.AddSkillItem(eSkillKey.SkillThree,skill3);
+
+		//============================= Skill 4 ===================================//
+
+		SRoleSkillItem skill4 = new SRoleSkillItem();
+		skill4.skillIndex = 1;
+		skill4.skillId = 1;
+		skill4.durationTime = 3f;
+		skill4.sound = SoundDef.Not_Use;
+		skill4.hitMethod = eHitMethod.HitAloneByNum;
+		
+		SkillAniChEvent skill4Evt1 = new SkillAniChEvent();
+		skill4Evt1.m_aniName = AnimationNameDef.Skill4;
+		skill4Evt1.m_startTime = 0f;
+		skill4Evt1.m_duration = 0.8f;
+		skill4Evt1.m_speed = 1f;
+		skill4.aniList.Add(skill4Evt1);
+
+		SkillAniChEvent skill4Evt2 = new SkillAniChEvent();
+		skill4Evt2.m_aniName = AnimationNameDef.Skill4;
+		skill4Evt2.m_startTime = 0.8f;
+		skill4Evt2.m_duration = 0.9f;
+		skill4Evt2.m_speed = 1f;
+		skill4.aniList.Add(skill4Evt2);
+
+		SkillAniChEvent skill4Evt3 = new SkillAniChEvent();
+		skill4Evt3.m_aniName = AnimationNameDef.Skill4;
+		skill4Evt3.m_startTime = 1.6f;
+		skill4Evt3.m_duration = 0.9f;
+		skill4Evt3.m_speed = 1f;
+		skill4.aniList.Add(skill4Evt3);
+
+		SkillEffectAddEvent skill4Evt4 = new SkillEffectAddEvent();
+		skill4Evt4.m_startTime = 0.2f;
+		skill4Evt4.m_asset = "Assets/SourceData/Prefabs/Effect/Effect7.prefab";
+		skill4Evt4.m_localPos = new Vector3(2f,0f,0f);
+		skill4Evt4.m_duration = 0.2f;
+		skill4Evt4.m_sound = SoundDef.Explode;
+		skill4.effectList.Add(skill4Evt4);
+
+		SkillEffectAddEvent skill4Evt5 = new SkillEffectAddEvent();
+		skill4Evt5.m_startTime = 1f;
+		skill4Evt5.m_asset = "Assets/SourceData/Prefabs/Effect/Effect7.prefab";
+		skill4Evt5.m_localPos = new Vector3(5f,0f,0f);
+		skill4Evt5.m_duration = 0.4f;
+		skill4Evt5.m_sound = SoundDef.Explode;
+		skill4.effectList.Add(skill4Evt5);
+
+		SkillEffectAddEvent skill4Evt6 = new SkillEffectAddEvent();
+		skill4Evt6.m_startTime = 1.8f;
+		skill4Evt6.m_asset = "Assets/SourceData/Prefabs/Effect/Effect7.prefab";
+		skill4Evt6.m_localPos = new Vector3(8f,0f,0f);
+		skill4Evt6.m_duration = 1.5f;
+		skill4Evt6.m_sound = SoundDef.Explode;
+		skill4.effectList.Add(skill4Evt6);
+
+		SkillHitBoundAddEvent skill4Evt7 = new SkillHitBoundAddEvent();
+		skill4Evt7.m_startTime = 0.2f;
+		skill4Evt7.m_duration = 0.6f;
+		skill4Evt7.m_boundIndex = 1;
+		skill4Evt7.m_localPos = new Vector3(2f,2f,0f);
+		skill4Evt7.m_boundSize = new Vector3(2f,4f,1f);
+		skill4Evt7.m_hitData.hitTimes = 1;
+		skill4Evt7.m_hitData.hitSpeed = new Vector3(3f,14f,0);
+		//skill4Evt7.m_hitData.hitSound = SoundDef.FireHit;
+		skill4.hitBoundList.Add(skill4Evt7);
+
+		SkillHitBoundAddEvent skill4Evt8 = new SkillHitBoundAddEvent();
+		skill4Evt8.m_startTime = 1.1f;
+		skill4Evt8.m_duration = 0.6f;
+		skill4Evt8.m_boundIndex = 2;
+		skill4Evt8.m_localPos = new Vector3(5f,2f,0f);
+		skill4Evt8.m_boundSize = new Vector3(2f,4f,1f);
+		skill4Evt8.m_hitData.hitTimes = 1;
+		skill4Evt8.m_hitData.hitSpeed = new Vector3(4f,12f,0);
+		//skill4Evt8.m_hitData.hitSound = SoundDef.FireHit;
+		skill4.hitBoundList.Add(skill4Evt8);
+
+		SkillHitBoundAddEvent skill4Evt9 = new SkillHitBoundAddEvent();
+		skill4Evt9.m_startTime = 2.2f;
+		skill4Evt9.m_duration = 0.6f;
+		skill4Evt9.m_boundIndex = 3;
+		skill4Evt9.m_localPos = new Vector3(8f,2f,0f);
+		skill4Evt9.m_boundSize = new Vector3(2f,4f,1f);
+		skill4Evt9.m_hitData.hitTimes = 1;
+		skill4Evt9.m_hitData.hitSpeed = new Vector3(3f,15f,0);
+		//skill4Evt9.m_hitData.hitSound = SoundDef.FireHit;
+		skill4.hitBoundList.Add(skill4Evt9);
+		
+		m_cRoleSkill.AddSkillItem(eSkillKey.SkillFour,skill4);
 		
 		//=========================== Attack 1 =================================//
 		
@@ -166,6 +296,7 @@ public class RoleDataLocal : DkSerializeData
 		attack1Evt2.m_localPos = new Vector3(0.5f,0.8f,0f);
 		attack1Evt2.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack1Evt2.m_hitData.hitTimes = 1;
+		attack1Evt2.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		attack1.hitBoundList.Add(attack1Evt2);
 		
 		SkillEffectAddEvent attack1Evt3 = new SkillEffectAddEvent();
@@ -202,6 +333,7 @@ public class RoleDataLocal : DkSerializeData
 		attack2Evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
 		attack2Evt3.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack2Evt3.m_hitData.hitTimes = 1;
+		attack2Evt3.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		attack2.hitBoundList.Add(attack2Evt3);
 		
 		m_cRoleSkill.AddSkillItem(eSkillKey.Attack,attack2);
@@ -211,50 +343,73 @@ public class RoleDataLocal : DkSerializeData
 		SRoleSkillItem attack3 = new SRoleSkillItem();
 		attack3.skillIndex = 2;
 		attack3.skillId = 4;
-		attack3.durationTime = 0.9f;
+		attack3.durationTime = 0.6f;
 		attack3.hitMethod = eHitMethod.HitAloneByNum;
 		
+//		SkillAniChEvent attack3evt1 = new SkillAniChEvent();
+//		attack3evt1.m_aniName = AnimationNameDef.Attack1;
+//		attack3evt1.m_startTime = 0f;
+//		attack3evt1.m_duration = 0.44f;
+//		attack3.aniList.Add(attack3evt1);
+//		
+//		SkillAniChEvent attack3evt2 = new SkillAniChEvent();
+//		attack3evt2.m_aniName = AnimationNameDef.Attack2;
+//		attack3evt2.m_startTime = 0.45f;
+//		attack3evt2.m_duration = 0.33f;
+//		attack3.aniList.Add(attack3evt2);
+
 		SkillAniChEvent attack3evt1 = new SkillAniChEvent();
-		attack3evt1.m_aniName = AnimationNameDef.Attack1;
+		attack3evt1.m_aniName = AnimationNameDef.Skill05;
 		attack3evt1.m_startTime = 0f;
-		attack3evt1.m_duration = 0.44f;
+		attack3evt1.m_duration = 0.6f;
 		attack3.aniList.Add(attack3evt1);
-		
-		SkillAniChEvent attack3evt2 = new SkillAniChEvent();
-		attack3evt2.m_aniName = AnimationNameDef.Attack2;
-		attack3evt2.m_startTime = 0.45f;
-		attack3evt2.m_duration = 0.33f;
-		attack3.aniList.Add(attack3evt2);
-		
+
 		SkillHitBoundAddEvent attack3evt3 = new SkillHitBoundAddEvent();
 		attack3evt3.m_startTime = 0.1f;
-		attack3evt3.m_duration = 0.3f;
+		attack3evt3.m_duration = 0.4f;
 		attack3evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
 		attack3evt3.m_boundSize = new Vector3(1.8f,1.4f,1f);
 		attack3evt3.m_boundIndex = 0;
 		attack3evt3.m_hitData.hitTimes = 1;
+		attack3evt3.m_hitData.hitSpeed = new Vector3(0,14f,0);
+		attack3evt3.m_hitData.hitSound = SoundDef.HIT;
 		//attack3evt3.m_hitData.hitForce = eSkillHitForce.Force_Hit;
 		attack3.hitBoundList.Add(attack3evt3);
+
+		SkillAttributeChEvent attack3evt4 = new SkillAttributeChEvent();
+		attack3evt4.m_startTime = 0.5f;
+		attack3evt4.m_activeChStateEnable = true;
+		attack3.attributeList.Add(attack3evt4);
 		
-		SkillHitBoundAddEvent attack3evt4 = new SkillHitBoundAddEvent();
-		attack3evt4.m_startTime = 0.6f;
-		attack3evt4.m_duration = 0.3f;
-		attack3evt4.m_localPos = new Vector3(0.5f,0.8f,0f);
-		attack3evt4.m_boundSize = new Vector3(1.8f,1.4f,1f);
-		attack3evt4.m_boundIndex = 1;
-		attack3evt4.m_hitData.hitTimes = 1;
-		attack3evt4.m_hitData.hitSpeed = new Vector3(0,14f,0);
-		//attack3evt4.m_hitData.hitForce = eSkillHitForce.Force_FlyUp;
-		attack3.hitBoundList.Add(attack3evt4);
+		//		SkillHitBoundAddEvent attack3evt3 = new SkillHitBoundAddEvent();
+//		attack3evt3.m_startTime = 0.1f;
+//		attack3evt3.m_duration = 0.3f;
+//		attack3evt3.m_localPos = new Vector3(0.5f,0.8f,0f);
+//		attack3evt3.m_boundSize = new Vector3(1.8f,1.4f,1f);
+//		attack3evt3.m_boundIndex = 0;
+//		attack3evt3.m_hitData.hitTimes = 1;
+//		//attack3evt3.m_hitData.hitForce = eSkillHitForce.Force_Hit;
+//		attack3.hitBoundList.Add(attack3evt3);
+//		
+//		SkillHitBoundAddEvent attack3evt4 = new SkillHitBoundAddEvent();
+//		attack3evt4.m_startTime = 0.6f;
+//		attack3evt4.m_duration = 0.3f;
+//		attack3evt4.m_localPos = new Vector3(0.5f,0.8f,0f);
+//		attack3evt4.m_boundSize = new Vector3(1.8f,1.4f,1f);
+//		attack3evt4.m_boundIndex = 1;
+//		attack3evt4.m_hitData.hitTimes = 1;
+//		attack3evt4.m_hitData.hitSpeed = new Vector3(0,14f,0);
+//		//attack3evt4.m_hitData.hitForce = eSkillHitForce.Force_FlyUp;
+//		attack3.hitBoundList.Add(attack3evt4);
 		
-		SkillEffectAddEvent attack3evt5 = new SkillEffectAddEvent();
-		attack3evt5.m_startTime = 0.1f;
-		attack3evt5.m_asset = "Assets/SourceData/Prefabs/Effect/Effect4.prefab";
-		attack3evt5.m_localPos = new Vector3(1f,1f,0f);
-		attack3.effectList.Add(attack3evt5);
+//		SkillEffectAddEvent attack3evt5 = new SkillEffectAddEvent();
+//		attack3evt5.m_startTime = 0.1f;
+//		attack3evt5.m_asset = "Assets/SourceData/Prefabs/Effect/Effect4.prefab";
+//		attack3evt5.m_localPos = new Vector3(1f,1f,0f);
+//		attack3.effectList.Add(attack3evt5);
 		
 		SkillEffectAddEvent attack3evt6 = new SkillEffectAddEvent();
-		attack3evt6.m_startTime = 0.5f;
+		attack3evt6.m_startTime = 0.1f; //0.5f;
 		attack3evt6.m_asset = "Assets/SourceData/Prefabs/Effect/Effect5.prefab";
 		attack3evt6.m_localPos = new Vector3(1f,1f,0f);
 		attack3.effectList.Add(attack3evt6);
@@ -289,6 +444,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack1Evt2.m_boundSize = new Vector3(2f,1.5f,1f);
 		jumpAttack1Evt2.m_hitData.hitTimes = 1;
 		jumpAttack1Evt2.m_hitData.hitSpeed = new Vector3(2f,6f,0);
+		jumpAttack1Evt2.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		jumpAttack1.hitBoundList.Add(jumpAttack1Evt2);
 		
 		SkillEffectAddEvent jumpAttack1Evt3 = new SkillEffectAddEvent();
@@ -327,6 +483,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack2Evt4.m_boundSize = new Vector3(2f,1.5f,1f);
 		jumpAttack2Evt4.m_hitData.hitTimes = 1;
 		jumpAttack2Evt4.m_hitData.hitSpeed = new Vector3(2f,7f,0);
+		jumpAttack2Evt4.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		jumpAttack2.hitBoundList.Add(jumpAttack2Evt4);
 
 		SkillEffectAddEvent jumpAttack2Evt3 = new SkillEffectAddEvent();
@@ -384,6 +541,7 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3evt3.m_boundIndex = 0;
 		jumpAttack3evt3.m_hitData.hitTimes = 1;
 		jumpAttack3evt3.m_hitData.hitSpeed = new Vector3(0,12,0);
+		jumpAttack3evt3.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		jumpAttack3.hitBoundList.Add(jumpAttack3evt3);
 		
 		SkillHitBoundAddEvent jumpAttack3evt4 = new SkillHitBoundAddEvent();
@@ -394,7 +552,8 @@ public class RoleDataLocal : DkSerializeData
 		jumpAttack3evt4.m_boundIndex = 1;
 		jumpAttack3evt4.m_hitData.hitTimes = 1;
 		jumpAttack3evt4.m_hitData.hitSpeed = new Vector3(13,-5f,0);
-		jumpAttack3evt4.m_hitData.timeScaleMoment = SkillTimeScaleMoment.HitMoment;
+		jumpAttack3evt4.m_hitData.hitTimeScale = SkillTimeScaleMoment.HitMoment;
+		jumpAttack3evt4.m_hitData.hitSound = SoundDef.SWORD_HIT;
 		jumpAttack3.hitBoundList.Add(jumpAttack3evt4);
 		
 		SkillEffectAddEvent jumpAttack3evt5 = new SkillEffectAddEvent();
@@ -434,21 +593,6 @@ public class RoleDataLocal : DkSerializeData
 	{
 		return m_bbData;
 	}
-	
-	//	public void OnParticleCollision(GameObject other)
-	//	{
-	//		Debug.Log(this.gameObject+" OnParticleCollision! ");
-	//	}
-	//
-	//	public void OnCollisionEnter(Collision collisionInfo)
-	//	{
-	//		Debug.Log(this.gameObject+" OnCollisionEnter!");
-	//	}
-	//
-	//	public void OnTriggerEnter(Collider other) 
-	//	{
-	//		Debug.Log(this.gameObject+" Role OnTriggerEnter! " + other.gameObject);
-	//	}
 
 //	public void OnTriggerEnter(Collider other) 
 //	{

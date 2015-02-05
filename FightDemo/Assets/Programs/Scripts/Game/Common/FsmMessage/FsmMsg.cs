@@ -48,6 +48,7 @@ public class RoleFsmMessage : FsmMsg
 	public eDamageType damageType = eDamageType.Not_Use;
 	public int hitId = -1;
 	public Vector3 hitSpeed = Vector3.zero;
+	public float hitDuration = 0f;
 	
 	public RoleFsmMessage()
 	{

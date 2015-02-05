@@ -141,14 +141,14 @@ public class InputManager
 		{
 			CacheKeyInput(eInputActiveKey.Skill_Two);
 		}
-//		else if(Input.GetKeyDown(KeyCode.Alpha3))
-//		{
-//			CacheKeyInput(eInputActiveKey.Skill_Three);
-//		}
-//		else if(Input.GetKeyDown(KeyCode.Alpha4))
-//		{
-//			CacheKeyInput(eInputActiveKey.Skill_Four);
-//		}
+		else if(Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			CacheKeyInput(eInputActiveKey.Skill_Three);
+		}
+		else if(Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			CacheKeyInput(eInputActiveKey.Skill_Four);
+		}
 		else if(Input.GetKeyDown(KeyCode.Space)&&KeyJumpEnalbe)
 		{
 			CacheKeyInput(eInputActiveKey.Jump);

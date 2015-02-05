@@ -83,6 +83,7 @@ public enum eActionType
 	ForceFly,
 	ForceFallDown,
 	ForceDown,
+	ForceMotion,
 	JoinImpact,
 	JoinLie,
 	JoinFallen,

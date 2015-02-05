@@ -75,31 +75,27 @@ public class HitCommonByStayProcess : HitMethod
 		{
 			m_hitCount++;
 			
-			SendHitMsg();
+			SendHitMsg(m_hitData);
 
 			return true;
 		}
 		else return false;
 	}
 
-	protected override void SendHitMsg ()
+	protected override void SendHitMsg (SkillHitData hitData)
 	{
-		base.SendHitMsg ();
+		base.SendHitMsg (hitData);
 		SceneObjInfo info = m_target.DataInfo;
 		
 		RoleFsmMessage fsmMsg = new RoleFsmMessage();
 		fsmMsg.receiveIndex = info.index;
 		fsmMsg.cmdType = eCommandType.Cmd_Hit;
 		fsmMsg.curPos = m_target.DataRunTime.CurPos;			
-		fsmMsg.actionType = GetActionByHitForce(m_hitData.hitForce, m_hitData.hitSpeed);
-		fsmMsg.hitSpeed = m_hitData.hitSpeed;
-		fsmMsg.lookDirection = GetLookDirection(m_hitData.hitLook);
-		
-		if(fsmMsg.lookDirection == eLookDirection.Right)
-		{
-			fsmMsg.hitSpeed.x = -m_hitData.hitSpeed.x;
-		}
-		
+		fsmMsg.actionType = GetActionByHitForce(m_hitData);
+		fsmMsg.lookDirection = GetLookDirection(m_hitData);
+		fsmMsg.hitSpeed = GetHitSpeedBy(m_hitData);
+		fsmMsg.hitDuration = m_hitData.hitDuration;
+
 		FsmMsgManager.SendFsmMsg(fsmMsg);
 	}
 }

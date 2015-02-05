@@ -22,6 +22,7 @@ public class SRoleSkillItem
 	public int skillId = -1;
 	public float durationTime = -1;
 	public eHitMethod hitMethod = eHitMethod.Not_Use;
+	public SoundDef sound = SoundDef.SWORD;
 	
 	public List<SkillAniChEvent> aniList = new List<SkillAniChEvent>();
 	public List<SkillPosChEvent> posList = new List<SkillPosChEvent>();
@@ -166,6 +167,8 @@ public class SkillEffectAddEvent : SkillProcessEvent
 	public Vector3 m_motion = Vector3.zero;
 	public float   m_moveTime = 0f;
 	public SkillPlaceMode m_placeMode = SkillPlaceMode.SelfInside;
+	public eSkillEffectMethod m_effectMethod = eSkillEffectMethod.Not_Use;
+	public SoundDef m_sound = SoundDef.Not_Use;
 	
 	public SkillEffectAddEvent()
 	{
@@ -194,13 +197,15 @@ public class SkillCameraEvent : SkillPosChEvent
 [System.Serializable]
 public class SkillHitData
 {
-	public int hitTimes = 1;				//次数
+	public int hitTimes = 1;
+	public float hitDuration = 0f;
 	public float hitInterval = 0f;
-	public eSkillHitForce hitForce = eSkillHitForce.Not_Use;
+	public Vector3 hitSpeed = Vector3.zero;
+	public eSkillHitForce hitForce = eSkillHitForce.Force_Speed;
 	public eHitMoment hitMoment = eHitMoment.Not_Use;
 	public eSkillHitLookDirection hitLook = eSkillHitLookDirection.OppositeAttackerLook;
-	public Vector3 hitSpeed = Vector3.zero;
-	public SkillTimeScaleMoment timeScaleMoment = SkillTimeScaleMoment.Not_Use; 
+	public SkillTimeScaleMoment hitTimeScale = SkillTimeScaleMoment.Not_Use; 
+	public SoundDef hitSound = SoundDef.Not_Use;
 }
 
 [System.Serializable]
@@ -222,3 +227,10 @@ public enum SkillTimeScaleMoment
 	HitMoment,
 }
 
+[System.Serializable]
+public enum eSkillEffectMethod
+{
+	Not_Use,
+	None,
+	Link,
+}

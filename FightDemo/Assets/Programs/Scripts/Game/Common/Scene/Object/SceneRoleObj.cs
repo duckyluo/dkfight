@@ -26,6 +26,10 @@ public class SceneRoleObj : SceneObj
 	protected DkBehaviourTree m_executorTree = null;
 
 	protected RoleBlackBoard m_roleBlackBoard = null;
+	public RoleBlackBoard SelfBBData
+	{
+		get{return m_roleBlackBoard;}
+	}
 
 	public SceneRoleObj(SceneObjInfo info):base(info)
 	{

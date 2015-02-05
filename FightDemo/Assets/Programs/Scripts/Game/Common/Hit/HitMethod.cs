@@ -34,14 +34,14 @@ public class HitMethod
 	
 	virtual public bool DoHit(){ return false;}
 
-	protected eLookDirection GetLookDirection(eSkillHitLookDirection hitLook)
+	protected eLookDirection GetLookDirection(SkillHitData hitData)
 	{
 		eLookDirection lookDirection = m_target.DataRunTime.LookDirection;
-		if(hitLook == eSkillHitLookDirection.LookAttackerPos)
+		if(hitData.hitLook == eSkillHitLookDirection.LookAttackerPos)
 		{
 			lookDirection = m_target.DataRunTime.GetLookDirectionToPos(m_self.DataRunTime.CurPos);
 		}
-		else if(hitLook == eSkillHitLookDirection.OppositeAttackerMove)
+		else if(hitData.hitLook == eSkillHitLookDirection.OppositeAttackerMove)
 		{
 			if(m_self.DataRunTime.MoveDirection == eMoveDirection.Right)
 			{
@@ -52,7 +52,7 @@ public class HitMethod
 				lookDirection = eLookDirection.Right;
 			}
 		}
-		else if(hitLook == eSkillHitLookDirection.OppositeAttackerLook)
+		else if(hitData.hitLook == eSkillHitLookDirection.OppositeAttackerLook)
 		{
 			if(m_self.DataRunTime.LookDirection == eLookDirection.Right)
 			{
@@ -66,53 +66,100 @@ public class HitMethod
 
 		return lookDirection;
 	}
-	
-	protected eActionType GetActionByHitForce(eSkillHitForce force , Vector3 hitSpeed)
+
+	protected Vector3 GetHitSpeedBy(SkillHitData hitData)
 	{
-		eActionType action = eActionType.ForceHit;
-
-		if(force == eSkillHitForce.Force_Caught)
+		Vector3 hitSpeed = Vector3.zero;
+		if(hitData.hitForce == eSkillHitForce.Force_Caught)
 		{
 			Debug.LogError("Not Yet Now !!!!!!!!!!!!!!!!!!!!!!!!!!");
-			return action;
 		}
-		else if(force == eSkillHitForce.Force_Stun)
+		else if(hitData.hitForce == eSkillHitForce.Force_Stun)
 		{
 			Debug.LogError("Not Yet Now !!!!!!!!!!!!!!!!!!!!!!!!!!");
-			return action;
 		}
-
-		if(m_target.DataRunTime.IsOnAir)
+		else if(hitData.hitForce == eSkillHitForce.Force_ComeUp)
 		{
-			if(hitSpeed.y >= 0 && hitSpeed.magnitude != 0)
+			Vector3 endPos = Vector3.zero;
+			if(m_self.DataRunTime.LookDirection == eLookDirection.Right)
 			{
-				action = eActionType.ForceFly;
-			}
-			else if(hitSpeed.y < 0)
-			{
-				action = eActionType.ForceFallDown;
+				endPos = m_self.DataRunTime.CurPos + new Vector3(1.5f,0,0);
 			}
 			else
 			{
-				action = eActionType.ForceFloatHit;
+				endPos = m_self.DataRunTime.CurPos - new Vector3(1.5f,0,0);
 			}
+			hitSpeed = endPos - m_target.DataRunTime.CurPos;
 		}
-		else
+		else 
 		{
-			if(hitSpeed.y > 0)
+			hitSpeed = hitData.hitSpeed;
+			eLookDirection lool = GetLookDirection(hitData);
+			if(lool == eLookDirection.Right)
 			{
-				action = eActionType.ForceFly;
-			}
-			else if(hitSpeed.y < 0)
-			{
-				action = eActionType.ForceDown;
-			}
-			else 
-			{
-				action = eActionType.ForceHit;
+				hitSpeed.x = -hitData.hitSpeed.x;
 			}
 		}
 
+		return hitSpeed;
+	}
+	
+	protected eActionType GetActionByHitForce(SkillHitData hitData)
+	{
+		eActionType action = eActionType.ForceHit;
+
+		if(hitData.hitForce == eSkillHitForce.Force_Caught)
+		{
+			Debug.LogError("Not Yet Now !!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return action;
+		}
+		else if(hitData.hitForce == eSkillHitForce.Force_Stun)
+		{
+			Debug.LogError("Not Yet Now !!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return action;
+		}
+		else if(hitData.hitForce == eSkillHitForce.Force_Motion)
+		{
+			Debug.LogError("Not Yet Now !!!!!!!!!!!!!!!!!!!!!!!!!!");
+			action = eActionType.ForceMotion;
+		}
+		else if(hitData.hitForce == eSkillHitForce.Force_ComeUp)
+		{
+			action = eActionType.ForceMotion;
+		}
+		else
+		{
+			if(m_target.DataRunTime.IsOnAir)
+			{
+				if(hitData.hitSpeed.sqrMagnitude == 0)
+				{
+					action = eActionType.ForceFloatHit;
+				}
+				else if(hitData.hitSpeed.y >= 0)
+				{
+					action = eActionType.ForceFly;
+				}
+				else if(hitData.hitSpeed.y < 0)
+				{
+					action = eActionType.ForceFallDown;
+				}
+			}
+			else
+			{
+				if(hitData.hitSpeed.y > 0)
+				{
+					action = eActionType.ForceFly;
+				}
+				else if(hitData.hitSpeed.y < 0)
+				{
+					action = eActionType.ForceDown;
+				}
+				else 
+				{
+					action = eActionType.ForceHit;
+				}
+			}
+		}
 		return action;
 	}
 
@@ -141,7 +188,7 @@ public class HitMethod
 			}
 		}
 
-		if(hitData.timeScaleMoment == SkillTimeScaleMoment.HitMoment)
+		if(hitData.hitTimeScale == SkillTimeScaleMoment.HitMoment)
 		{
 			TimerManager.Instance.ChangeTimeScale(0.08f,0.15f);
 		}
@@ -149,9 +196,12 @@ public class HitMethod
 		return bol;
 	}
 
-	virtual	protected void SendHitMsg()
+	virtual	protected void SendHitMsg(SkillHitData hitData)
 	{
-		SoundManager.PlaySound(SoundDef.SWORD_HIT);
+		if(hitData.hitSound != SoundDef.Not_Use)
+		{
+			SoundManager.PlaySound(hitData.hitSound);
+		}
 	}
 }
 

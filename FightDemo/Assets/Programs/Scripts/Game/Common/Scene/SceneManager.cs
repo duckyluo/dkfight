@@ -43,4 +43,15 @@ public class SceneManager
 
 		m_objCtrl.Update();
 	}
+
+	public static RoleBlackBoard GetTargetFrom(int index)
+	{
+		if(!m_isInited)
+		{
+			return null;
+		}
+
+		SceneRoleObj obj = m_objCtrl.GetItem(index) as SceneRoleObj;
+		return obj.SelfBBData;
+	}
 }

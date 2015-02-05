@@ -13,7 +13,7 @@ public class HitAloneByNumProcess : HitMethod
 	protected float m_timeCount = 0f;
 	
 	protected int m_hitCount = 0;
-	
+
 	protected SkillHitData m_hitData = null;
 
 	protected List<int> boundList = new List<int>();
@@ -59,28 +59,30 @@ public class HitAloneByNumProcess : HitMethod
 			}
 		}
 		
-		if(m_hitCount == m_hitData.hitTimes )
+		if(m_hitCount == m_hitData.hitTimes)
 		{
 			m_status = eProcessStatus.End;
 		}
 	}
 	
-	public override bool DoHit ()
+	public override bool DoHit()
 	{
 		if(m_hitCount < m_hitData.hitTimes)
 		{
 			m_hitCount++;
 			
-			SendHitMsg();
+			SendHitMsg(m_hitData);
 
 			return true;
 		}
 		else return false;
 	}
 
-	protected override void SendHitMsg ()
+	protected override void SendHitMsg (SkillHitData hitData)
 	{
-		base.SendHitMsg ();
+		Debug.Log(" ============================= !!!!");
+
+		base.SendHitMsg (hitData);
 
 		SceneObjInfo info = m_target.DataInfo;
 		
@@ -88,15 +90,10 @@ public class HitAloneByNumProcess : HitMethod
 		fsmMsg.receiveIndex = info.index;
 		fsmMsg.cmdType = eCommandType.Cmd_Hit;
 		fsmMsg.curPos = m_target.DataRunTime.CurPos;
-		fsmMsg.actionType = GetActionByHitForce(m_hitData.hitForce , m_hitData.hitSpeed);
-		fsmMsg.hitSpeed = m_hitData.hitSpeed;
-		fsmMsg.lookDirection = GetLookDirection(m_hitData.hitLook);
-		
-		if(fsmMsg.lookDirection == eLookDirection.Right)
-		{
-			fsmMsg.hitSpeed.x = -m_hitData.hitSpeed.x;
-		}
-		
+		fsmMsg.actionType = GetActionByHitForce(m_hitData);
+		fsmMsg.lookDirection = GetLookDirection(m_hitData);
+		fsmMsg.hitSpeed = GetHitSpeedBy(m_hitData);
+		fsmMsg.hitDuration = m_hitData.hitDuration;
 		FsmMsgManager.SendFsmMsg(fsmMsg);
 	}
 }

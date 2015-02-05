@@ -77,6 +77,12 @@ public class HitBoundProcess : IProcess
 				m_hitBoundObj.transform.localPosition = pos;
 			}
 		}
+		else if(hitBoundEvent.m_placeMode == SkillPlaceMode.TargetInside)
+		{
+			RoleBlackBoard targetBB = m_selfBB.CtrlSkill.GetSingleTarget();
+			m_hitBoundObj.transform.parent = targetBB.PrefabMain.transform;
+			m_hitBoundObj.transform.localPosition = m_localPos;
+		}
 		else
 		{
 			Debug.Log("Not Yet!!!!!!!!!!");
@@ -119,7 +125,7 @@ public class HitBoundProcess : IProcess
 
 	public void Stop()
 	{
-		Clean();
+		Destroy();
 	}
 
 	public void End()

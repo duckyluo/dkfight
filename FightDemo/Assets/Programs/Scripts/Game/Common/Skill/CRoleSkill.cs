@@ -118,6 +118,7 @@ public class CRoleSkillItem : IComparable
 	public int skillId = -1;
 	public float durationTime = -1;
 	public eHitMethod hitMethod = eHitMethod.Not_Use;
+	public SoundDef sound = SoundDef.Not_Use;
 
 	public List<SkillProcessEvent> skillEvents = new List<SkillProcessEvent>();
 	
@@ -127,6 +128,7 @@ public class CRoleSkillItem : IComparable
 		skillId = sItem.skillId;
 		durationTime = sItem.durationTime;
 		hitMethod = sItem.hitMethod;
+		sound = sItem.sound;
 
 		AddEventFromList(sItem.aniList);
 		AddEventFromList(sItem.posList);

@@ -1,5 +1,5 @@
 
-
+[System.Serializable]
 public enum SoundDef
 {
 	Not_Use = 0,
@@ -8,4 +8,7 @@ public enum SoundDef
 	HIT = 3,
 	FallOne = 4,
 	FallTwo = 5,
+	Explode = 6,
+	FireHit = 7,
+	Air = 8,
 }

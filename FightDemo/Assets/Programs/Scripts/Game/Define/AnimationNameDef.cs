@@ -18,5 +18,9 @@ public class AnimationNameDef
 	public const string Attack4 = "attack4";
 	public const string Attack5 = "attack5";
 
+	public const string Skill05 = "Skill05";
+	public const string Skill3 = "Skill04_Action";
+	public const string Skill4= "attack slj";
+
 	public const string Hit1 = "hit 2";
 }

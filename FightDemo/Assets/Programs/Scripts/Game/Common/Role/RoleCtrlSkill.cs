@@ -154,10 +154,10 @@ public class RoleCtrlSkill
 			ProcessCamera();
 			CheckAllProcessStatus();
 		}
-		else if(m_curSkillStatus == eProcessStatus.End)
-		{
-			Debug.LogError("[CtrlSkill][Update] Something impossible !");
-		}
+//		else if(m_curSkillStatus == eProcessStatus.End)
+//		{
+//			Debug.LogError("[CtrlSkill][Update] Something impossible !");
+//		}
 	}
 	
 	private void CheckAllProcessStatus()
@@ -264,7 +264,7 @@ public class RoleCtrlSkill
 		foreach(EffectProcess effect in m_curEffectList)
 		{
 			effect.Update();
-			if(effect.GetStatus() == eProcessStatus.End)
+			if(!effect.IsRunning())
 			{
 				list.Add(effect);
 			}
@@ -441,6 +441,12 @@ public class RoleCtrlSkill
 		{
 			hitTarget.TargetOut(boundIndex);
 		}
+	}
+
+	public RoleBlackBoard GetSingleTarget()
+	{
+		RoleBlackBoard target = SceneManager.GetTargetFrom(1);
+		return target;
 	}
 
 	//===============================================================//

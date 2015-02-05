@@ -138,7 +138,7 @@ public class THitMessage : TimeLineMessage
 	public eDamageType damageType = eDamageType.Not_Use;
 	public int hitId = -1;
 	public Vector3 hitSpeed = Vector3.zero;
-
+	public float hitDuration = 0f;
 	//public eHitResultType hitResultType = eHitResultType.Not_Use;
 	//public eDamageForce damageForce = eDamageForce.Not_Use;
 
@@ -153,6 +153,7 @@ public class THitMessage : TimeLineMessage
 		damageType = fsmMsg.damageType;
 		hitId = fsmMsg.hitId;
 		hitSpeed = fsmMsg.hitSpeed;
+		hitDuration = fsmMsg.hitDuration;
 	}
 }
 

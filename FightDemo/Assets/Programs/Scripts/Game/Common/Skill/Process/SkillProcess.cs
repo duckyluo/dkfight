@@ -17,7 +17,9 @@ public class SkillProcess : DkEventDispatch , IProcess
 	protected float m_duration = 0;
 
 	protected float m_remainTime = 0f;
-	
+
+	protected CRoleSkillItem m_skillItem = null;
+
 	protected eProcessStatus m_status = eProcessStatus.None;
 	
 	public void Reset(CRoleSkillItem skillItem)
@@ -26,6 +28,7 @@ public class SkillProcess : DkEventDispatch , IProcess
 
 		m_status = eProcessStatus.Start;
 
+		m_skillItem = skillItem;
 		m_skillId = skillItem.skillId;
 		m_skillIndex = skillItem.skillIndex;
 		eventList.AddRange(skillItem.skillEvents);
@@ -59,8 +62,10 @@ public class SkillProcess : DkEventDispatch , IProcess
 			m_remainTime = m_duration;
 			m_status = eProcessStatus.Run;
 
-			SoundManager.PlaySound(SoundDef.SWORD);
-
+			if(m_skillItem.sound != SoundDef.Not_Use)
+			{
+				SoundManager.PlaySound(m_skillItem.sound);
+			}
 		}
 		else
 		{

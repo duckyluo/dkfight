@@ -47,6 +47,16 @@ public class SceneObjCtrl : IFsmReceiver
 		}
 		else return null;
 	}
+
+	public SceneObj GetItem(int index)
+	{
+		SceneObj obj = null;
+		if(objDict.TryGetValue(index,out obj))
+		{
+			return obj;
+		}
+		else return null;
+	}
 	
 	public void ClearAllObj()
 	{
